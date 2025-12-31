@@ -24,7 +24,7 @@
     - [x] Sub-task: Implement `getConversations`
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Convex Backend Functions' (Protocol in workflow.md) 1137204
 
-## Phase 3: Visitor Chat Widget
+## Phase 3: Visitor Chat Widget [checkpoint: fdb9e13]
 - [x] Task: Build Floating Action Button (FAB) cf90238
     - [x] Sub-task: Write Tests for FAB
     - [x] Sub-task: Implement FAB with shadcn/ui
@@ -37,10 +37,10 @@
 - [x] Task: Real-time Message Subscription a95babf
     - [x] Sub-task: Write Tests for real-time updates
     - [x] Sub-task: Implement `useQuery` subscription for messages
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Visitor Chat Widget' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Visitor Chat Widget' (Protocol in workflow.md) fdb9e13
 
 ## Phase 4: Admin Inbox Dashboard
-- [ ] Task: Create /admin layout
+- [~] Task: Create /admin layout
     - [ ] Sub-task: Write Tests for admin layout
     - [ ] Sub-task: Implement two-column layout with shadcn/ui
 - [ ] Task: Implement Conversation List (Left Column)
