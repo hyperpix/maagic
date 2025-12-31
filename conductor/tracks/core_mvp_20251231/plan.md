@@ -4,9 +4,9 @@
 - [x] Task: Initialize Next.js app with Tailwind CSS and shadcn/ui a629d75
     - [x] Sub-task: Run `npx create-next-app@latest`
     - [x] Sub-task: Initialize shadcn/ui
-- [ ] Task: Set up Convex backend
-    - [ ] Sub-task: Install `convex` and initialize the project
-    - [ ] Sub-task: Define schema for `conversations` and `messages`
+- [x] Task: Set up Convex backend b560b04
+    - [x] Sub-task: Install `convex` and initialize the project
+    - [x] Sub-task: Define schema for `conversations` and `messages`
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Project Scaffolding & Data Model' (Protocol in workflow.md)
 
 ## Phase 2: Convex Backend Functions
