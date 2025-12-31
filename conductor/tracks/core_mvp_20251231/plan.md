@@ -34,9 +34,9 @@
 - [x] Task: Integrate Visitor Message Sending f7970f2
     - [x] Sub-task: Write Tests for Message Input
     - [x] Sub-task: Implement message input and `sendMessage` mutation call
-- [ ] Task: Real-time Message Subscription
-    - [ ] Sub-task: Write Tests for real-time updates
-    - [ ] Sub-task: Implement `useQuery` subscription for messages
+- [x] Task: Real-time Message Subscription a95babf
+    - [x] Sub-task: Write Tests for real-time updates
+    - [x] Sub-task: Implement `useQuery` subscription for messages
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Visitor Chat Widget' (Protocol in workflow.md)
 
 ## Phase 4: Admin Inbox Dashboard
