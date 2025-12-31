@@ -40,10 +40,10 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Visitor Chat Widget' (Protocol in workflow.md) fdb9e13
 
 ## Phase 4: Admin Inbox Dashboard
-- [~] Task: Create /admin layout
-    - [ ] Sub-task: Write Tests for admin layout
-    - [ ] Sub-task: Implement two-column layout with shadcn/ui
-- [ ] Task: Implement Conversation List (Left Column)
+- [x] Task: Create /admin layout 6cfbb71
+    - [x] Sub-task: Write Tests for admin layout
+    - [x] Sub-task: Implement two-column layout with shadcn/ui
+- [~] Task: Implement Conversation List (Left Column)
     - [ ] Sub-task: Write Tests for conversation list
     - [ ] Sub-task: Implement list with real-time updates
 - [ ] Task: Implement Message View & Reply (Right Column)
