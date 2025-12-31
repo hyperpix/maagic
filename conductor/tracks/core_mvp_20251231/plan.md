@@ -43,10 +43,10 @@
 - [x] Task: Create /admin layout 6cfbb71
     - [x] Sub-task: Write Tests for admin layout
     - [x] Sub-task: Implement two-column layout with shadcn/ui
-- [~] Task: Implement Conversation List (Left Column)
-    - [ ] Sub-task: Write Tests for conversation list
-    - [ ] Sub-task: Implement list with real-time updates
-- [ ] Task: Implement Message View & Reply (Right Column)
+- [x] Task: Implement Conversation List (Left Column) cc60623
+    - [x] Sub-task: Write Tests for conversation list
+    - [x] Sub-task: Implement list with real-time updates
+- [~] Task: Implement Message View & Reply (Right Column)
     - [ ] Sub-task: Write Tests for message view
     - [ ] Sub-task: Implement message history and reply input
 - [ ] Task: Conductor - User Manual Verification 'Phase 4: Admin Inbox Dashboard' (Protocol in workflow.md)
