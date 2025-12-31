@@ -60,10 +60,10 @@
     - [x] Sub-task: Replace custom Card/ScrollArea with AssistantModal
 - [x] Task: Conductor - User Manual Verification 'Phase 5: Refactor ChatWidget with assistant-ui' (Protocol in workflow.md) f63fb4a
 
-## Phase 6: Final Integration & Polish
-- [~] Task: Style Refinement & Tone Check
+## Phase 6: Final Integration & Polish [checkpoint: final]
+- [x] Task: Style Refinement & Tone Check ff45e1f
     - [x] Sub-task: Review against `product-guidelines.md`
     - [x] Sub-task: Apply final Stripe-like styling tweaks (Removed boilerplate)
-- [ ] Task: End-to-End Testing
-    - [ ] Sub-task: Perform manual E2E test between visitor and admin
-- [ ] Task: Conductor - User Manual Verification 'Phase 5: Final Integration & Polish' (Protocol in workflow.md)
+- [x] Task: End-to-End Testing
+    - [x] Sub-task: Perform manual E2E test between visitor and admin
+- [x] Task: Conductor - User Manual Verification 'Phase 6: Final Integration & Polish' (Protocol in workflow.md) final
