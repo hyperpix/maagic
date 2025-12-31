@@ -1,5 +1,17 @@
-import { mutation } from "./_generated/server";
+import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
+
+export const getMessagesInternal = async (ctx: any, args: { conversationId: any }) => {
+  return await ctx.db
+    .query("messages")
+    .withIndex("by_conversation", (q: any) => q.eq("conversationId", args.conversationId))
+    .collect();
+};
+
+export const getMessages = query({
+  args: { conversationId: v.id("conversations") },
+  handler: getMessagesInternal,
+});
 
 export const sendMessageInternal = async (
   ctx: any,
