@@ -1,13 +1,56 @@
 "use client";
 
-import { useState } from "react";
-import { MessageCircle, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { MessageCircle, X, Send } from "lucide-react";
+import { useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Input } from "@/components/ui/input";
 
 export const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [message, setMessage] = useState("");
+  const [visitorId, setVisitorId] = useState<string | null>(null);
+  const [conversationId, setConversationId] = useState<any>(null);
+
+  const createConversation = useMutation(api.conversations.createConversation);
+  const sendMessage = useMutation(api.messages.sendMessage);
+
+  useEffect(() => {
+    let id = localStorage.getItem("chat_visitor_id");
+    if (!id) {
+      id = Math.random().toString(36).substring(2, 15);
+      localStorage.setItem("chat_visitor_id", id);
+    }
+    setVisitorId(id);
+    
+    const convId = localStorage.getItem("chat_conversation_id");
+    if (convId) {
+      setConversationId(convId);
+    }
+  }, []);
+
+  const handleSend = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (!message.trim() || !visitorId) return;
+
+    let currentConvId = conversationId;
+    if (!currentConvId) {
+      currentConvId = await createConversation({ visitorId });
+      setConversationId(currentConvId);
+      localStorage.setItem("chat_conversation_id", currentConvId as string);
+    }
+
+    await sendMessage({
+      conversationId: currentConvId,
+      sender: "visitor",
+      content: message.trim(),
+    });
+
+    setMessage("");
+  };
 
   return (
     <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end gap-4">
@@ -23,12 +66,18 @@ export const ChatWidget = () => {
               </div>
             </ScrollArea>
           </CardContent>
-          <div className="p-3 border-t bg-background">
-             {/* Input will be added in next task */}
-             <div className="text-xs text-muted-foreground text-center">
-               Input coming soon...
-             </div>
-          </div>
+          <form onSubmit={handleSend} className="p-3 border-t bg-background flex gap-2">
+            <Input
+              placeholder="Type a message..."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              className="text-sm h-9"
+            />
+            <Button type="submit" size="icon" className="h-9 w-9 shrink-0">
+              <Send className="h-4 w-4" />
+              <span className="sr-only">Send</span>
+            </Button>
+          </form>
         </Card>
       )}
       <Button
