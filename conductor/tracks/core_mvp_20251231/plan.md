@@ -7,7 +7,7 @@
 - [x] Task: Set up Convex backend b560b04
     - [x] Sub-task: Install `convex` and initialize the project
     - [x] Sub-task: Define schema for `conversations` and `messages`
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Project Scaffolding & Data Model' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Project Scaffolding & Data Model' (Protocol in workflow.md) 5af3f29
 
 ## Phase 2: Convex Backend Functions [checkpoint: 1137204]
 - [x] Task: Implement `createConversation` mutation d563bbe
@@ -22,12 +22,12 @@
 - [x] Task: Implement `getConversations` query (Admin list) 4a428e5
     - [x] Sub-task: Write Tests for `getConversations`
     - [x] Sub-task: Implement `getConversations`
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Convex Backend Functions' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Convex Backend Functions' (Protocol in workflow.md) 1137204
 
 ## Phase 3: Visitor Chat Widget
-- [ ] Task: Build Floating Action Button (FAB)
-    - [ ] Sub-task: Write Tests for FAB
-    - [ ] Sub-task: Implement FAB with shadcn/ui
+- [x] Task: Build Floating Action Button (FAB) cf90238
+    - [x] Sub-task: Write Tests for FAB
+    - [x] Sub-task: Implement FAB with shadcn/ui
 - [ ] Task: Build Chat Modal & Message List
     - [ ] Sub-task: Write Tests for Chat Modal
     - [ ] Sub-task: Implement Chat Modal and scrollable message list
