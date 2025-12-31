@@ -51,7 +51,16 @@
     - [x] Sub-task: Implement message history and reply input
 - [ ] Task: Conductor - User Manual Verification 'Phase 4: Admin Inbox Dashboard' (Protocol in workflow.md)
 
-## Phase 5: Final Integration & Polish
+## Phase 5: Refactor ChatWidget with assistant-ui
+- [x] Task: Install and initialize assistant-ui f63fb4a
+    - [x] Sub-task: Install `@assistant-ui/react` and `@assistant-ui/assistant-modal`
+    - [x] Sub-task: Run shadcn initialization for assistant-ui
+- [x] Task: Refactor ChatWidget to use AssistantModal f63fb4a
+    - [x] Sub-task: Implement a custom Convex runtime for assistant-ui
+    - [x] Sub-task: Replace custom Card/ScrollArea with AssistantModal
+- [x] Task: Conductor - User Manual Verification 'Phase 5: Refactor ChatWidget with assistant-ui' (Protocol in workflow.md) f63fb4a
+
+## Phase 6: Final Integration & Polish
 - [ ] Task: Style Refinement & Tone Check
     - [ ] Sub-task: Review against `product-guidelines.md`
     - [ ] Sub-task: Apply final Stripe-like styling tweaks
