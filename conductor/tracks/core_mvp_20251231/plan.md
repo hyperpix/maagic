@@ -39,7 +39,7 @@
     - [x] Sub-task: Implement `useQuery` subscription for messages
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Visitor Chat Widget' (Protocol in workflow.md) fdb9e13
 
-## Phase 4: Admin Inbox Dashboard
+## Phase 4: Admin Inbox Dashboard [checkpoint: 53ee27d]
 - [x] Task: Create /admin layout 6cfbb71
     - [x] Sub-task: Write Tests for admin layout
     - [x] Sub-task: Implement two-column layout with shadcn/ui
@@ -49,9 +49,9 @@
 - [x] Task: Implement Message View & Reply (Right Column) 2ea0a90
     - [x] Sub-task: Write Tests for message view
     - [x] Sub-task: Implement message history and reply input
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: Admin Inbox Dashboard' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 4: Admin Inbox Dashboard' (Protocol in workflow.md) 53ee27d
 
-## Phase 5: Refactor ChatWidget with assistant-ui
+## Phase 5: Refactor ChatWidget with assistant-ui [checkpoint: f63fb4a]
 - [x] Task: Install and initialize assistant-ui f63fb4a
     - [x] Sub-task: Install `@assistant-ui/react` and `@assistant-ui/assistant-modal`
     - [x] Sub-task: Run shadcn initialization for assistant-ui
@@ -61,9 +61,9 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 5: Refactor ChatWidget with assistant-ui' (Protocol in workflow.md) f63fb4a
 
 ## Phase 6: Final Integration & Polish
-- [ ] Task: Style Refinement & Tone Check
-    - [ ] Sub-task: Review against `product-guidelines.md`
-    - [ ] Sub-task: Apply final Stripe-like styling tweaks
+- [~] Task: Style Refinement & Tone Check
+    - [x] Sub-task: Review against `product-guidelines.md`
+    - [x] Sub-task: Apply final Stripe-like styling tweaks (Removed boilerplate)
 - [ ] Task: End-to-End Testing
     - [ ] Sub-task: Perform manual E2E test between visitor and admin
 - [ ] Task: Conductor - User Manual Verification 'Phase 5: Final Integration & Polish' (Protocol in workflow.md)
