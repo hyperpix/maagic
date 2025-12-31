@@ -31,9 +31,9 @@
 - [x] Task: Build Chat Modal & Message List 25be2a4
     - [x] Sub-task: Write Tests for Chat Modal
     - [x] Sub-task: Implement Chat Modal and scrollable message list
-- [ ] Task: Integrate Visitor Message Sending
-    - [ ] Sub-task: Write Tests for Message Input
-    - [ ] Sub-task: Implement message input and `sendMessage` mutation call
+- [x] Task: Integrate Visitor Message Sending f7970f2
+    - [x] Sub-task: Write Tests for Message Input
+    - [x] Sub-task: Implement message input and `sendMessage` mutation call
 - [ ] Task: Real-time Message Subscription
     - [ ] Sub-task: Write Tests for real-time updates
     - [ ] Sub-task: Implement `useQuery` subscription for messages
