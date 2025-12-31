@@ -16,9 +16,9 @@
 - [x] Task: Implement `sendMessage` mutation c60d2b8
     - [x] Sub-task: Write Tests for `sendMessage`
     - [x] Sub-task: Implement `sendMessage`
-- [ ] Task: Implement `getMessages` query
-    - [ ] Sub-task: Write Tests for `getMessages`
-    - [ ] Sub-task: Implement `getMessages`
+- [x] Task: Implement `getMessages` query 52b9bc3
+    - [x] Sub-task: Write Tests for `getMessages`
+    - [x] Sub-task: Implement `getMessages`
 - [ ] Task: Implement `getConversations` query (Admin list)
     - [ ] Sub-task: Write Tests for `getConversations`
     - [ ] Sub-task: Implement `getConversations`
