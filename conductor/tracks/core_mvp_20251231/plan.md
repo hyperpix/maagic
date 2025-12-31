@@ -1,6 +1,6 @@
 # Implementation Plan - Core Live Chat MVP
 
-## Phase 1: Project Scaffolding & Data Model
+## Phase 1: Project Scaffolding & Data Model [checkpoint: 5af3f29]
 - [x] Task: Initialize Next.js app with Tailwind CSS and shadcn/ui a629d75
     - [x] Sub-task: Run `npx create-next-app@latest`
     - [x] Sub-task: Initialize shadcn/ui
