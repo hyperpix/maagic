@@ -1,9 +1,9 @@
 # Implementation Plan - Core Live Chat MVP
 
 ## Phase 1: Project Scaffolding & Data Model
-- [ ] Task: Initialize Next.js app with Tailwind CSS and shadcn/ui
-    - [ ] Sub-task: Run `npx create-next-app@latest`
-    - [ ] Sub-task: Initialize shadcn/ui
+- [x] Task: Initialize Next.js app with Tailwind CSS and shadcn/ui a629d75
+    - [x] Sub-task: Run `npx create-next-app@latest`
+    - [x] Sub-task: Initialize shadcn/ui
 - [ ] Task: Set up Convex backend
     - [ ] Sub-task: Install `convex` and initialize the project
     - [ ] Sub-task: Define schema for `conversations` and `messages`
