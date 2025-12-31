@@ -28,9 +28,9 @@
 - [x] Task: Build Floating Action Button (FAB) cf90238
     - [x] Sub-task: Write Tests for FAB
     - [x] Sub-task: Implement FAB with shadcn/ui
-- [ ] Task: Build Chat Modal & Message List
-    - [ ] Sub-task: Write Tests for Chat Modal
-    - [ ] Sub-task: Implement Chat Modal and scrollable message list
+- [x] Task: Build Chat Modal & Message List 25be2a4
+    - [x] Sub-task: Write Tests for Chat Modal
+    - [x] Sub-task: Implement Chat Modal and scrollable message list
 - [ ] Task: Integrate Visitor Message Sending
     - [ ] Sub-task: Write Tests for Message Input
     - [ ] Sub-task: Implement message input and `sendMessage` mutation call
