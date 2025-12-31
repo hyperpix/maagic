@@ -10,9 +10,9 @@
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Project Scaffolding & Data Model' (Protocol in workflow.md)
 
 ## Phase 2: Convex Backend Functions
-- [ ] Task: Implement `createConversation` mutation
-    - [ ] Sub-task: Write Tests for `createConversation`
-    - [ ] Sub-task: Implement `createConversation`
+- [x] Task: Implement `createConversation` mutation d563bbe
+    - [x] Sub-task: Write Tests for `createConversation`
+    - [x] Sub-task: Implement `createConversation`
 - [ ] Task: Implement `sendMessage` mutation
     - [ ] Sub-task: Write Tests for `sendMessage`
     - [ ] Sub-task: Implement `sendMessage`
