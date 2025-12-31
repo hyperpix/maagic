@@ -19,9 +19,9 @@
 - [x] Task: Implement `getMessages` query 52b9bc3
     - [x] Sub-task: Write Tests for `getMessages`
     - [x] Sub-task: Implement `getMessages`
-- [ ] Task: Implement `getConversations` query (Admin list)
-    - [ ] Sub-task: Write Tests for `getConversations`
-    - [ ] Sub-task: Implement `getConversations`
+- [x] Task: Implement `getConversations` query (Admin list) 4a428e5
+    - [x] Sub-task: Write Tests for `getConversations`
+    - [x] Sub-task: Implement `getConversations`
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Convex Backend Functions' (Protocol in workflow.md)
 
 ## Phase 3: Visitor Chat Widget
