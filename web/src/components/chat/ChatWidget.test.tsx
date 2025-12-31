@@ -1,7 +1,7 @@
 import { vi } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { ChatWidget } from "./ChatWidget";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 
 vi.mock("convex/react", () => ({
   useMutation: vi.fn(),
@@ -37,11 +37,11 @@ describe("ChatWidget", () => {
     mockCreateConversation = vi.fn().mockResolvedValue("conv123");
     
     (useMutation as any).mockImplementation((apiRef: any) => {
-      // Return based on call order if reference matching fails
-      // 1st hook: createConversation, 2nd hook: sendMessage
       if ((useMutation as any).mock.calls.length % 2 === 1) return mockCreateConversation;
       return mockSendMessage;
     });
+    
+    (useQuery as any).mockReturnValue([]);
   });
 
   it("renders the floating action button", () => {
@@ -77,20 +77,28 @@ describe("ChatWidget", () => {
 
   it("calls sendMessage when send button is clicked", async () => {
     render(<ChatWidget />);
-    
-    // Wait for visitorId to be generated in useEffect
     await waitFor(() => expect(localStorageMock.getItem("chat_visitor_id")).toBeTruthy());
-    
     fireEvent.click(screen.getByRole("button"));
-    
     const input = screen.getByPlaceholderText(/Type a message/i);
     fireEvent.change(input, { target: { value: "Hello world" } });
-    
-    const sendButton = screen.getByRole("button", { name: /Send/i });
-    fireEvent.click(sendButton);
-    
+    fireEvent.click(screen.getByRole("button", { name: /Send/i }));
     await waitFor(() => {
       expect(mockSendMessage).toHaveBeenCalled();
     });
+  });
+
+  it("renders messages from subscription", () => {
+    const mockMessages = [
+      { _id: "m1", content: "Hello subscriber", sender: "visitor" },
+      { _id: "m2", content: "Hi there back!", sender: "agent" },
+    ];
+    
+    (useQuery as any).mockReturnValue(mockMessages);
+
+    render(<ChatWidget />);
+    fireEvent.click(screen.getByRole("button"));
+    
+    expect(screen.getByText("Hello subscriber")).toBeInTheDocument();
+    expect(screen.getByText("Hi there back!")).toBeInTheDocument();
   });
 });

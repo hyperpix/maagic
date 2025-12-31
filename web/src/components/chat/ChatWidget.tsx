@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { MessageCircle, X, Send } from "lucide-react";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 export const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,6 +18,11 @@ export const ChatWidget = () => {
 
   const createConversation = useMutation(api.conversations.createConversation);
   const sendMessage = useMutation(api.messages.sendMessage);
+  
+  const messages = useQuery(
+    api.messages.getMessages,
+    conversationId ? { conversationId } : "skip"
+  );
 
   useEffect(() => {
     let id = localStorage.getItem("chat_visitor_id");
@@ -61,8 +67,30 @@ export const ChatWidget = () => {
           </CardHeader>
           <CardContent className="flex-1 p-0 overflow-hidden">
             <ScrollArea className="h-full p-4">
-              <div className="text-center text-muted-foreground text-xs mt-4">
-                No messages yet. Say hello!
+              <div className="flex flex-col gap-3">
+                {messages === undefined ? (
+                  <div className="text-center text-muted-foreground text-xs mt-4">
+                    Loading messages...
+                  </div>
+                ) : messages.length === 0 ? (
+                  <div className="text-center text-muted-foreground text-xs mt-4">
+                    No messages yet. Say hello!
+                  </div>
+                ) : (
+                  messages.map((msg: any) => (
+                    <div
+                      key={msg._id}
+                      className={cn(
+                        "max-w-[80%] rounded-lg px-3 py-2 text-sm",
+                        msg.sender === "visitor"
+                          ? "bg-primary text-primary-foreground self-end"
+                          : "bg-muted self-start"
+                      )}
+                    >
+                      {msg.content}
+                    </div>
+                  ))
+                )}
               </div>
             </ScrollArea>
           </CardContent>
