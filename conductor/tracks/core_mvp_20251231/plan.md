@@ -13,9 +13,9 @@
 - [x] Task: Implement `createConversation` mutation d563bbe
     - [x] Sub-task: Write Tests for `createConversation`
     - [x] Sub-task: Implement `createConversation`
-- [ ] Task: Implement `sendMessage` mutation
-    - [ ] Sub-task: Write Tests for `sendMessage`
-    - [ ] Sub-task: Implement `sendMessage`
+- [x] Task: Implement `sendMessage` mutation c60d2b8
+    - [x] Sub-task: Write Tests for `sendMessage`
+    - [x] Sub-task: Implement `sendMessage`
 - [ ] Task: Implement `getMessages` query
     - [ ] Sub-task: Write Tests for `getMessages`
     - [ ] Sub-task: Implement `getMessages`
