@@ -19,8 +19,12 @@ import { useAdminRuntime } from "@/lib/use-admin-runtime";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { ConversationsDataTable } from "@/components/conversations-data-table";
+import { HomePage } from "@/components/home-page";
+
+type View = "home" | "inbox" | "analytics" | "knowledge" | "orders" | "issues" | "settings";
 
 export default function AdminPage() {
+  const [view, setView] = useState<View>("home");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const markOpened = useMutation(api.conversations.markConversationOpened);
 
@@ -84,6 +88,8 @@ export default function AdminPage() {
       <AdminSidebar
         selectedId={selectedId}
         onSelectConversation={setSelectedId}
+        currentView={view}
+        onViewChange={setView}
       />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 border-b">
@@ -101,13 +107,40 @@ export default function AdminPage() {
             <h2 className="font-medium">
               {selectedId
                 ? `Conversation with ${conversations?.find((c: any) => c._id === selectedId)?.visitorId}`
-                : "Inbox"}
+                : view === "home" ? "Home"
+                : view === "inbox" ? "Inbox"
+                : view.charAt(0).toUpperCase() + view.slice(1)}
             </h2>
           </div>
         </header>
 
         <div className="flex flex-1 flex-col overflow-hidden">
-          {selectedId ? (
+          {view === "home" && !selectedId && <HomePage />}
+          {view === "inbox" && !selectedId && (
+            <div className="flex flex-1 h-full">
+              <ConversationsDataTable
+                data={conversationsWithLastMessage || []}
+                onRowClick={async (id) => {
+                  setSelectedId(id);
+                  await markOpened({ conversationId: id });
+                }}
+                getInitials={getInitials}
+                truncateMessage={truncateMessage}
+                formatTime={formatTime}
+                isLoading={conversationsWithLastMessage === undefined}
+                selectedId={selectedId}
+              />
+              <div className="flex-1 flex items-center h-full">
+                <div className="text-left max-w-md pl-8">
+                  <h3 className="text-lg font-semibold mb-2">Select a conversation</h3>
+                  <p className="text-muted-foreground text-sm">
+                    Click on a conversation from the list to view the full message history and start chatting.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+          {selectedId && (
             <>
               <ScrollArea className="flex-1 p-4">
                 <div className="flex flex-col gap-3 max-w-3xl mx-auto">
@@ -157,28 +190,10 @@ export default function AdminPage() {
                 </div>
               </div>
             </>
-          ) : (
-            <div className="flex flex-1 h-full">
-            <ConversationsDataTable
-              data={conversationsWithLastMessage || []}
-              onRowClick={async (id) => {
-                setSelectedId(id);
-                await markOpened({ conversationId: id });
-              }}
-              getInitials={getInitials}
-              truncateMessage={truncateMessage}
-              formatTime={formatTime}
-              isLoading={conversationsWithLastMessage === undefined}
-              selectedId={selectedId}
-            />
-              <div className="flex-1 flex items-center h-full">
-                <div className="text-left max-w-md pl-8">
-                  <h3 className="text-lg font-semibold mb-2">Select a conversation</h3>
-                  <p className="text-muted-foreground text-sm">
-                    Click on a conversation from the list to view the full message history and start chatting.
-                  </p>
-                </div>
-              </div>
+          )}
+          {view !== "home" && view !== "inbox" && !selectedId && (
+            <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
+              {view.charAt(0).toUpperCase() + view.slice(1)} page coming soon
             </div>
           )}
         </div>

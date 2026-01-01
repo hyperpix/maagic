@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-table"
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 
 interface Conversation {
@@ -100,60 +101,81 @@ export function ConversationsDataTable({
 
   if (isLoading) {
     return (
-      <div className="flex-1 overflow-auto p-4">
-        <Table>
-          <TableBody>
-            <TableRow className="border-0">
-              <TableCell colSpan={3} className="text-center text-muted-foreground text-sm py-4 border-0">
-                Loading conversations...
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
+      <div className="flex-1 overflow-hidden pt-4 pr-4 pb-4 pl-0 h-full flex flex-col">
+        <div className="max-w-sm border-r border-border/30 h-full rounded-lg overflow-hidden flex flex-col">
+          <div className="flex-1 overflow-auto">
+            <Table>
+              <TableBody>
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <TableRow
+                    key={index}
+                    className="cursor-pointer hover:bg-muted/30 border-b border-border/20 last:border-b-0 transition-colors"
+                  >
+                    <TableCell className="py-3 px-4">
+                      <div className="flex items-start gap-3">
+                        <Skeleton className="h-10 w-10 rounded-full" />
+                        <div className="flex flex-col gap-1 flex-1">
+                          <Skeleton className="h-4 w-24" />
+                          <Skeleton className="h-3 w-32" />
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="py-3 px-4">
+                      <div className="flex items-center justify-end gap-2">
+                        <Skeleton className="h-3 w-12" />
+                        <Skeleton className="h-2 w-2 rounded-full" />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
       </div>
     )
   }
 
   if (data.length === 0) {
     return (
-      <div className="flex-1 overflow-auto p-4">
-        <Table>
-          <TableBody>
-            <TableRow className="border-0">
-              <TableCell colSpan={3} className="text-center text-muted-foreground text-sm py-4 border-0">
-                No conversations yet
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
+      <div className="flex-1 overflow-hidden pt-4 pr-4 pb-4 pl-0 h-full flex flex-col">
+        <div className="max-w-sm border-r border-border/30 h-full rounded-lg overflow-hidden flex flex-col">
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center text-muted-foreground text-sm">
+              No conversations yet
+            </div>
+          </div>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="flex-1 overflow-auto pt-4 pr-4 pb-4 pl-0 h-full">
-      <div className="max-w-sm border-r border-border/30 h-full rounded-lg overflow-hidden">
-        <Table>
-          <TableBody>
-            {table.getRowModel().rows.map((row, index) => (
-              <TableRow
-                key={row.id}
-                className={cn(
-                  "cursor-pointer hover:bg-muted/30 border-b border-border/20 last:border-b-0 transition-colors",
-                  index === 0 && "first:rounded-t-lg",
-                  index === table.getRowModel().rows.length - 1 && "last:rounded-b-lg"
-                )}
-                onClick={() => onRowClick(row.original._id)}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className="py-3 px-4">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+    <div className="flex-1 overflow-hidden pt-4 pr-4 pb-4 pl-0 h-full flex flex-col">
+      <div className="max-w-sm border-r border-border/30 h-full rounded-lg overflow-hidden flex flex-col">
+        <div className="flex-1 overflow-auto">
+          <Table>
+            <TableBody>
+              {table.getRowModel().rows.map((row, index) => (
+                <TableRow
+                  key={row.id}
+                  className={cn(
+                    "cursor-pointer hover:bg-muted/30 border-b border-border/20 last:border-b-0 transition-colors",
+                    index === 0 && "first:rounded-t-lg",
+                    index === table.getRowModel().rows.length - 1 && "last:rounded-b-lg"
+                  )}
+                  onClick={() => onRowClick(row.original._id)}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id} className="py-3 px-4">
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </div>
     </div>
   )

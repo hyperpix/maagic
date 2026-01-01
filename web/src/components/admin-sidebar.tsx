@@ -44,6 +44,8 @@ import {
 interface AdminSidebarProps extends React.ComponentProps<typeof Sidebar> {
   selectedId: string | null
   onSelectConversation: (id: string | null) => void
+  currentView?: string
+  onViewChange?: (view: string) => void
 }
 
 const data = {
@@ -74,6 +76,8 @@ const data = {
 export function AdminSidebar({
   selectedId,
   onSelectConversation,
+  currentView = "home",
+  onViewChange,
   ...props
 }: AdminSidebarProps) {
   const conversations = useQuery(api.conversations.getConversations)
@@ -143,8 +147,23 @@ export function AdminSidebar({
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton
-                isActive={!selectedId}
-                onClick={() => onSelectConversation(null)}
+                isActive={currentView === "home" && !selectedId}
+                onClick={() => {
+                  onViewChange?.("home")
+                  onSelectConversation(null)
+                }}
+                className="w-full justify-start"
+              >
+                Home
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                isActive={currentView === "inbox" && !selectedId}
+                onClick={() => {
+                  onViewChange?.("inbox")
+                  onSelectConversation(null)
+                }}
                 className="w-full justify-start"
               >
                 Inbox
@@ -155,26 +174,62 @@ export function AdminSidebar({
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton
-                onClick={() => {}}
+                isActive={currentView === "analytics"}
+                onClick={() => {
+                  onViewChange?.("analytics")
+                  onSelectConversation(null)
+                }}
                 className="w-full justify-start"
               >
-                Resolved
+                Analytics
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton
-                onClick={() => {}}
+                isActive={currentView === "knowledge"}
+                onClick={() => {
+                  onViewChange?.("knowledge")
+                  onSelectConversation(null)
+                }}
                 className="w-full justify-start"
               >
-                Spam
+                Knowledge
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton
-                onClick={() => {}}
+                isActive={currentView === "orders"}
+                onClick={() => {
+                  onViewChange?.("orders")
+                  onSelectConversation(null)
+                }}
                 className="w-full justify-start"
               >
-                Archived
+                Orders
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                isActive={currentView === "issues"}
+                onClick={() => {
+                  onViewChange?.("issues")
+                  onSelectConversation(null)
+                }}
+                className="w-full justify-start"
+              >
+                Issues
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                isActive={currentView === "settings"}
+                onClick={() => {
+                  onViewChange?.("settings")
+                  onSelectConversation(null)
+                }}
+                className="w-full justify-start"
+              >
+                Settings
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
