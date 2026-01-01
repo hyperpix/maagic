@@ -48,7 +48,7 @@ describe("AdminPage", () => {
 
   it("renders the admin dashboard layout", () => {
     render(<AdminPage />);
-    expect(screen.getAllByText(/Admin Inbox/i)[0]).toBeInTheDocument();
+    expect(screen.getAllByText(/Inbox/i)[0]).toBeInTheDocument();
   });
 
   it("renders a list of conversations", () => {

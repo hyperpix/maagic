@@ -47,7 +47,7 @@ export default function AdminPage() {
             <h2 className="font-medium">
               {selectedId
                 ? `Conversation with ${conversations?.find((c: any) => c._id === selectedId)?.visitorId}`
-                : "Admin Inbox"}
+                : "Inbox"}
             </h2>
           </div>
         </header>
@@ -68,8 +68,8 @@ export default function AdminPage() {
                         className={cn(
                           "max-w-[80%] rounded-lg px-3 py-2 text-sm",
                           msg.sender === "agent"
-                            ? "bg-primary text-primary-foreground self-end"
-                            : "bg-muted self-start"
+                            ? "bg-muted text-black self-end"
+                            : "bg-background text-foreground border border-gray-200 self-start"
                         )}
                       >
                         {msg.content}
@@ -110,7 +110,7 @@ export default function AdminPage() {
           )}
         </div>
       </SidebarInset>
-      <UserSidebar />
+      <UserSidebar selectedId={selectedId} conversations={conversations} />
     </SidebarProvider>
   );
 }

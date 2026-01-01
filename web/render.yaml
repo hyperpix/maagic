@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: maagic-web
+    env: node
+    region: oregon
+    buildCommand: cd web && npm install && npm run build
+    startCommand: cd web && npm start
+    rootDir: web
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_CONVEX_URL
+        sync: false  # Will be set in Render dashboard
+    plan: starter
+
