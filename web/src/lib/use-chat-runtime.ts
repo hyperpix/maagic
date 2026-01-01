@@ -11,7 +11,7 @@ import { useEffect, useMemo, useState } from "react";
 export const useConvexRuntime = () => {
   const [visitorId, setVisitorId] = useState<string | null>(null);
   const [conversationId, setConversationId] = useState<any>(null);
-  
+
   const clearChat = () => {
     localStorage.removeItem("chat_conversation_id");
     setConversationId(null);

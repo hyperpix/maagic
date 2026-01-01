@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { api } from "../../../convex/_generated/api";
-import { useQuery } from "convex/react";
+import { useQuery, useMutation } from "convex/react";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -11,24 +11,73 @@ import { UserSidebar } from "@/components/user-sidebar";
 import {
   SidebarInset,
   SidebarProvider,
-  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { AssistantRuntimeProvider } from "@assistant-ui/react";
 import { ComposerPrimitive } from "@assistant-ui/react";
 import "@/components/assistant-ui/attachment";
 import { useAdminRuntime } from "@/lib/use-admin-runtime";
 import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import { ConversationsDataTable } from "@/components/conversations-data-table";
 
 export default function AdminPage() {
-  const [selectedId, setSelectedId] = useState<any>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const markOpened = useMutation(api.conversations.markConversationOpened);
 
   const conversations = useQuery(api.conversations.getConversations);
+  const allMessages = useQuery(api.messages.getAllMessages);
   const messages = useQuery(
     api.messages.getMessages,
     selectedId ? { conversationId: selectedId } : "skip"
   );
 
   const runtime = useAdminRuntime(selectedId);
+
+  // Compute last message for each conversation
+  const conversationsWithLastMessage = useMemo(() => {
+    if (!conversations || !allMessages) return [];
+    
+    return conversations.map((conv: any) => {
+      const convMessages = allMessages.filter((msg: any) => msg.conversationId === conv._id);
+      const lastMessage = convMessages.sort((a: any, b: any) => b.createdAt - a.createdAt)[0];
+      return {
+        ...conv,
+        lastMessage: lastMessage ? {
+          content: lastMessage.content,
+          createdAt: lastMessage.createdAt,
+        } : null,
+      };
+    });
+  }, [conversations, allMessages]);
+
+  const getInitials = (visitorId: string) => {
+    if (!visitorId) return "?";
+    const parts = visitorId.split(/[-_]/);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return visitorId.substring(0, 2).toUpperCase();
+  };
+
+  const truncateMessage = (text: string, maxLength: number = 60) => {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + "...";
+  };
+
+  const formatTime = (timestamp: number) => {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return "Just now";
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffDays < 7) return `${diffDays}d ago`;
+    return date.toLocaleDateString();
+  };
 
   return (
     <SidebarProvider>
@@ -39,11 +88,16 @@ export default function AdminPage() {
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 border-b">
           <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator
-              orientation="vertical"
-              className="mr-2 data-[orientation=vertical]:h-4"
-            />
+            {selectedId && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setSelectedId(null)}
+                className="h-8 w-8"
+              >
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+            )}
             <h2 className="font-medium">
               {selectedId
                 ? `Conversation with ${conversations?.find((c: any) => c._id === selectedId)?.visitorId}`
@@ -104,13 +158,32 @@ export default function AdminPage() {
               </div>
             </>
           ) : (
-            <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
-              Select a conversation to start chatting
+            <div className="flex flex-1 h-full">
+            <ConversationsDataTable
+              data={conversationsWithLastMessage || []}
+              onRowClick={async (id) => {
+                setSelectedId(id);
+                await markOpened({ conversationId: id });
+              }}
+              getInitials={getInitials}
+              truncateMessage={truncateMessage}
+              formatTime={formatTime}
+              isLoading={conversationsWithLastMessage === undefined}
+              selectedId={selectedId}
+            />
+              <div className="flex-1 flex items-center h-full">
+                <div className="text-left max-w-md pl-8">
+                  <h3 className="text-lg font-semibold mb-2">Select a conversation</h3>
+                  <p className="text-muted-foreground text-sm">
+                    Click on a conversation from the list to view the full message history and start chatting.
+                  </p>
+                </div>
+              </div>
             </div>
           )}
         </div>
       </SidebarInset>
-      <UserSidebar selectedId={selectedId} conversations={conversations} />
+      {selectedId && <UserSidebar selectedId={selectedId} conversations={conversations} />}
     </SidebarProvider>
   );
 }

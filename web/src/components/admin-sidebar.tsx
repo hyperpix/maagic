@@ -30,6 +30,7 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
+  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
@@ -42,7 +43,7 @@ import {
 
 interface AdminSidebarProps extends React.ComponentProps<typeof Sidebar> {
   selectedId: string | null
-  onSelectConversation: (id: string) => void
+  onSelectConversation: (id: string | null) => void
 }
 
 const data = {
@@ -78,6 +79,8 @@ export function AdminSidebar({
   const conversations = useQuery(api.conversations.getConversations)
   const [selectedOrg, setSelectedOrg] = useState(data.organizations[0])
   const { isMobile } = useSidebar()
+
+  const unopenedCount = conversations?.filter((conv: any) => !conv.openedAt).length || 0
 
   return (
     <Sidebar variant="inset" {...props}>
@@ -137,39 +140,43 @@ export function AdminSidebar({
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Conversations</SidebarGroupLabel>
           <SidebarMenu>
-            {conversations === undefined ? (
-              <SidebarMenuItem>
-                <div className="px-2 py-1.5 text-center text-muted-foreground text-sm">
-                  Loading conversations...
-                </div>
-              </SidebarMenuItem>
-            ) : conversations.length === 0 ? (
-              <SidebarMenuItem>
-                <div className="px-2 py-1.5 text-center text-muted-foreground text-sm">
-                  No conversations yet
-                </div>
-              </SidebarMenuItem>
-            ) : (
-              conversations.map((conv: any) => (
-                <SidebarMenuItem key={conv._id}>
-                  <SidebarMenuButton
-                    isActive={selectedId === conv._id}
-                    tooltip={conv.visitorId}
-                    onClick={() => onSelectConversation(conv._id)}
-                    className="flex flex-col items-start gap-0.5 h-auto py-2"
-                  >
-                    <span className="truncate text-sm font-medium w-full">
-                      {conv.visitorId}
-                    </span>
-                    <span className="text-xs text-muted-foreground truncate w-full">
-                      {new Date(conv.createdAt).toLocaleString()}
-                    </span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))
-            )}
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                isActive={!selectedId}
+                onClick={() => onSelectConversation(null)}
+                className="w-full justify-start"
+              >
+                Inbox
+                {unopenedCount > 0 && (
+                  <SidebarMenuBadge>{unopenedCount}</SidebarMenuBadge>
+                )}
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                onClick={() => {}}
+                className="w-full justify-start"
+              >
+                Resolved
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                onClick={() => {}}
+                className="w-full justify-start"
+              >
+                Spam
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                onClick={() => {}}
+                className="w-full justify-start"
+              >
+                Archived
+              </SidebarMenuButton>
+            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
         <NavSecondary items={data.navSecondary} className="mt-auto" />

@@ -13,6 +13,13 @@ export const getMessages = query({
   handler: getMessagesInternal,
 });
 
+export const getAllMessages = query({
+  args: {},
+  handler: async (ctx: any) => {
+    return await ctx.db.query("messages").order("desc").collect();
+  },
+});
+
 export const sendMessageInternal = async (
   ctx: any,
   args: { conversationId: any; sender: "visitor" | "agent"; content: string }

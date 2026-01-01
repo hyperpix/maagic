@@ -22,3 +22,12 @@ export const createConversation = mutation({
   args: { visitorId: v.string() },
   handler: createConversationInternal,
 });
+
+export const markConversationOpened = mutation({
+  args: { conversationId: v.id("conversations") },
+  handler: async (ctx: any, args: { conversationId: any }) => {
+    await ctx.db.patch(args.conversationId, {
+      openedAt: Date.now(),
+    });
+  },
+});
