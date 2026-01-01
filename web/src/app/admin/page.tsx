@@ -83,13 +83,20 @@ export default function AdminPage() {
     return date.toLocaleDateString();
   };
 
+  const handleViewChange = (viewString: string) => {
+    const validViews: View[] = ["home", "inbox", "analytics", "knowledge", "orders", "issues", "settings"];
+    if (validViews.includes(viewString as View)) {
+      setView(viewString as View);
+    }
+  };
+
   return (
     <SidebarProvider>
       <AdminSidebar
         selectedId={selectedId}
         onSelectConversation={setSelectedId}
         currentView={view}
-        onViewChange={setView}
+        onViewChange={handleViewChange}
       />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 border-b">
