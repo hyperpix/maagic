@@ -6,8 +6,8 @@ services:
     repo: https://github.com/hyperpix/maagic.git
     branch: main
     rootDir: web
-    buildCommand: cd web && npm ci && npm run build
-    startCommand: cd web && npm start
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
     healthCheckPath: /
     envVars:
       - key: NODE_ENV
