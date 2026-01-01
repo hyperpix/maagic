@@ -15,8 +15,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Live Chat App",
+  title: "Maagic",
   description: "Minimal live chat powered by Convex and Assistant-UI",
+  icons: {
+    icon: "/maagic-logo.png",
+  },
 };
 
 export default function RootLayout({
