@@ -5,11 +5,11 @@ import { AssistantModal } from "@/components/assistant-ui/assistant-modal";
 import { AssistantRuntimeProvider } from "@assistant-ui/react";
 
 export const ChatWidget = () => {
-  const runtime = useConvexRuntime();
+  const { runtime, clearChat } = useConvexRuntime();
 
   return (
     <AssistantRuntimeProvider runtime={runtime}>
-      <AssistantModal />
+      <AssistantModal clearChat={clearChat} />
     </AssistantRuntimeProvider>
   );
 };

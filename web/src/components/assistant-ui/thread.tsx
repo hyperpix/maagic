@@ -28,10 +28,12 @@ import {
   PencilIcon,
   RefreshCwIcon,
   SquareIcon,
+  XIcon,
 } from "lucide-react";
+import Image from "next/image";
 import type { FC } from "react";
 
-export const Thread: FC = () => {
+export const Thread: FC<{ clearChat?: () => void }> = ({ clearChat }) => {
   return (
     <ThreadPrimitive.Root
       className="aui-root aui-thread-root @container flex h-full flex-col bg-background"
@@ -39,6 +41,26 @@ export const Thread: FC = () => {
         ["--thread-max-width" as string]: "44rem",
       }}
     >
+      {clearChat && (
+        <div className="flex items-center justify-between px-4 py-3 border-b">
+          <Image
+            src="/maagic-logo.png"
+            alt="Maagic"
+            width={32}
+            height={32}
+            className="object-contain"
+          />
+          <TooltipIconButton
+            tooltip="Clear chat"
+            variant="ghost"
+            size="sm"
+            onClick={clearChat}
+            className="h-8 w-8"
+          >
+            <XIcon className="size-4" />
+          </TooltipIconButton>
+        </div>
+      )}
       <ThreadPrimitive.Viewport
         turnAnchor="top"
         className="aui-thread-viewport relative flex flex-1 flex-col overflow-x-auto overflow-y-scroll scroll-smooth px-4 pt-4"
