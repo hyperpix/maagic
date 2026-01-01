@@ -3,7 +3,7 @@
 import { BotIcon, ChevronDownIcon } from "lucide-react";
 
 import { type FC, forwardRef } from "react";
-import { AssistantModalPrimitive, AssistantRuntime } from "@assistant-ui/react";
+import { AssistantModalPrimitive } from "@assistant-ui/react";
 
 import { Thread } from "@/components/assistant-ui/thread";
 import { TooltipIconButton } from "@/components/assistant-ui/tooltip-icon-button";
