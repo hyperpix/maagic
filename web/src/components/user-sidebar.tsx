@@ -38,7 +38,7 @@ interface UserSidebarProps extends React.ComponentProps<typeof Sidebar> {
 const defaultUser = {
   name: "Admin",
   email: "admin@example.com",
-  avatar: "/avatars/admin.jpg",
+  avatar: "", // Avatar fallback will show initials
 }
 
 export function UserSidebar({
@@ -153,5 +153,6 @@ export function UserSidebar({
     </Sidebar>
   )
 }
+
 
 
