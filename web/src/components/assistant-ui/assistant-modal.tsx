@@ -36,7 +36,6 @@ const AssistantModalButton = forwardRef<
 
   return (
     <TooltipIconButton
-      variant="default"
       tooltip={tooltip}
       side="left"
       {...rest}
