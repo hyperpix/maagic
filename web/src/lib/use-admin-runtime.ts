@@ -33,6 +33,7 @@ export const useAdminRuntime = (conversationId: string | null) => {
             content: [{ type: "text", text: String(msg.content ?? "") }],
             createdAt: new Date(msg.createdAt),
             attachments: [],
+            status: { type: "complete", reason: "stop" },
             metadata: {
               custom: {},
             },

@@ -45,6 +45,7 @@ export const useConvexRuntime = () => {
         content: [{ type: "text", text: msg.content }],
         createdAt: new Date(msg.createdAt),
         attachments: [],
+        status: { type: "complete", reason: "stop" },
         metadata: {
           custom: {},
         },
