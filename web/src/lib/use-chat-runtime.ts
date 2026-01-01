@@ -2,9 +2,9 @@
 
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import { 
-  ExternalStoreAdapter, 
-  useExternalStoreRuntime 
+import {
+  ExternalStoreAdapter,
+  useExternalStoreRuntime
 } from "@assistant-ui/react";
 import { useEffect, useMemo, useState } from "react";
 
@@ -14,7 +14,7 @@ export const useConvexRuntime = () => {
 
   const createConversation = useMutation(api.conversations.createConversation);
   const sendMessageMutation = useMutation(api.messages.sendMessage);
-  
+
   const messages = useQuery(
     api.messages.getMessages,
     conversationId ? { conversationId } : "skip"
@@ -26,8 +26,9 @@ export const useConvexRuntime = () => {
       id = Math.random().toString(36).substring(2, 15);
       localStorage.setItem("chat_visitor_id", id);
     }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setVisitorId(id);
-    
+
     const convId = localStorage.getItem("chat_conversation_id");
     if (convId) {
       setConversationId(convId);
@@ -36,11 +37,17 @@ export const useConvexRuntime = () => {
 
   const store = useMemo((): ExternalStoreAdapter => {
     return {
+      isRunning: false,
+      isLoading: conversationId ? messages === undefined : false,
       messages: (messages || []).map((msg: any) => ({
         id: msg._id,
         role: msg.sender === "visitor" ? "user" : "assistant",
         content: [{ type: "text", text: msg.content }],
         createdAt: new Date(msg.createdAt),
+        attachments: [],
+        metadata: {
+          custom: {},
+        },
       })),
       onNew: async (message) => {
         if (!visitorId) return;
@@ -62,6 +69,17 @@ export const useConvexRuntime = () => {
           sender: "visitor",
           content: text,
         });
+      },
+      adapters: {
+        attachments: {
+          add: async () => { throw new Error("Not supported"); },
+          remove: async () => { },
+          accept: "*",
+          send: async () => { throw new Error("Not supported"); },
+        },
+        feedback: {
+          submit: async () => { },
+        },
       },
     };
   }, [messages, visitorId, conversationId, createConversation, sendMessageMutation]);

@@ -9,8 +9,9 @@
 
 ## UI & Styling
 - **CSS Framework:** Tailwind CSS - For rapid, utility-first styling.
-- **Component Library:** shadcn/ui - A collection of re-usable components built with Radix UI and Tailwind CSS, following the project's minimalist design goals.
-- **Icons:** Lucide React - A clean and consistent icon set that integrates well with shadcn/ui.
+- **Component Library:** shadcn/ui - A collection of re-usable components built with Radix UI and Tailwind CSS.
+- **Chat UI:** assistant-ui - Specifically `@assistant-ui/react` and `@assistant-ui/assistant-modal` for a polished, modern chat interface.
+- **Icons:** Lucide React - A clean and consistent icon set.
 
 ## Package Management
 - **npm / bun:** Standard package management for the Node.js ecosystem.

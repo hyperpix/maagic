@@ -2,132 +2,115 @@
 
 import { useState } from "react";
 import { api } from "../../../convex/_generated/api";
-import { useQuery, useMutation } from "convex/react";
+import { useQuery } from "convex/react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { AdminSidebar } from "@/components/admin-sidebar";
+import { UserSidebar } from "@/components/user-sidebar";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { AssistantRuntimeProvider } from "@assistant-ui/react";
+import { ComposerPrimitive } from "@assistant-ui/react";
+import "@/components/assistant-ui/attachment";
+import { useAdminRuntime } from "@/lib/use-admin-runtime";
+import { Button } from "@/components/ui/button";
 
 export default function AdminPage() {
   const [selectedId, setSelectedId] = useState<any>(null);
-  const [reply, setReply] = useState("");
-  
+
   const conversations = useQuery(api.conversations.getConversations);
   const messages = useQuery(
     api.messages.getMessages,
     selectedId ? { conversationId: selectedId } : "skip"
   );
-  const sendMessage = useMutation(api.messages.sendMessage);
 
-  const handleSend = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!reply.trim() || !selectedId) return;
-
-    await sendMessage({
-      conversationId: selectedId,
-      sender: "agent",
-      content: reply.trim(),
-    });
-
-    setReply("");
-  };
+  const runtime = useAdminRuntime(selectedId);
 
   return (
-    <div className="flex h-screen bg-background">
-      {/* Sidebar: Conversation List */}
-      <aside className="w-80 border-r flex flex-col bg-muted/30" role="complementary">
-        <header className="p-4 border-b bg-background">
-          <h1 className="font-semibold text-lg">Admin Inbox</h1>
+    <SidebarProvider>
+      <AdminSidebar
+        selectedId={selectedId}
+        onSelectConversation={setSelectedId}
+      />
+      <SidebarInset>
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b">
+          <div className="flex items-center gap-2 px-4">
+            <SidebarTrigger className="-ml-1" />
+            <Separator
+              orientation="vertical"
+              className="mr-2 data-[orientation=vertical]:h-4"
+            />
+            <h2 className="font-medium">
+              {selectedId
+                ? `Conversation with ${conversations?.find((c: any) => c._id === selectedId)?.visitorId}`
+                : "Admin Inbox"}
+            </h2>
+          </div>
         </header>
-        <div className="flex-1 overflow-y-auto">
-          {conversations === undefined ? (
-            <div className="p-4 text-center text-muted-foreground text-sm">
-              Loading conversations...
-            </div>
-          ) : conversations.length === 0 ? (
-            <div className="p-4 text-center text-muted-foreground text-sm">
-              No conversations yet
-            </div>
-          ) : (
-            <div className="flex flex-col">
-              {conversations.map((conv) => (
-                <button
-                  key={conv._id}
-                  onClick={() => setSelectedId(conv._id)}
-                  className={cn(
-                    "w-full text-left p-4 border-b transition-colors hover:bg-accent/50",
-                    selectedId === conv._id && "bg-accent"
+
+        <div className="flex flex-1 flex-col overflow-hidden">
+          {selectedId ? (
+            <>
+              <ScrollArea className="flex-1 p-4">
+                <div className="flex flex-col gap-3 max-w-3xl mx-auto">
+                  {messages === undefined ? (
+                    <div className="text-center text-muted-foreground text-xs">Loading messages...</div>
+                  ) : messages.length === 0 ? (
+                    <div className="text-center text-muted-foreground text-xs">No messages yet.</div>
+                  ) : (
+                    messages.map((msg: any) => (
+                      <div
+                        key={msg._id}
+                        className={cn(
+                          "max-w-[80%] rounded-lg px-3 py-2 text-sm",
+                          msg.sender === "agent"
+                            ? "bg-primary text-primary-foreground self-end"
+                            : "bg-muted self-start"
+                        )}
+                      >
+                        {msg.content}
+                      </div>
+                    ))
                   )}
-                >
-                  <div className="font-medium text-sm truncate">
-                    {conv.visitorId}
-                  </div>
-                  <div className="text-xs text-muted-foreground mt-1">
-                    {new Date(conv.createdAt).toLocaleString()}
-                  </div>
-                </button>
-              ))}
+                </div>
+              </ScrollArea>
+
+              <div className="p-4 bg-background">
+                <div className="max-w-3xl mx-auto">
+                  <AssistantRuntimeProvider runtime={runtime}>
+                    <ComposerPrimitive.Root className="aui-composer-root relative flex w-full flex-col">
+                      <div className="flex w-full flex-col rounded-2xl border border-input bg-background px-1 pt-2 outline-none transition-shadow has-[textarea:focus-visible]:border-ring has-[textarea:focus-visible]:ring-2 has-[textarea:focus-visible]:ring-ring/20">
+                        <ComposerPrimitive.Input
+                          placeholder="Type a reply..."
+                          className="aui-composer-input mb-1 max-h-32 min-h-14 w-full resize-none bg-transparent px-4 pt-2 pb-3 text-sm outline-none placeholder:text-muted-foreground focus-visible:ring-0"
+                          rows={1}
+                          aria-label="Message input"
+                        />
+                        <div className="aui-composer-action-wrapper relative mx-2 mb-2 flex items-center justify-end">
+                          <ComposerPrimitive.Send asChild>
+                            <Button type="button" variant="ghost" className="rounded-full text-muted-foreground hover:text-foreground">
+                              Send
+                            </Button>
+                          </ComposerPrimitive.Send>
+                        </div>
+                      </div>
+                    </ComposerPrimitive.Root>
+                  </AssistantRuntimeProvider>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
+              Select a conversation to start chatting
             </div>
           )}
         </div>
-      </aside>
-
-      {/* Main Content: Message View */}
-      <main className="flex-1 flex flex-col" role="main">
-        {selectedId ? (
-          <div className="flex-1 flex flex-col overflow-hidden">
-            <header className="p-4 border-b bg-background flex items-center justify-between">
-              <h2 className="font-medium">
-                Conversation with {conversations?.find(c => c._id === selectedId)?.visitorId}
-              </h2>
-            </header>
-            
-            <ScrollArea className="flex-1 p-4">
-              <div className="flex flex-col gap-3 max-w-3xl mx-auto">
-                {messages === undefined ? (
-                  <div className="text-center text-muted-foreground text-xs">Loading messages...</div>
-                ) : messages.length === 0 ? (
-                  <div className="text-center text-muted-foreground text-xs">No messages yet.</div>
-                ) : (
-                  messages.map((msg: any) => (
-                    <div
-                      key={msg._id}
-                      className={cn(
-                        "max-w-[80%] rounded-lg px-3 py-2 text-sm",
-                        msg.sender === "agent"
-                          ? "bg-primary text-primary-foreground self-end"
-                          : "bg-muted self-start"
-                      )}
-                    >
-                      {msg.content}
-                    </div>
-                  ))
-                )}
-              </div>
-            </ScrollArea>
-
-            <div className="p-4 border-t bg-background">
-              <form onSubmit={handleSend} className="max-w-3xl mx-auto flex gap-2">
-                <Input
-                  placeholder="Type a reply..."
-                  value={reply}
-                  onChange={(e) => setReply(e.target.value)}
-                  className="flex-1"
-                />
-                <Button type="submit" size="icon">
-                  <Send className="h-4 w-4" />
-                  <span className="sr-only">Send</span>
-                </Button>
-              </form>
-            </div>
-          </div>
-        ) : (
-          <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
-            Select a conversation to start chatting
-          </div>
-        )}
-      </main>
-    </div>
+      </SidebarInset>
+      <UserSidebar />
+    </SidebarProvider>
   );
 }

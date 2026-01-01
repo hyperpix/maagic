@@ -1,6 +1,6 @@
 "use client";
 
-import { PropsWithChildren, useEffect, useState, type FC } from "react";
+import { PropsWithChildren, useEffect, useState, useMemo, type FC } from "react";
 import Image from "next/image";
 import { XIcon, PlusIcon, FileText } from "lucide-react";
 import {
@@ -27,21 +27,13 @@ import { TooltipIconButton } from "@/components/assistant-ui/tooltip-icon-button
 import { cn } from "@/lib/utils";
 
 const useFileSrc = (file: File | undefined) => {
-  const [src, setSrc] = useState<string | undefined>(undefined);
+  const src = useMemo(() => (file ? URL.createObjectURL(file) : undefined), [file]);
 
   useEffect(() => {
-    if (!file) {
-      setSrc(undefined);
-      return;
-    }
-
-    const objectUrl = URL.createObjectURL(file);
-    setSrc(objectUrl);
-
     return () => {
-      URL.revokeObjectURL(objectUrl);
+      if (src) URL.revokeObjectURL(src);
     };
-  }, [file]);
+  }, [src]);
 
   return src;
 };
@@ -157,7 +149,7 @@ const AttachmentUI: FC = () => {
         className={cn(
           "aui-attachment-root relative",
           isImage &&
-            "aui-attachment-root-composer only:[&>#attachment-tile]:size-24",
+          "aui-attachment-root-composer only:[&>#attachment-tile]:size-24",
         )}
       >
         <AttachmentPreviewDialog>
@@ -166,7 +158,7 @@ const AttachmentUI: FC = () => {
               className={cn(
                 "aui-attachment-tile size-14 cursor-pointer overflow-hidden rounded-[14px] border bg-muted transition-opacity hover:opacity-75",
                 isComposer &&
-                  "aui-attachment-tile-composer border-foreground/20",
+                "aui-attachment-tile-composer border-foreground/20",
               )}
               role="button"
               id="attachment-tile"

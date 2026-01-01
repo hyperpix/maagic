@@ -1,12 +1,12 @@
 # Implementation Plan - Refactor Chat Widget with Assistant-UI
 
 ## Phase 1: Setup and Infrastructure
-- [ ] Task: Install assistant-ui dependencies
-    - [ ] Sub-task: Run `npm install @assistant-ui/react @assistant-ui/react-markdown`
-    - [ ] Sub-task: Run `npx shadcn@latest add @assistant-ui/assistant-modal`
-- [ ] Task: Configure project for assistant-ui
-    - [ ] Sub-task: Update `tailwind.config.ts` or globals.css if required by shadcn components
-    - [ ] Sub-task: Ensure `TooltipProvider` is available in `layout.tsx`
+- [x] Task: Install assistant-ui dependencies a93b7e0
+    - [x] Sub-task: Run `npm install @assistant-ui/react @assistant-ui/react-markdown`
+    - [x] Sub-task: Run `npx shadcn@latest add @assistant-ui/assistant-modal`
+- [x] Task: Configure project for assistant-ui c398ee3
+    - [x] Sub-task: Update `tailwind.config.ts` or globals.css if required by shadcn components
+    - [x] Sub-task: Ensure `TooltipProvider` is available in `layout.tsx`
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Setup and Infrastructure' (Protocol in workflow.md)
 
 ## Phase 2: Custom Convex Runtime
