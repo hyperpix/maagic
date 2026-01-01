@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: maagic-web
+    env: node
+    region: oregon
+    repo: https://github.com/hyperpix/maagic.git
+    branch: main
+    rootDir: web
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_CONVEX_URL
+        sync: false
+    plan: starter
+
