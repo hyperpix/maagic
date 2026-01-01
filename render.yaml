@@ -13,5 +13,5 @@ services:
         value: production
       - key: NEXT_PUBLIC_CONVEX_URL
         sync: false
-    plan: starter
+    plan: free
 
