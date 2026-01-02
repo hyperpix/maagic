@@ -23,11 +23,11 @@ This plan outlines the steps to redesign the Agent configuration page into a 2-c
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Appearance Section & Local State' (Protocol in workflow.md) 2b2a8e9
 
 ## Phase 4: Live Preview Integration
-- [ ] Task: Refactor the existing chat widget component to accept dynamic theme and branding props (colors, title, etc.).
-- [ ] Task: Embed the interactive chat widget in the right-hand "Live Preview" column.
-- [ ] Task: Connect the local form state to the Preview component for real-time visual updates.
-- [ ] Task: Write tests to verify the Preview updates styling correctly when form values change.
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: Live Preview Integration' (Protocol in workflow.md)
+- [x] Task: Refactor the existing chat widget component to accept dynamic theme and branding props (colors, title, etc.). 72aa4bc
+- [x] Task: Embed the interactive chat widget in the right-hand "Live Preview" column. 72aa4bc
+- [x] Task: Connect the local form state to the Preview component for real-time visual updates. 72aa4bc
+- [x] Task: Write tests to verify the Preview updates styling correctly when form values change. 72aa4bc
+- [x] Task: Conductor - User Manual Verification 'Phase 4: Live Preview Integration' (Protocol in workflow.md) 72aa4bc
 
 ## Phase 5: Data Persistence & Integration
 - [ ] Task: Wire up the "Save" logic (e.g., a "Save Changes" button or debounced updates) to call Convex mutations.
