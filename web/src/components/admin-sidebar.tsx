@@ -150,15 +150,12 @@ export function AdminSidebar({
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="w-full justify-between h-auto py-2">
-                  <div className="flex items-center gap-2 flex-1">
+                <Button variant="outline" size="sm" className="w-full justify-between">
+                  <div className="flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full bg-green-500" />
-                    <div className="grid flex-1 text-left text-xs leading-tight">
-                      <span className="truncate font-medium">{selectedAgent.name}</span>
-                      <span className="truncate text-xs text-muted-foreground">{selectedAgent.email}</span>
-                    </div>
+                    <span className="text-sm font-medium">{selectedAgent.name}</span>
                   </div>
-                  <ChevronDown className="ml-2 size-3" />
+                  <ChevronDown className="ml-2 size-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
