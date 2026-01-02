@@ -112,7 +112,9 @@ export default function AdminPage() {
           selectedId={selectedId}
         />
       )}
-      <SidebarInset>
+      <SidebarInset 
+        className={view === "inbox" && !selectedId ? "ml-80" : ""}
+      >
         {view === "inbox" && !selectedId ? (
           <div className="flex flex-col h-full">
             <header className="flex h-16 shrink-0 items-center gap-2 border-b">

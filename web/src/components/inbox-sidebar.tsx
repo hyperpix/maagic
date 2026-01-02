@@ -48,7 +48,12 @@ export function InboxSidebar({
   }, [data, searchQuery])
 
   return (
-    <div className="w-80 border-l border-r bg-sidebar flex flex-col h-full">
+    <div 
+      className="w-80 border-l border-r bg-sidebar flex flex-col fixed inset-y-0 z-10 h-svh"
+      style={{
+        left: 'var(--sidebar-width, 16rem)'
+      }}
+    >
       <div className="p-2 border-b shrink-0">
         <div className="px-2">
           <Input
