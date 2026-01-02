@@ -10,6 +10,9 @@ import {
   Globe,
   X,
   Plus,
+  ShoppingCart,
+  AlertCircle,
+  Trash2,
 } from "lucide-react"
 import {
   Sidebar,
@@ -269,29 +272,32 @@ export function UserSidebar({
               </div>
             </ScrollArea>
             {selectedId && (
-              <div className="p-4 space-y-2">
+              <div className="p-4 space-y-2 border-t">
                 <Button
                   variant="outline"
-                  className="w-full justify-start"
+                  className="w-full justify-start gap-2 h-9 font-medium hover:bg-accent/50 transition-colors"
                   size="sm"
                   onClick={() => console.log("Create Order")}
                 >
+                  <ShoppingCart className="h-4 w-4" />
                   Create Order
                 </Button>
                 <Button
                   variant="outline"
-                  className="w-full justify-start"
+                  className="w-full justify-start gap-2 h-9 font-medium hover:bg-accent/50 transition-colors"
                   size="sm"
                   onClick={() => console.log("Create Issue")}
                 >
+                  <AlertCircle className="h-4 w-4" />
                   Create Issue
                 </Button>
                 <Button
                   variant="destructive"
-                  className="w-full justify-start"
+                  className="w-full justify-start gap-2 h-9 font-medium hover:bg-destructive/90 transition-colors"
                   size="sm"
                   onClick={() => console.log("Delete Conversation")}
                 >
+                  <Trash2 className="h-4 w-4" />
                   Delete Conversation
                 </Button>
               </div>
