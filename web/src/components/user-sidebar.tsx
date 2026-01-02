@@ -314,11 +314,11 @@ export function UserSidebar({
                 </Button>
                 <Button
                   variant="destructive"
-                  className="w-full justify-start gap-2 h-9 font-medium hover:bg-destructive/90 transition-colors text-destructive-foreground"
+                  className="w-full justify-start gap-2 h-9 font-medium hover:bg-destructive/90 transition-colors text-white"
                   size="sm"
                   onClick={() => setDeleteDialogOpen(true)}
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Trash2 className="h-4 w-4 text-white" />
                   Delete Conversation
                 </Button>
               </div>
