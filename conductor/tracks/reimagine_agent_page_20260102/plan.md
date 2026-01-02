@@ -22,7 +22,7 @@ This plan outlines the steps to redesign the Agent configuration page into a 2-c
 - [x] Task: Write tests for the Appearance form inputs and state synchronization. 2b2a8e9
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Appearance Section & Local State' (Protocol in workflow.md) 2b2a8e9
 
-## Phase 4: Live Preview Integration
+## Phase 4: Live Preview Integration [checkpoint: 99be6f1]
 - [x] Task: Refactor the existing chat widget component to accept dynamic theme and branding props (colors, title, etc.). 72aa4bc
 - [x] Task: Embed the interactive chat widget in the right-hand "Live Preview" column. 72aa4bc
 - [x] Task: Connect the local form state to the Preview component for real-time visual updates. 72aa4bc
