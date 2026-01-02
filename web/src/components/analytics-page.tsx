@@ -19,7 +19,8 @@ import {
   BarChart3,
   TrendingUp,
   Target,
-  BarChart
+  BarChart,
+  Inbox
 } from "lucide-react"
 
 export function AnalyticsPage() {
@@ -60,6 +61,17 @@ export function AnalyticsPage() {
     { name: "Avg Messages/Chat", value: metrics.avgMessagesPerChat, icon: BarChart3, color: "bg-indigo-50 text-indigo-600" },
     { name: "Avg Seconds/Chat", value: metrics.avgSecondsPerChat, icon: Clock, color: "bg-rose-50 text-rose-600" },
   ]
+
+  const EmptyState = ({ message }: { message: string }) => (
+    <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
+      <div className="w-16 h-16 rounded-full bg-muted/30 flex items-center justify-center mb-4">
+        <Inbox className="h-8 w-8 text-muted-foreground/40" />
+      </div>
+      <p className="text-sm font-medium text-muted-foreground/60 italic max-w-[200px]">
+        {message}
+      </p>
+    </div>
+  )
 
   return (
     <div className="flex flex-col gap-12 p-8 max-w-[1600px] mx-auto bg-background/50">
@@ -109,26 +121,22 @@ export function AnalyticsPage() {
             </SoftCardHeader>
             <SoftCardContent>
               <div className="space-y-8 pt-4">
-                <div className="relative">
+                <div className="relative px-2">
                   {/* Gauge Track */}
-                  <div className="h-4 bg-muted/50 rounded-full overflow-hidden">
-                    <div className="h-full bg-primary/80 rounded-full" style={{ width: '0%' }}></div>
+                  <div className="h-6 bg-muted/30 rounded-full overflow-hidden p-1 shadow-inner">
+                    <div className="h-full bg-gradient-to-r from-primary/40 to-primary rounded-full transition-all duration-1000" style={{ width: '5%' }}></div>
                   </div>
                   {/* Ticks */}
-                  <div className="flex justify-between mt-3 px-1">
+                  <div className="flex justify-between mt-4 px-2">
                     {[0, 25, 50, 75, 100].map((tick) => (
                       <div key={tick} className="flex flex-col items-center">
-                        <div className="h-2 w-px bg-border"></div>
-                        <span className="text-[10px] font-medium text-muted-foreground mt-1">{tick}%</span>
+                        <div className="h-2 w-px bg-muted-foreground/30"></div>
+                        <span className="text-[10px] font-bold text-muted-foreground/50 mt-1">{tick}%</span>
                       </div>
                     ))}
                   </div>
                 </div>
-                <div className="flex items-center justify-center h-32 bg-muted/5 rounded-[1.5rem] border border-dashed border-border/50">
-                  <p className="text-sm text-muted-foreground italic">
-                    Not enough data to show funnel visualization
-                  </p>
-                </div>
+                <EmptyState message="Funnel visualization will appear once more users interact with the widget." />
               </div>
             </SoftCardContent>
           </SoftCard>
@@ -140,16 +148,18 @@ export function AnalyticsPage() {
             </SoftCardHeader>
             <SoftCardContent>
               <div className="space-y-6 pt-4">
-                {/* Bar Chart Placeholder */}
-                <div className="h-48 flex items-end justify-around gap-4 px-2">
+                {/* Soft Bar Chart */}
+                <div className="h-48 flex items-end justify-around gap-6 px-4">
                   {['Views', 'Clicks', 'Starts', 'Engaged'].map((label) => (
-                    <div key={label} className="flex-1 flex flex-col items-center gap-3">
-                      <div className="w-full bg-muted/30 rounded-2xl" style={{ height: '15%' }}></div>
-                      <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{label}</span>
+                    <div key={label} className="flex-1 flex flex-col items-center gap-4 group">
+                      <div className="w-full bg-muted/20 rounded-3xl relative overflow-hidden h-full">
+                        <div className="absolute bottom-0 left-0 right-0 bg-primary/20 rounded-t-3xl transition-all duration-1000 group-hover:bg-primary/30" style={{ height: '15%' }}></div>
+                      </div>
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.15em]">{label}</span>
                     </div>
                   ))}
                 </div>
-                <p className="text-sm text-muted-foreground text-center italic py-2">
+                <p className="text-xs text-muted-foreground/60 text-center font-medium pt-2">
                   Insufficient data for comparative analysis
                 </p>
               </div>
@@ -174,20 +184,27 @@ export function AnalyticsPage() {
             </SoftCardHeader>
             <SoftCardContent>
               <div className="space-y-6 pt-4">
-                <div className="h-48 relative bg-muted/5 rounded-[1.5rem] flex items-center justify-center overflow-hidden">
-                  <svg className="absolute inset-0 w-full h-full p-4" viewBox="0 0 400 200">
+                <div className="h-48 relative rounded-[2rem] flex items-center justify-center overflow-hidden bg-muted/5 border border-muted/20 shadow-inner">
+                  <svg className="absolute inset-0 w-full h-full opacity-30" viewBox="0 0 400 200" preserveAspectRatio="none">
+                    <defs>
+                      <linearGradient id="softGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.2" />
+                        <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0" />
+                      </linearGradient>
+                    </defs>
                     <path
-                      d="M 0 180 Q 100 180 200 180 T 400 180"
+                      d="M 0 180 Q 100 170 200 180 T 400 175"
                       fill="none"
                       stroke="hsl(var(--primary))"
-                      strokeWidth="3"
+                      strokeWidth="4"
                       strokeLinecap="round"
-                      className="opacity-20"
+                    />
+                    <path
+                      d="M 0 180 Q 100 170 200 180 T 400 175 V 200 H 0 Z"
+                      fill="url(#softGradient)"
                     />
                   </svg>
-                  <p className="text-sm text-muted-foreground relative z-10 font-medium">
-                    No recent activity detected
-                  </p>
+                  <EmptyState message="No recent activity detected in the last 7 days." />
                 </div>
               </div>
             </SoftCardContent>
@@ -202,16 +219,18 @@ export function AnalyticsPage() {
             </SoftCardHeader>
             <SoftCardContent>
               <div className="space-y-6 pt-4">
-                <div className="h-48 flex items-end justify-around gap-4 px-2">
+                <div className="h-48 flex items-end justify-around gap-6 px-4">
                   {['1-2', '3-5', '6-10', '11+'].map((range) => (
-                    <div key={range} className="flex-1 flex flex-col items-center gap-3">
-                      <div className="w-full bg-primary/40 rounded-2xl" style={{ height: '10%' }}></div>
-                      <span className="text-xs font-semibold text-muted-foreground tracking-wide">{range}</span>
+                    <div key={range} className="flex-1 flex flex-col items-center gap-4">
+                      <div className="w-full bg-primary/5 rounded-3xl relative h-full">
+                        <div className="absolute bottom-0 left-0 right-0 bg-primary/40 rounded-3xl transition-all duration-1000" style={{ height: '10%' }}></div>
+                      </div>
+                      <span className="text-xs font-bold text-muted-foreground/70">{range}</span>
                     </div>
                   ))}
                 </div>
-                <p className="text-sm text-muted-foreground text-center italic">
-                  Data points pending
+                <p className="text-xs text-muted-foreground/60 text-center font-medium">
+                  Message frequency data pending
                 </p>
               </div>
             </SoftCardContent>
@@ -226,13 +245,33 @@ export function AnalyticsPage() {
             </SoftCardHeader>
             <SoftCardContent>
               <div className="space-y-6 pt-4">
-                <div className="h-48 relative bg-muted/5 rounded-[1.5rem] flex items-center justify-center overflow-hidden">
-                  <svg className="absolute inset-0 w-full h-full p-4" viewBox="0 0 400 200">
-                    <circle cx="200" cy="100" r="60" fill="none" stroke="currentColor" strokeWidth="12" className="text-muted/20" />
+                <div className="h-48 relative flex items-center justify-center bg-muted/5 rounded-[2rem] border border-muted/20 shadow-inner">
+                  <svg className="w-32 h-32 transform -rotate-90">
+                    <circle
+                      cx="64"
+                      cy="64"
+                      r="58"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="10"
+                      className="text-muted/20"
+                    />
+                    <circle
+                      cx="64"
+                      cy="64"
+                      r="58"
+                      fill="none"
+                      stroke="hsl(var(--primary))"
+                      strokeWidth="10"
+                      strokeDasharray="364.4"
+                      strokeDashoffset="340"
+                      strokeLinecap="round"
+                      className="opacity-40"
+                    />
                   </svg>
-                  <p className="text-sm text-muted-foreground relative z-10 font-medium text-center px-8">
-                    Not enough duration data to display
-                  </p>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <EmptyState message="Not enough duration data to display" />
+                  </div>
                 </div>
               </div>
             </SoftCardContent>
