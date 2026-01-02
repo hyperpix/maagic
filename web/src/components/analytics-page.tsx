@@ -64,7 +64,7 @@ export function AnalyticsPage() {
 
   const EmptyState = ({ message }: { message: string }) => (
     <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-      <div className="w-16 h-16 rounded-full bg-muted/30 flex items-center justify-center mb-4">
+      <div className="w-16 h-16 rounded-full bg-muted/30 flex items-center justify-center mb-4 transition-colors group-hover:bg-muted/50">
         <Inbox className="h-8 w-8 text-muted-foreground/40" />
       </div>
       <p className="text-sm font-medium text-muted-foreground/60 italic max-w-[200px]">
@@ -74,32 +74,32 @@ export function AnalyticsPage() {
   )
 
   return (
-    <div className="flex flex-col gap-12 p-8 max-w-[1600px] mx-auto bg-background/50">
+    <div className="flex flex-col gap-8 md:gap-12 p-4 sm:p-6 md:p-8 max-w-[1600px] mx-auto bg-background/50">
       {/* Header Section */}
-      <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground/90">Analytics</h1>
-        <p className="text-muted-foreground text-lg">Detailed insights into your AI agent's performance and user engagement.</p>
+      <div className="flex flex-col gap-2 px-2 sm:px-0">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground/90">Analytics</h1>
+        <p className="text-muted-foreground text-base sm:text-lg">Detailed insights into your AI agent's performance and user engagement.</p>
       </div>
 
       {/* Overview Metrics */}
       <div className="space-y-6">
-        <div className="flex items-center gap-2 px-2">
+        <div className="flex items-center gap-2 px-4 sm:px-2">
           <TrendingUp className="h-5 w-5 text-primary" />
           <h2 className="text-xl font-semibold text-foreground/80">Overview Metrics</h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
           {overviewMetrics.map((stat) => (
             <SoftCard
               key={stat.name}
-              className="hover:scale-[1.02] transition-transform duration-300"
+              className="hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 group"
             >
-              <SoftCardContent className="pt-8 pb-6 flex flex-col gap-4">
-                <div className={`w-12 h-12 rounded-2xl ${stat.color} flex items-center justify-center`}>
+              <SoftCardContent className="pt-6 sm:pt-8 pb-6 flex flex-col gap-4">
+                <div className={`w-12 h-12 rounded-2xl ${stat.color} flex items-center justify-center transition-shadow group-hover:shadow-md`}>
                   <stat.icon className="h-6 w-6" />
                 </div>
                 <div>
                   <p className="text-sm font-medium text-muted-foreground mb-1">{stat.name}</p>
-                  <p className="text-4xl font-bold tracking-tight text-foreground">{stat.value}</p>
+                  <p className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">{stat.value}</p>
                 </div>
               </SoftCardContent>
             </SoftCard>
@@ -109,11 +109,11 @@ export function AnalyticsPage() {
 
       {/* User Engagement Funnel */}
       <div className="space-y-6">
-        <div className="flex items-center gap-2 px-2">
+        <div className="flex items-center gap-2 px-4 sm:px-2">
           <Target className="h-5 w-5 text-primary" />
           <h2 className="text-xl font-semibold text-foreground/80">User Engagement</h2>
         </div>
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8">
           <SoftCard className="flex-1">
             <SoftCardHeader>
               <SoftCardTitle>Engagement Funnel</SoftCardTitle>
@@ -136,7 +136,9 @@ export function AnalyticsPage() {
                     ))}
                   </div>
                 </div>
-                <EmptyState message="Funnel visualization will appear once more users interact with the widget." />
+                <div className="flex items-center justify-center h-32 bg-muted/5 rounded-[1.5rem] border border-dashed border-border/50 group">
+                  <EmptyState message="Funnel visualization will appear once more users interact with the widget." />
+                </div>
               </div>
             </SoftCardContent>
           </SoftCard>
@@ -149,17 +151,17 @@ export function AnalyticsPage() {
             <SoftCardContent>
               <div className="space-y-6 pt-4">
                 {/* Soft Bar Chart */}
-                <div className="h-48 flex items-end justify-around gap-6 px-4">
+                <div className="h-48 flex items-end justify-around gap-2 sm:gap-6 px-2 sm:px-4">
                   {['Views', 'Clicks', 'Starts', 'Engaged'].map((label) => (
                     <div key={label} className="flex-1 flex flex-col items-center gap-4 group">
                       <div className="w-full bg-muted/20 rounded-3xl relative overflow-hidden h-full">
                         <div className="absolute bottom-0 left-0 right-0 bg-primary/20 rounded-t-3xl transition-all duration-1000 group-hover:bg-primary/30" style={{ height: '15%' }}></div>
                       </div>
-                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.15em]">{label}</span>
+                      <span className="text-[9px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-[0.1em] sm:tracking-[0.15em] text-center">{label}</span>
                     </div>
                   ))}
                 </div>
-                <p className="text-xs text-muted-foreground/60 text-center font-medium pt-2">
+                <p className="text-xs text-muted-foreground/60 text-center font-medium pt-2 italic">
                   Insufficient data for comparative analysis
                 </p>
               </div>
@@ -170,21 +172,21 @@ export function AnalyticsPage() {
 
       {/* Conversation Metrics */}
       <div className="space-y-6 pb-12">
-        <div className="flex items-center gap-2 px-2">
+        <div className="flex items-center gap-2 px-4 sm:px-2">
           <BarChart className="h-5 w-5 text-primary" />
           <h2 className="text-xl font-semibold text-foreground/80">Conversation Insights</h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8">
           <SoftCard>
             <SoftCardHeader>
               <SoftCardTitle>Total Conversations</SoftCardTitle>
               <SoftCardDescription>
-                7-day trend of total interactions across all platforms.
+                7-day trend of interactions.
               </SoftCardDescription>
             </SoftCardHeader>
             <SoftCardContent>
               <div className="space-y-6 pt-4">
-                <div className="h-48 relative rounded-[2rem] flex items-center justify-center overflow-hidden bg-muted/5 border border-muted/20 shadow-inner">
+                <div className="h-48 relative rounded-[2rem] flex items-center justify-center overflow-hidden bg-muted/5 border border-muted/20 shadow-inner group">
                   <svg className="absolute inset-0 w-full h-full opacity-30" viewBox="0 0 400 200" preserveAspectRatio="none">
                     <defs>
                       <linearGradient id="softGradient" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -214,38 +216,38 @@ export function AnalyticsPage() {
             <SoftCardHeader>
               <SoftCardTitle>User Retention</SoftCardTitle>
               <SoftCardDescription>
-                Distribution of message count per conversation.
+                Message count distribution.
               </SoftCardDescription>
             </SoftCardHeader>
             <SoftCardContent>
               <div className="space-y-6 pt-4">
-                <div className="h-48 flex items-end justify-around gap-6 px-4">
+                <div className="h-48 flex items-end justify-around gap-4 px-4">
                   {['1-2', '3-5', '6-10', '11+'].map((range) => (
                     <div key={range} className="flex-1 flex flex-col items-center gap-4">
-                      <div className="w-full bg-primary/5 rounded-3xl relative h-full">
-                        <div className="absolute bottom-0 left-0 right-0 bg-primary/40 rounded-3xl transition-all duration-1000" style={{ height: '10%' }}></div>
+                      <div className="w-full bg-primary/5 rounded-3xl relative h-full group overflow-hidden">
+                        <div className="absolute bottom-0 left-0 right-0 bg-primary/40 rounded-3xl transition-all duration-1000 group-hover:bg-primary/50" style={{ height: '10%' }}></div>
                       </div>
                       <span className="text-xs font-bold text-muted-foreground/70">{range}</span>
                     </div>
                   ))}
                 </div>
-                <p className="text-xs text-muted-foreground/60 text-center font-medium">
+                <p className="text-xs text-muted-foreground/60 text-center font-medium italic">
                   Message frequency data pending
                 </p>
               </div>
             </SoftCardContent>
           </SoftCard>
 
-          <SoftCard>
+          <SoftCard className="md:col-span-2 xl:col-span-1">
             <SoftCardHeader>
               <SoftCardTitle>Time Retention</SoftCardTitle>
               <SoftCardDescription>
-                Duration distribution of user interactions.
+                Duration of user interactions.
               </SoftCardDescription>
             </SoftCardHeader>
             <SoftCardContent>
               <div className="space-y-6 pt-4">
-                <div className="h-48 relative flex items-center justify-center bg-muted/5 rounded-[2rem] border border-muted/20 shadow-inner">
+                <div className="h-48 relative flex items-center justify-center bg-muted/5 rounded-[2rem] border border-muted/20 shadow-inner group">
                   <svg className="w-32 h-32 transform -rotate-90">
                     <circle
                       cx="64"
@@ -266,7 +268,7 @@ export function AnalyticsPage() {
                       strokeDasharray="364.4"
                       strokeDashoffset="340"
                       strokeLinecap="round"
-                      className="opacity-40"
+                      className="opacity-40 transition-all duration-1000 group-hover:opacity-60"
                     />
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center">
