@@ -8,9 +8,9 @@ This plan outlines the steps to redesign the Analytics page to achieve a "soft" 
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Design System Foundations' (Protocol in workflow.md)
 
 ## Phase 2: Overview & Layout Implementation
-- [ ] Task: Write tests for the new `AnalyticsPage` layout and metrics display.
-- [ ] Task: Refactor `web/src/components/analytics-page.tsx` layout for increased whitespace and hierarchical spacing.
-- [ ] Task: Implement the "Overview Metrics" section using the `SoftCard` component.
+- [x] Task: Write tests for the new `AnalyticsPage` layout fe46a22 and metrics display.
+- [x] Task: Refactor `web/src/components/analytics-page.tsx` layout fe46a22 for increased whitespace and hierarchical spacing.
+- [x] Task: Implement the "Overview Metrics" section fe46a22 using the `SoftCard` component.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Overview & Layout Implementation' (Protocol in workflow.md)
 
 ## Phase 3: Soft Visualizations & Empty States
