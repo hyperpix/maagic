@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Switch } from "@/components/ui/switch"
 import { cn } from "@/lib/utils"
 
 interface Conversation {
@@ -38,14 +39,26 @@ export function InboxSidebar({
   selectedId = null,
 }: InboxSidebarProps) {
   const [searchQuery, setSearchQuery] = React.useState("")
+  const [showUnreadOnly, setShowUnreadOnly] = React.useState(false)
 
   const filteredData = React.useMemo(() => {
-    if (!searchQuery) return data
-    return data.filter((conv) =>
-      conv.visitorId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      conv.lastMessage?.content.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-  }, [data, searchQuery])
+    let filtered = data
+    
+    // Filter by read/unread
+    if (showUnreadOnly) {
+      filtered = filtered.filter((conv) => !conv.openedAt)
+    }
+    
+    // Filter by search query
+    if (searchQuery) {
+      filtered = filtered.filter((conv) =>
+        conv.visitorId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        conv.lastMessage?.content.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    }
+    
+    return filtered
+  }, [data, searchQuery, showUnreadOnly])
 
   return (
     <div 
@@ -55,8 +68,16 @@ export function InboxSidebar({
       }}
     >
       <div className="p-2 shrink-0">
-        <div className="px-2 mb-2 pt-4">
+        <div className="px-2 mb-2 pt-4 flex items-center justify-between">
           <h2 className="font-medium">Inbox</h2>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-muted-foreground">Unread</span>
+            <Switch
+              checked={showUnreadOnly}
+              onCheckedChange={setShowUnreadOnly}
+              className="data-[state=checked]:bg-yellow-500"
+            />
+          </div>
         </div>
         <div className="px-2">
           <Input
