@@ -42,9 +42,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Separator } from "@/components/ui/separator"
+import { toast } from "sonner"
 import { useQuery, useMutation } from "convex/react"
 import { api } from "../../convex/_generated/api"
+import { Separator } from "@/components/ui/separator"
 
 export type AgentConfig = {
   title?: string
@@ -98,9 +99,10 @@ export function AgentPage() {
   const handleSave = async () => {
     try {
       await updateConfigMutation(config)
-      // Show success toast or similar if available
+      toast.success("Agent configuration saved successfully!")
     } catch (error) {
       console.error("Failed to save config:", error)
+      toast.error("Failed to save configuration.")
     }
   }
 
@@ -110,6 +112,9 @@ export function AgentPage() {
   const [maxRetrieveBase, setMaxRetrieveBase] = useState("3")
   const [kbFilterTags, setKbFilterTags] = useState<string[]>([])
   const [newTag, setNewTag] = useState("")
+
+  if (savedConfig === undefined) {
+    return (
 
   const renderSection = () => {
     switch (activeSection) {
@@ -342,6 +347,38 @@ export function AgentPage() {
                   rows={4}
                   className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
                 />
+              </div>
+            </div>
+          </div>
+        )
+      case "deployment":
+        return (
+          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
+            <div>
+              <h2 className="text-xl font-semibold mb-1">Widget Code & Configuration</h2>
+              <p className="text-sm text-muted-foreground">Generate and configure your widget integration code</p>
+            </div>
+
+            <div className="space-y-6 max-w-2xl">
+              <div className="space-y-4">
+                <div className="p-4 bg-muted/50 rounded-lg border">
+                  <div className="flex items-center justify-between mb-2">
+                    <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Embed Script</Label>
+                    <Button variant="ghost" size="sm" className="h-8 gap-2" onClick={() => {
+                      const code = `<script src="${window.location.origin}/widget.js" data-agent-id="primary" async></script>`
+                      navigator.clipboard.writeText(code)
+                    }}>
+                      <Code className="h-3 w-3" />
+                      Copy Code
+                    </Button>
+                  </div>
+                  <pre className="text-xs font-mono bg-background p-3 rounded border overflow-x-auto whitespace-pre-wrap">
+                    {`<script src="${typeof window !== 'undefined' ? window.location.origin : ''}/widget.js" data-agent-id="primary" async></script>`}
+                  </pre>
+                </div>
+                <p className="text-xs text-muted-foreground italic">
+                  Note: Add this script tag to the {`<head>`} or the end of the {`<body>`} of your website.
+                </p>
               </div>
             </div>
           </div>
