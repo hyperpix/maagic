@@ -45,3 +45,22 @@ test("navigation switches between sections", async () => {
   // Should show Knowledge Base section
   expect(screen.getByText("Configure how your agent retrieves domain knowledge")).toBeDefined()
 })
+
+test("appearance section inputs update local state", async () => {
+  render(<AgentPage />)
+  
+  // Navigate to Appearance
+  const appearanceButton = screen.getByText("Appearance")
+  fireEvent.click(appearanceButton)
+  
+  // Change Title
+  const titleInput = screen.getByLabelText("Title")
+  fireEvent.change(titleInput, { target: { value: "New Agent Title" } })
+  expect((titleInput as HTMLInputElement).value).toBe("New Agent Title")
+  
+  // Change Primary Color
+  const colorInput = screen.getByLabelText("Primary Color")
+  fireEvent.change(colorInput, { target: { value: "#ff0000" } })
+  expect((colorInput as HTMLInputElement).value).toBe("#ff0000")
+})
+
