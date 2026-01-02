@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
 import { 
   MessageSquare, 
   Brain, 
@@ -12,6 +11,10 @@ import {
   ShieldCheck, 
   Code 
 } from "lucide-react"
+import {
+  SidebarMenuItem,
+  SidebarMenuButton,
+} from "@/components/ui/sidebar"
 
 export type AgentSection = 
   | "instructions" 
@@ -39,27 +42,20 @@ const items: { id: AgentSection; label: string; icon: any }[] = [
 
 export function AgentSidebarNav({ activeSection, onSectionChange }: AgentSidebarNavProps) {
   return (
-    <div className="space-y-1">
+    <>
       {items.map((item) => {
-        const Icon = item.icon
         return (
-          <Button
-            key={item.id}
-            variant="ghost"
-            size="sm"
-            className={cn(
-              "w-full justify-start gap-3 px-3 py-2 h-10",
-              activeSection === item.id 
-                ? "bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary" 
-                : "text-muted-foreground hover:bg-muted hover:text-foreground"
-            )}
-            onClick={() => onSectionChange(item.id)}
-          >
-            <Icon className="h-4 w-4" />
-            <span className="font-medium">{item.label}</span>
-          </Button>
+          <SidebarMenuItem key={item.id}>
+            <SidebarMenuButton
+              isActive={activeSection === item.id}
+              onClick={() => onSectionChange(item.id)}
+              className="w-full justify-start"
+            >
+              {item.label}
+            </SidebarMenuButton>
+          </SidebarMenuItem>
         )
       })}
-    </div>
+    </>
   )
 }

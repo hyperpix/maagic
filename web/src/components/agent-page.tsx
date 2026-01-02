@@ -445,8 +445,8 @@ export function AgentPage() {
         </AssistantRuntimeProvider>
       }
     >
-      <div className="flex flex-col gap-8">
-        <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-8 w-full pt-6">
+        <div className="flex items-center justify-between px-4">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Agent Configuration</h1>
             <p className="text-muted-foreground mt-1">Manage behavior, knowledge, and appearance</p>
@@ -458,7 +458,9 @@ export function AgentPage() {
 
         <Separator />
 
-        {renderSection()}
+        <div className="px-4 w-full">
+          {renderSection()}
+        </div>
       </div>
     </AgentLayout>
   )

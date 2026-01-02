@@ -1,11 +1,21 @@
 import { render, screen, fireEvent } from "@testing-library/react"
 import { AgentPage } from "./agent-page"
 import { expect, test, vi } from "vitest"
+import { SidebarProvider } from "@/components/ui/sidebar"
 
 // Mock Convex
 vi.mock("convex/react", () => ({
-  useQuery: vi.fn(),
+  useQuery: vi.fn(() => ({})),
   useMutation: vi.fn(() => vi.fn()),
+}))
+
+vi.mock("../../convex/_generated/api", () => ({
+  api: {
+    agentConfig: {
+      getAgentConfig: "getAgentConfig",
+      updateAgentConfig: "updateAgentConfig",
+    },
+  },
 }))
 
 // Mock our custom runtime hook
@@ -30,8 +40,16 @@ vi.mock("@/components/assistant-ui/thread", () => ({
   ),
 }))
 
+const renderWithProvider = (ui: React.ReactElement) => {
+  return render(
+    <SidebarProvider>
+      {ui}
+    </SidebarProvider>
+  )
+}
+
 test("navigation switches between sections", async () => {
-  render(<AgentPage />)
+  renderWithProvider(<AgentPage />)
   
   // Should start on Instructions
   expect(screen.getByText("Behavior & Instructions")).toBeDefined()
@@ -52,7 +70,7 @@ test("navigation switches between sections", async () => {
 })
 
 test("appearance section inputs update local state", async () => {
-  render(<AgentPage />)
+  renderWithProvider(<AgentPage />)
   
   // Navigate to Appearance
   const appearanceButton = screen.getByText("Appearance")
@@ -70,7 +88,7 @@ test("appearance section inputs update local state", async () => {
 })
 
 test("live preview synchronizes with form state", async () => {
-  render(<AgentPage />)
+  renderWithProvider(<AgentPage />)
   
   // Navigate to Appearance
   const appearanceButton = screen.getByText("Appearance")
@@ -90,5 +108,3 @@ test("live preview synchronizes with form state", async () => {
   // Verify preview updated
   expect(screen.getByTestId("preview-color").textContent).toBe("#00ff00")
 })
-
-

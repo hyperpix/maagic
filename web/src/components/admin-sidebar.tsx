@@ -245,6 +245,18 @@ export function AdminSidebar({
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton
+                isActive={currentView === "agent"}
+                onClick={() => {
+                  onViewChange?.("agent")
+                  onSelectConversation(null)
+                }}
+                className="w-full justify-start"
+              >
+                Agent
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
                 isActive={currentView === "orders"}
                 onClick={() => {
                   onViewChange?.("orders")

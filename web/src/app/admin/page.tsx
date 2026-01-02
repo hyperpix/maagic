@@ -33,9 +33,10 @@ import { InboxSidebar } from "@/components/inbox-sidebar";
 import { KnowledgeSidebar } from "@/components/knowledge-sidebar";
 import { HomePage } from "@/components/home-page";
 import { AnalyticsPage } from "@/components/analytics-page";
+import { AgentPage } from "@/components/agent-page";
 import { AddDataSourceDialog } from "@/components/add-data-source-dialog";
 
-type View = "home" | "inbox" | "analytics" | "knowledge" | "orders" | "issues" | "settings";
+type View = "home" | "inbox" | "analytics" | "knowledge" | "agent" | "orders" | "issues" | "settings";
 
 export default function AdminPage() {
   const [view, setView] = useState<View>("home");
@@ -128,7 +129,7 @@ export default function AdminPage() {
   };
 
   const handleViewChange = (viewString: string) => {
-    const validViews: View[] = ["home", "inbox", "analytics", "knowledge", "orders", "issues", "settings"];
+    const validViews: View[] = ["home", "inbox", "analytics", "knowledge", "agent", "orders", "issues", "settings"];
     if (validViews.includes(viewString as View)) {
       setView(viewString as View);
     }
@@ -172,7 +173,7 @@ export default function AdminPage() {
         onOpenChange={setAddDataSourceOpen}
       />
       <SidebarInset
-        style={(view === "inbox" && !selectedId) || (view === "knowledge") ? {
+        style={(view === "inbox" && !selectedId) || (view === "knowledge") || (view === "agent") ? {
           marginLeft: '20rem'
         } : undefined}
       >
@@ -197,35 +198,38 @@ export default function AdminPage() {
                 </p>
               </div>
             </div>
-          </div>
-        ) : (
+            </div>
+          ) : (
           <>
-            <header className="flex h-16 shrink-0 items-center gap-2 border-b">
-              <div className="flex items-center gap-2 px-4">
-                {selectedId && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setSelectedId(null)}
-                    className="h-8 w-8"
-                  >
-                    <ArrowLeft className="h-4 w-4" />
-                  </Button>
-                )}
-                <h2 className="font-medium">
-                  {selectedId && view === "knowledge"
-                    ? "Preview"
-                    : selectedId
-                    ? `Conversation with ${conversations?.find((c: any) => c._id === selectedId)?.visitorId}`
-                    : view === "home" ? "Home"
-                    : view.charAt(0).toUpperCase() + view.slice(1)}
-                </h2>
-              </div>
-            </header>
+            {view !== "agent" && (
+              <header className="flex h-16 shrink-0 items-center gap-2 border-b">
+                <div className="flex items-center gap-2 px-4">
+                  {selectedId && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setSelectedId(null)}
+                      className="h-8 w-8"
+                    >
+                      <ArrowLeft className="h-4 w-4" />
+                    </Button>
+                  )}
+                  <h2 className="font-medium">
+                    {selectedId && view === "knowledge"
+                      ? "Preview"
+                      : selectedId
+                      ? `Conversation with ${conversations?.find((c: any) => c._id === selectedId)?.visitorId}`
+                      : view === "home" ? "Home"
+                      : view.charAt(0).toUpperCase() + view.slice(1)}
+                  </h2>
+                </div>
+              </header>
+            )}
 
             <div className="flex flex-1 flex-col overflow-hidden">
               {view === "home" && !selectedId && <HomePage />}
               {view === "analytics" && !selectedId && <AnalyticsPage />}
+              {view === "agent" && !selectedId && <AgentPage />}
               {view === "knowledge" && selectedId && knowledgeItems ? (
                 <ScrollArea className="flex-1 p-6">
                   <div className="max-w-4xl mx-auto space-y-6">
@@ -346,8 +350,8 @@ export default function AdminPage() {
                               <h2 className="text-xl font-semibold">Content</h2>
                               <div className="text-sm text-muted-foreground">
                                 {wordCount} words • {charCount} characters
-                              </div>
-                            </div>
+                  </div>
+                  </div>
                             {isEditingKnowledge ? (
                               <textarea
                                 value={editContent}
@@ -364,9 +368,9 @@ export default function AdminPage() {
                                 <pre className="whitespace-pre-wrap font-sans text-sm bg-muted p-4 rounded-lg overflow-x-auto text-black">
                                   {selectedItem.content}
                                 </pre>
-                              </div>
-                            )}
-                          </div>
+            </div>
+          )}
+        </div>
                           <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
                             <DialogContent>
                               <DialogHeader>
@@ -396,29 +400,29 @@ export default function AdminPage() {
                 </ScrollArea>
               ) : selectedId && view !== "knowledge" && (
                 <>
-                  <ScrollArea className="flex-1 p-4">
-                    <div className="flex flex-col gap-3 max-w-3xl mx-auto">
-                      {messages === undefined ? (
-                        <div className="text-center text-muted-foreground text-xs">Loading messages...</div>
-                      ) : messages.length === 0 ? (
-                        <div className="text-center text-muted-foreground text-xs">No messages yet.</div>
-                      ) : (
-                        messages.map((msg: any) => (
-                          <div
-                            key={msg._id}
-                            className={cn(
-                              "max-w-[80%] rounded-lg px-3 py-2 text-sm",
-                              msg.sender === "agent"
+            <ScrollArea className="flex-1 p-4">
+              <div className="flex flex-col gap-3 max-w-3xl mx-auto">
+                {messages === undefined ? (
+                  <div className="text-center text-muted-foreground text-xs">Loading messages...</div>
+                ) : messages.length === 0 ? (
+                  <div className="text-center text-muted-foreground text-xs">No messages yet.</div>
+                ) : (
+                  messages.map((msg: any) => (
+                    <div
+                      key={msg._id}
+                      className={cn(
+                        "max-w-[80%] rounded-lg px-3 py-2 text-sm",
+                        msg.sender === "agent"
                                 ? "bg-muted text-black self-end"
                                 : "bg-background text-foreground border border-gray-200 self-start"
-                            )}
-                          >
-                            {msg.content}
-                          </div>
-                        ))
                       )}
+                    >
+                      {msg.content}
                     </div>
-                  </ScrollArea>
+                  ))
+                )}
+              </div>
+            </ScrollArea>
 
                   <div className="p-4 bg-background">
                     <div className="max-w-3xl mx-auto space-y-3">
@@ -456,22 +460,22 @@ export default function AdminPage() {
                               <ComposerPrimitive.Send asChild>
                                 <Button type="button" variant="ghost" className="rounded-full text-muted-foreground hover:text-foreground">
                                   Send
-                                </Button>
+                </Button>
                               </ComposerPrimitive.Send>
                             </div>
                           </div>
                         </ComposerPrimitive.Root>
                       </AssistantRuntimeProvider>
-                    </div>
-                  </div>
+            </div>
+          </div>
                 </>
               )}
-              {view !== "home" && view !== "inbox" && view !== "knowledge" && view !== "analytics" && !selectedId && (
-                <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
+              {view !== "home" && view !== "inbox" && view !== "knowledge" && view !== "analytics" && view !== "agent" && !selectedId && (
+          <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
                   {view.charAt(0).toUpperCase() + view.slice(1)} page coming soon
                 </div>
               )}
-            </div>
+          </div>
           </>
         )}
       </SidebarInset>

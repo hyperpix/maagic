@@ -23,6 +23,17 @@ Create Convex tables:
    - sender: "visitor" | "agent"
    - content: string
    - createdAt: number
+3) agentConfig
+   - title: string
+   - description: string
+   - logoUrl: string
+   - primaryColor: string
+   - backgroundColor: string
+   - greetingMessage: string
+   - baseInstructions: string
+   - model: string
+   - temperature: number
+   - maxTokens: number
 
 –––––––––––––––– CONVEX FUNCTIONS ––––––––––––––––
 1) mutation: createConversation(visitorId)
@@ -82,6 +93,7 @@ This should be production-clean but intentionally minimal.
 ## Core Features
 - **Visitor Chat Widget:** A floating UI component that allows visitors to initiate and maintain conversations. It remains closed by default to respect user space.
 - **Admin Inbox:** A streamlined dashboard for managing multiple conversations, prioritized by activity (status-based).
+- **Agent Configuration:** A robust admin interface to customize the agent's identity, branding, behavior, and knowledge base, with a real-time live preview.
 - **Real-time Sync:** Powered by Convex to ensure data consistency across all clients.
 
 ## Key Constraints

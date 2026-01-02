@@ -19,17 +19,19 @@ vi.mock("../../convex/_generated/api", () => ({
 }))
 
 describe("AnalyticsPage Redesign", () => {
-  it("renders with soft layout structure", () => {
-    const { getAllByText, getByTestId } = render(<AnalyticsPage />)
+  it("renders with soft layout structure using shadcn components", () => {
+    render(<AnalyticsPage />)
     
-    // Check for overview section header
-    expect(screen.getByText("Overview Metrics")).toBeInTheDocument()
+    // Check for main title
+    expect(screen.getByText("Analytics")).toBeInTheDocument()
     
-    // Check for key data points (using AllBy because they might appear in labels and chart titles)
-    expect(getAllByText("Credits Used").length).toBeGreaterThan(0)
-    expect(getAllByText("Total Conversations").length).toBeGreaterThan(0)
+    // Check for Tab triggers
+    expect(screen.getByText("Overview")).toBeInTheDocument()
+    expect(screen.getByText("Engagement")).toBeInTheDocument()
+    expect(screen.getByText("Conversations")).toBeInTheDocument()
     
-    // Check for SoftCard usage (we'll add data-testid to the component during implementation)
-    // For now, we'll just check that it renders without crashing
+    // Check for some metric labels
+    expect(screen.getByText("Credits Used")).toBeInTheDocument()
+    expect(screen.getAllByText("Total Messages").length).toBeGreaterThan(0)
   })
 })

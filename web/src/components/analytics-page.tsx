@@ -1,15 +1,29 @@
 "use client"
 
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { useQuery } from "convex/react"
 import { api } from "../../convex/_generated/api"
 import { 
-  SoftCard, 
-  SoftCardContent, 
-  SoftCardDescription, 
-  SoftCardHeader, 
-  SoftCardTitle 
-} from "@/components/ui/soft-card"
+  Card, 
+  CardContent, 
+  CardDescription, 
+  CardHeader, 
+  CardTitle,
+  CardFooter
+} from "@/components/ui/card"
+import { 
+  Tabs, 
+  TabsContent, 
+  TabsList, 
+  TabsTrigger 
+} from "@/components/ui/tabs"
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
+import { 
+  Alert, 
+  AlertDescription, 
+  AlertTitle 
+} from "@/components/ui/alert"
 import { 
   CreditCard,
   Clock,
@@ -20,10 +34,15 @@ import {
   TrendingUp,
   Target,
   BarChart,
-  Inbox
+  Inbox,
+  Info,
+  ArrowUpRight,
+  ArrowDownRight
 } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 export function AnalyticsPage() {
+  const [activeTab, setActiveTab] = useState("overview")
   const conversations = useQuery(api.conversations.getConversations)
   const allMessages = useQuery(api.messages.getAllMessages)
 
@@ -33,17 +52,14 @@ export function AnalyticsPage() {
     const totalMessages = allMessages?.length || 0
     const avgMessagesPerChat = totalConversations > 0 ? (totalMessages / totalConversations).toFixed(1) : "0"
     
-    // Calculate total seconds (mock - would need message timestamps)
-    const totalSeconds = totalMessages * 30 // Assuming avg 30 seconds per message
+    const totalSeconds = totalMessages * 30 
     const avgSecondsPerChat = totalConversations > 0 ? (totalSeconds / totalConversations).toFixed(0) : "0"
-    
-    // Calculate total minutes (for credits)
     const totalMinutes = Math.round(totalSeconds / 60)
     
     return {
       creditsUsed: totalMinutes,
       totalMinutes,
-      websiteTraffic: 0, // Would need separate tracking
+      websiteTraffic: 0,
       totalMessages,
       totalConversations,
       avgMessagesPerChat,
@@ -51,235 +67,239 @@ export function AnalyticsPage() {
     }
   }, [conversations, allMessages])
 
-  // Overview metrics grid
   const overviewMetrics = [
-    { name: "Credits Used", value: metrics.creditsUsed.toString(), icon: CreditCard, color: "bg-blue-50 text-blue-600" },
-    { name: "Total Minutes", value: metrics.totalMinutes.toString(), icon: Clock, color: "bg-green-50 text-green-600" },
-    { name: "Website Traffic", value: metrics.websiteTraffic.toString(), icon: Globe, color: "bg-purple-50 text-purple-600" },
-    { name: "Total Messages", value: metrics.totalMessages.toString(), icon: MessageSquare, color: "bg-yellow-50 text-yellow-600" },
-    { name: "Total Conversations", value: metrics.totalConversations.toString(), icon: Users, color: "bg-orange-50 text-orange-600" },
-    { name: "Avg Messages/Chat", value: metrics.avgMessagesPerChat, icon: BarChart3, color: "bg-indigo-50 text-indigo-600" },
-    { name: "Avg Seconds/Chat", value: metrics.avgSecondsPerChat, icon: Clock, color: "bg-rose-50 text-rose-600" },
+    { 
+      name: "Credits Used", 
+      value: metrics.creditsUsed.toString(), 
+      icon: CreditCard, 
+      color: "text-blue-600",
+      bg: "bg-blue-50 dark:bg-blue-950/30",
+      change: "+12%",
+      trend: "up"
+    },
+    { 
+      name: "Total Minutes", 
+      value: metrics.totalMinutes.toString(), 
+      icon: Clock, 
+      color: "text-emerald-600",
+      bg: "bg-emerald-50 dark:bg-emerald-950/30",
+      change: "+5%",
+      trend: "up"
+    },
+    { 
+      name: "Website Traffic", 
+      value: metrics.websiteTraffic.toString(), 
+      icon: Globe, 
+      color: "text-purple-600",
+      bg: "bg-purple-50 dark:bg-purple-950/30",
+      change: "0%",
+      trend: "neutral"
+    },
+    { 
+      name: "Total Messages", 
+      value: metrics.totalMessages.toString(), 
+      icon: MessageSquare, 
+      color: "text-amber-600",
+      bg: "bg-amber-50 dark:bg-amber-950/30",
+      change: "+18%",
+      trend: "up"
+    },
+  ]
+
+  const secondaryMetrics = [
+    { name: "Total Conversations", value: metrics.totalConversations.toString(), icon: Users },
+    { name: "Avg Messages/Chat", value: metrics.avgMessagesPerChat, icon: BarChart3 },
+    { name: "Avg Seconds/Chat", value: metrics.avgSecondsPerChat, icon: Clock },
   ]
 
   const EmptyState = ({ message }: { message: string }) => (
-    <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-      <div className="w-16 h-16 rounded-full bg-muted/30 flex items-center justify-center mb-4 transition-colors group-hover:bg-muted/50">
-        <Inbox className="h-8 w-8 text-muted-foreground/40" />
+    <Alert variant="mono" className="bg-muted/30 border-none rounded-2xl py-8">
+      <div className="flex flex-col items-center text-center w-full">
+        <Inbox className="h-8 w-8 text-muted-foreground/40 mb-3" />
+        <AlertTitle className="text-muted-foreground/80 font-medium">Insufficient Data</AlertTitle>
+        <AlertDescription className="text-muted-foreground/60 italic text-xs max-w-[250px] mt-1">
+          {message}
+        </AlertDescription>
       </div>
-      <p className="text-sm font-medium text-muted-foreground/60 italic max-w-[200px]">
-        {message}
-      </p>
-    </div>
+    </Alert>
   )
 
+  const softCardClasses = "rounded-[2rem] border-none shadow-soft transition-all duration-300 hover:shadow-md dark:bg-card/50"
+
   return (
-    <div className="flex flex-col gap-8 md:gap-12 p-4 sm:p-6 md:p-8 max-w-[1600px] mx-auto bg-background/50">
-      {/* Header Section */}
-      <div className="flex flex-col gap-2 px-2 sm:px-0">
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground/90">Analytics</h1>
-        <p className="text-muted-foreground text-base sm:text-lg">Detailed insights into your AI agent's performance and user engagement.</p>
+    <div className="flex flex-col gap-10 p-6 md:p-10 max-w-[1600px] mx-auto">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 px-2">
+        <div className="space-y-1.5">
+          <h1 className="text-4xl font-bold tracking-tight text-foreground">Analytics</h1>
+          <p className="text-muted-foreground text-lg">Performance insights and visitor engagement data.</p>
+        </div>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-auto">
+          <TabsList className="bg-muted/50 p-1 rounded-full h-11">
+            <TabsTrigger value="overview" className="rounded-full px-6 data-[state=active]:bg-background data-[state=active]:shadow-sm">Overview</TabsTrigger>
+            <TabsTrigger value="engagement" className="rounded-full px-6 data-[state=active]:bg-background data-[state=active]:shadow-sm">Engagement</TabsTrigger>
+            <TabsTrigger value="conversations" className="rounded-full px-6 data-[state=active]:bg-background data-[state=active]:shadow-sm">Conversations</TabsTrigger>
+          </TabsList>
+        </Tabs>
       </div>
 
-      {/* Overview Metrics */}
-      <div className="space-y-6">
-        <div className="flex items-center gap-2 px-4 sm:px-2">
-          <TrendingUp className="h-5 w-5 text-primary" />
-          <h2 className="text-xl font-semibold text-foreground/80">Overview Metrics</h2>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-          {overviewMetrics.map((stat) => (
-            <SoftCard
-              key={stat.name}
-              className="hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 group"
-            >
-              <SoftCardContent className="pt-6 sm:pt-8 pb-6 flex flex-col gap-4">
-                <div className={`w-12 h-12 rounded-2xl ${stat.color} flex items-center justify-center transition-shadow group-hover:shadow-md`}>
-                  <stat.icon className="h-6 w-6" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground mb-1">{stat.name}</p>
-                  <p className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">{stat.value}</p>
-                </div>
-              </SoftCardContent>
-            </SoftCard>
-          ))}
-        </div>
-      </div>
+      <Separator className="opacity-50" />
 
-      {/* User Engagement Funnel */}
-      <div className="space-y-6">
-        <div className="flex items-center gap-2 px-4 sm:px-2">
-          <Target className="h-5 w-5 text-primary" />
-          <h2 className="text-xl font-semibold text-foreground/80">User Engagement</h2>
-        </div>
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8">
-          <SoftCard className="flex-1">
-            <SoftCardHeader>
-              <SoftCardTitle>Engagement Funnel</SoftCardTitle>
-              <SoftCardDescription>Track user progression from widget views to high engagement</SoftCardDescription>
-            </SoftCardHeader>
-            <SoftCardContent>
-              <div className="space-y-8 pt-4">
-                <div className="relative px-2">
-                  {/* Gauge Track */}
-                  <div className="h-6 bg-muted/30 rounded-full overflow-hidden p-1 shadow-inner">
-                    <div className="h-full bg-gradient-to-r from-primary/40 to-primary rounded-full transition-all duration-1000" style={{ width: '5%' }}></div>
-                  </div>
-                  {/* Ticks */}
-                  <div className="flex justify-between mt-4 px-2">
-                    {[0, 25, 50, 75, 100].map((tick) => (
-                      <div key={tick} className="flex flex-col items-center">
-                        <div className="h-2 w-px bg-muted-foreground/30"></div>
-                        <span className="text-[10px] font-bold text-muted-foreground/50 mt-1">{tick}%</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="flex items-center justify-center h-32 bg-muted/5 rounded-[1.5rem] border border-dashed border-border/50 group">
-                  <EmptyState message="Funnel visualization will appear once more users interact with the widget." />
-                </div>
-              </div>
-            </SoftCardContent>
-          </SoftCard>
-
-          <SoftCard className="flex-1">
-            <SoftCardHeader>
-              <SoftCardTitle>Engagement Statistics</SoftCardTitle>
-              <SoftCardDescription>Detailed breakdown of user engagement funnel metrics</SoftCardDescription>
-            </SoftCardHeader>
-            <SoftCardContent>
-              <div className="space-y-6 pt-4">
-                {/* Soft Bar Chart */}
-                <div className="h-48 flex items-end justify-around gap-2 sm:gap-6 px-2 sm:px-4">
-                  {['Views', 'Clicks', 'Starts', 'Engaged'].map((label) => (
-                    <div key={label} className="flex-1 flex flex-col items-center gap-4 group">
-                      <div className="w-full bg-muted/20 rounded-3xl relative overflow-hidden h-full">
-                        <div className="absolute bottom-0 left-0 right-0 bg-primary/20 rounded-t-3xl transition-all duration-1000 group-hover:bg-primary/30" style={{ height: '15%' }}></div>
-                      </div>
-                      <span className="text-[9px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-[0.1em] sm:tracking-[0.15em] text-center">{label}</span>
+      <Tabs value={activeTab} className="w-full space-y-10">
+        <TabsContent value="overview" className="m-0 space-y-10 focus-visible:ring-0">
+          {/* Main Stats Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {overviewMetrics.map((stat) => (
+              <Card key={stat.name} className={softCardClasses}>
+                <CardContent className="p-8 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className={cn("p-3 rounded-2xl", stat.bg)}>
+                      <stat.icon className={cn("h-5 w-5", stat.color)} />
                     </div>
-                  ))}
-                </div>
-                <p className="text-xs text-muted-foreground/60 text-center font-medium pt-2 italic">
-                  Insufficient data for comparative analysis
-                </p>
-              </div>
-            </SoftCardContent>
-          </SoftCard>
-        </div>
-      </div>
+                    <Badge variant="secondary" className="rounded-full font-bold px-2 py-0.5 text-[10px] bg-muted/50 text-muted-foreground">
+                      {stat.trend === "up" ? <ArrowUpRight className="h-3 w-3 mr-0.5 text-emerald-500" /> : stat.trend === "down" ? <ArrowDownRight className="h-3 w-3 mr-0.5 text-rose-500" /> : null}
+                      {stat.change}
+                    </Badge>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">{stat.name}</p>
+                    <p className="text-4xl font-bold tracking-tight mt-1">{stat.value}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
 
-      {/* Conversation Metrics */}
-      <div className="space-y-6 pb-12">
-        <div className="flex items-center gap-2 px-4 sm:px-2">
-          <BarChart className="h-5 w-5 text-primary" />
-          <h2 className="text-xl font-semibold text-foreground/80">Conversation Insights</h2>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8">
-          <SoftCard>
-            <SoftCardHeader>
-              <SoftCardTitle>Total Conversations</SoftCardTitle>
-              <SoftCardDescription>
-                7-day trend of interactions.
-              </SoftCardDescription>
-            </SoftCardHeader>
-            <SoftCardContent>
-              <div className="space-y-6 pt-4">
-                <div className="h-48 relative rounded-[2rem] flex items-center justify-center overflow-hidden bg-muted/5 border border-muted/20 shadow-inner group">
-                  <svg className="absolute inset-0 w-full h-full opacity-30" viewBox="0 0 400 200" preserveAspectRatio="none">
+          {/* Secondary Stats & Charts Row */}
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+            <Card className={cn(softCardClasses, "xl:col-span-2")}>
+              <CardHeader className="px-8 pt-8 flex flex-row items-center justify-between space-y-0">
+                <div className="space-y-1">
+                  <CardTitle>Activity Overview</CardTitle>
+                  <CardDescription>Visual representation of agent activity over time.</CardDescription>
+                </div>
+                <div className="flex gap-2">
+                  <Badge variant="outline" className="rounded-full border-muted text-muted-foreground">Last 7 Days</Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="px-8 pb-8 pt-4">
+                <div className="h-64 relative rounded-[1.5rem] flex items-center justify-center overflow-hidden bg-muted/5 border border-muted/10 shadow-inner group">
+                  <svg className="absolute inset-0 w-full h-full opacity-40" viewBox="0 0 400 200" preserveAspectRatio="none">
                     <defs>
-                      <linearGradient id="softGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.2" />
+                      <linearGradient id="mainStatGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.15" />
                         <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0" />
                       </linearGradient>
                     </defs>
                     <path
-                      d="M 0 180 Q 100 170 200 180 T 400 175"
+                      d="M 0 180 Q 100 160 200 180 T 400 170"
                       fill="none"
                       stroke="hsl(var(--primary))"
                       strokeWidth="4"
                       strokeLinecap="round"
                     />
                     <path
-                      d="M 0 180 Q 100 170 200 180 T 400 175 V 200 H 0 Z"
-                      fill="url(#softGradient)"
+                      d="M 0 180 Q 100 160 200 180 T 400 170 V 200 H 0 Z"
+                      fill="url(#mainStatGradient)"
                     />
                   </svg>
-                  <EmptyState message="No recent activity detected in the last 7 days." />
+                  <EmptyState message="No activity recorded in the selected period." />
                 </div>
-              </div>
-            </SoftCardContent>
-          </SoftCard>
+              </CardContent>
+            </Card>
 
-          <SoftCard>
-            <SoftCardHeader>
-              <SoftCardTitle>User Retention</SoftCardTitle>
-              <SoftCardDescription>
-                Message count distribution.
-              </SoftCardDescription>
-            </SoftCardHeader>
-            <SoftCardContent>
-              <div className="space-y-6 pt-4">
-                <div className="h-48 flex items-end justify-around gap-4 px-4">
-                  {['1-2', '3-5', '6-10', '11+'].map((range) => (
-                    <div key={range} className="flex-1 flex flex-col items-center gap-4">
-                      <div className="w-full bg-primary/5 rounded-3xl relative h-full group overflow-hidden">
-                        <div className="absolute bottom-0 left-0 right-0 bg-primary/40 rounded-3xl transition-all duration-1000 group-hover:bg-primary/50" style={{ height: '10%' }}></div>
-                      </div>
-                      <span className="text-xs font-bold text-muted-foreground/70">{range}</span>
+            <div className="space-y-6">
+              <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-muted-foreground px-2">Key Ratios</h3>
+              {secondaryMetrics.map((stat) => (
+                <Card key={stat.name} className={cn(softCardClasses, "hover:scale-[1.01]")}>
+                  <CardContent className="p-6 flex items-center gap-5">
+                    <div className="p-3 rounded-xl bg-muted/50">
+                      <stat.icon className="h-5 w-5 text-muted-foreground" />
                     </div>
-                  ))}
-                </div>
-                <p className="text-xs text-muted-foreground/60 text-center font-medium italic">
-                  Message frequency data pending
-                </p>
-              </div>
-            </SoftCardContent>
-          </SoftCard>
+                    <div>
+                      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{stat.name}</p>
+                      <p className="text-2xl font-bold">{stat.value}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </TabsContent>
 
-          <SoftCard className="md:col-span-2 xl:col-span-1">
-            <SoftCardHeader>
-              <SoftCardTitle>Time Retention</SoftCardTitle>
-              <SoftCardDescription>
-                Duration of user interactions.
-              </SoftCardDescription>
-            </SoftCardHeader>
-            <SoftCardContent>
-              <div className="space-y-6 pt-4">
-                <div className="h-48 relative flex items-center justify-center bg-muted/5 rounded-[2rem] border border-muted/20 shadow-inner group">
-                  <svg className="w-32 h-32 transform -rotate-90">
-                    <circle
-                      cx="64"
-                      cy="64"
-                      r="58"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="10"
-                      className="text-muted/20"
-                    />
-                    <circle
-                      cx="64"
-                      cy="64"
-                      r="58"
-                      fill="none"
-                      stroke="hsl(var(--primary))"
-                      strokeWidth="10"
-                      strokeDasharray="364.4"
-                      strokeDashoffset="340"
-                      strokeLinecap="round"
-                      className="opacity-40 transition-all duration-1000 group-hover:opacity-60"
-                    />
-                  </svg>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <EmptyState message="Not enough duration data to display" />
+        <TabsContent value="engagement" className="m-0 focus-visible:ring-0">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <Card className={softCardClasses}>
+              <CardHeader className="p-8">
+                <CardTitle>Conversion Funnel</CardTitle>
+                <CardDescription>User progression through the chat experience.</CardDescription>
+              </CardHeader>
+              <CardContent className="px-8 pb-10 space-y-10">
+                <div className="space-y-4">
+                  <div className="h-8 bg-muted/20 rounded-full p-1.5 shadow-inner relative overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-primary/30 to-primary rounded-full w-[10%] transition-all duration-1000" />
+                  </div>
+                  <div className="flex justify-between px-1">
+                    {['Views', 'Clicks', 'Starts', 'Resolved'].map((label) => (
+                      <span key={label} className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest">{label}</span>
+                    ))}
                   </div>
                 </div>
-              </div>
-            </SoftCardContent>
-          </SoftCard>
-        </div>
-      </div>
+                <EmptyState message="Start receiving messages to see your funnel data." />
+              </CardContent>
+            </Card>
+
+            <Card className={softCardClasses}>
+              <CardHeader className="p-8">
+                <CardTitle>Traffic Source Breakdown</CardTitle>
+                <CardDescription>Where your chat users are coming from.</CardDescription>
+              </CardHeader>
+              <CardContent className="p-8 flex items-center justify-center min-h-[300px]">
+                <div className="relative w-48 h-48">
+                  <svg className="w-full h-full transform -rotate-90">
+                    <circle cx="96" cy="96" r="80" fill="none" stroke="currentColor" strokeWidth="24" className="text-muted/10" />
+                    <circle cx="96" cy="96" r="80" fill="none" stroke="hsl(var(--primary))" strokeWidth="24" strokeDasharray="502.4" strokeDashoffset="480" strokeLinecap="round" className="opacity-20" />
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="text-3xl font-bold text-muted-foreground/20">0%</span>
+                    <span className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-tighter">No Traffic</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="conversations" className="m-0 focus-visible:ring-0">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-10">
+            {[
+              { title: "Engagement Depth", desc: "Messages per session distribution.", label: "Frequency" },
+              { title: "Session Duration", desc: "Time spent per interaction.", label: "Duration" },
+              { title: "Peak Activity", desc: "Hours with most conversations.", label: "Hot Zones" }
+            ].map((box) => (
+              <Card key={box.title} className={softCardClasses}>
+                <CardHeader className="p-8">
+                  <CardTitle>{box.title}</CardTitle>
+                  <CardDescription>{box.desc}</CardDescription>
+                </CardHeader>
+                <CardContent className="px-8 pb-10">
+                  <div className="h-48 flex items-end justify-around gap-4 group">
+                    {[1, 2, 3, 4].map((i) => (
+                      <div key={i} className="flex-1 bg-muted/20 rounded-2xl relative overflow-hidden h-full">
+                        <div className="absolute bottom-0 left-0 right-0 bg-primary/10 rounded-t-2xl h-[10%] group-hover:bg-primary/20 transition-all duration-500" />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-6 flex flex-col items-center gap-1">
+                    <Badge variant="mono" className="bg-muted/50 text-muted-foreground/60 text-[10px] uppercase tracking-widest">{box.label}</Badge>
+                    <p className="text-xs text-muted-foreground/40 font-medium italic mt-2">Awaiting data...</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }

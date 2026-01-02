@@ -2,6 +2,16 @@
 
 import * as React from "react"
 import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { ChevronDown } from "lucide-react"
+import {
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar"
 
 interface AgentLayoutProps {
   children: React.ReactNode
@@ -12,34 +22,58 @@ interface AgentLayoutProps {
 export function AgentLayout({ children, preview, sidebar }: AgentLayoutProps) {
   return (
     <div className="flex flex-1 h-full overflow-hidden bg-background">
-      {/* Settings Sidebar (Vertical Nav) */}
-      <div className="w-64 border-r flex flex-col bg-muted/5">
-        <div className="p-4 border-b">
-          <h2 className="font-semibold text-sm px-2">Agent Settings</h2>
+      {/* Settings Sidebar (Nested) */}
+      <div 
+        className="w-80 border-l bg-sidebar flex flex-col fixed inset-y-0 z-10 h-svh"
+        style={{
+          left: 'var(--sidebar-width, 16rem)'
+        }}
+      >
+        <div className="relative shrink-0">
+          <div className="absolute top-0 left-0 right-0 p-2">
+            <div className="px-2 mb-2 pt-4 flex items-center justify-between">
+              <h2 className="font-medium">Agent</h2>
+            </div>
+          </div>
+          <SidebarHeader>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <div className="h-14" />
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <Button variant="outline" size="sm" className="w-full justify-between bg-muted text-muted-foreground hover:bg-muted/80 border-sidebar-border">
+                  <span className="text-sm font-medium">Agent Settings</span>
+                  <ChevronDown className="ml-2 size-4" />
+                </Button>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarHeader>
         </div>
-        <nav className="flex-1 overflow-y-auto p-2">
-          {sidebar}
-        </nav>
+        <div className="flex-1 min-h-0 overflow-y-auto">
+          <SidebarGroup>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {sidebar}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </div>
       </div>
 
       {/* Main Content Area (Scrollable Forms) */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="max-w-4xl mx-auto p-8 pb-32">
+      <div className="flex-1 overflow-y-auto h-full">
+        <div className="w-full pb-32 pt-0 min-h-full">
           {children}
         </div>
       </div>
 
       {/* Preview Column (Fixed) */}
-      <div className="w-[450px] border-l bg-muted/10 flex flex-col items-center p-8 hidden xl:flex">
-        <div className="sticky top-8 w-full flex flex-col items-center">
-          <div className="w-full aspect-[9/16] max-h-[750px] bg-background rounded-3xl shadow-2xl border-8 border-muted/20 overflow-hidden relative">
+      <div className="w-[450px] border-l bg-yellow-100 flex flex-col items-center p-8 hidden xl:flex overflow-hidden">
+        <div className="flex-1 flex items-center justify-center w-full overflow-hidden">
+          <div className="w-full aspect-[9/16] max-h-[750px] bg-background rounded-3xl border-8 border-muted/20 overflow-hidden relative">
             <div className="absolute inset-0 flex flex-col">
               {preview}
             </div>
-          </div>
-          <div className="mt-6 flex flex-col items-center gap-1">
-            <p className="text-sm font-medium text-foreground">Interactive Preview</p>
-            <p className="text-xs text-muted-foreground">Changes are reflected in real-time</p>
           </div>
         </div>
       </div>
