@@ -30,8 +30,8 @@ This plan outlines the steps to redesign the Agent configuration page into a 2-c
 - [x] Task: Conductor - User Manual Verification 'Phase 4: Live Preview Integration' (Protocol in workflow.md) 72aa4bc
 
 ## Phase 5: Data Persistence & Integration
-- [ ] Task: Wire up the "Save" logic (e.g., a "Save Changes" button or debounced updates) to call Convex mutations.
-- [ ] Task: Ensure "Behavior" and "Knowledge" settings are also correctly persisted in the new `agentConfig` schema.
-- [ ] Task: Implement initial data loading to populate the forms from the database on page load.
-- [ ] Task: Perform final UI/UX polish, ensuring responsiveness and consistent styling.
-- [ ] Task: Conductor - User Manual Verification 'Phase 5: Data Persistence & Integration' (Protocol in workflow.md)
+- [x] Task: Wire up the "Save" logic (e.g., a "Save Changes" button or debounced updates) to call Convex mutations. b9de3bc
+- [x] Task: Ensure "Behavior" and "Knowledge" settings are also correctly persisted in the new `agentConfig` schema. b9de3bc
+- [x] Task: Implement initial data loading to populate the forms from the database on page load. b9de3bc
+- [x] Task: Perform final UI/UX polish, ensuring responsiveness and consistent styling. b9de3bc
+- [x] Task: Conductor - User Manual Verification 'Phase 5: Data Persistence & Integration' (Protocol in workflow.md) b9de3bc
