@@ -17,10 +17,10 @@ This plan outlines the steps to redesign the Agent configuration page into a 2-c
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Layout & Navigation Refactor' (Protocol in workflow.md) 8b2ebab
 
 ## Phase 3: Appearance Section & Local State
-- [ ] Task: Build the "Appearance" configuration form (Identity, Branding, Styling, Legal).
-- [ ] Task: Implement a local state manager (e.g., a hook) in `AgentPage` to handle real-time form updates for the preview.
-- [ ] Task: Write tests for the Appearance form inputs and state synchronization.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Appearance Section & Local State' (Protocol in workflow.md)
+- [x] Task: Build the "Appearance" configuration form (Identity, Branding, Styling, Legal). 2b2a8e9
+- [x] Task: Implement a local state manager (e.g., a hook) in `AgentPage` to handle real-time form updates for the preview. 2b2a8e9
+- [x] Task: Write tests for the Appearance form inputs and state synchronization. 2b2a8e9
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Appearance Section & Local State' (Protocol in workflow.md) 2b2a8e9
 
 ## Phase 4: Live Preview Integration
 - [ ] Task: Refactor the existing chat widget component to accept dynamic theme and branding props (colors, title, etc.).
