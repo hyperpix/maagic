@@ -50,7 +50,6 @@ export function InboxSidebar({
   return (
     <div className="w-80 border-r bg-sidebar flex flex-col">
       <div className="p-2 border-b">
-        <h2 className="text-lg font-semibold mb-2 px-2">Inbox</h2>
         <div className="px-2">
           <Input
             placeholder="Search conversations..."
