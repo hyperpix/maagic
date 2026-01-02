@@ -22,6 +22,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Button } from "@/components/ui/button"
 import {
   Sidebar,
   SidebarContent,
@@ -149,7 +150,7 @@ export function AdminSidebar({
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <SidebarMenuButton size="sm" className="w-full justify-start">
+                <Button variant="ghost" size="sm" className="w-full justify-between h-auto py-2">
                   <div className="flex items-center gap-2 flex-1">
                     <div className="h-2 w-2 rounded-full bg-green-500" />
                     <div className="grid flex-1 text-left text-xs leading-tight">
@@ -157,8 +158,8 @@ export function AdminSidebar({
                       <span className="truncate text-xs text-muted-foreground">{selectedAgent.email}</span>
                     </div>
                   </div>
-                  <ChevronDown className="ml-auto size-3" />
-                </SidebarMenuButton>
+                  <ChevronDown className="ml-2 size-3" />
+                </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 className="w-[--radix-dropdown-menu-trigger-width] min-w-56"
