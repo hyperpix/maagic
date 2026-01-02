@@ -211,6 +211,8 @@ export default function AdminPage() {
                 </div>
               )}
             </div>
+          </>
+        )}
       </SidebarInset>
       {selectedId && <UserSidebar selectedId={selectedId} conversations={conversations} />}
     </SidebarProvider>
