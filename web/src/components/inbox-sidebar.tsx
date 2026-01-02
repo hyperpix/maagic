@@ -5,6 +5,8 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Switch } from "@/components/ui/switch"
+import { Button } from "@/components/ui/button"
+import { Plus } from "lucide-react"
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -33,6 +35,7 @@ interface InboxSidebarProps {
   formatTime: (timestamp: number) => string
   isLoading?: boolean
   selectedId?: string | null
+  onAddClick?: () => void
 }
 
 export function InboxSidebar({
@@ -43,6 +46,7 @@ export function InboxSidebar({
   formatTime,
   isLoading = false,
   selectedId = null,
+  onAddClick,
 }: InboxSidebarProps) {
   const [searchQuery, setSearchQuery] = React.useState("")
   const [showUnreadOnly, setShowUnreadOnly] = React.useState(false)
@@ -85,7 +89,7 @@ export function InboxSidebar({
             />
           </div>
         </div>
-        <div className="px-2">
+        <div className="px-2 mt-5">
           <Input
             placeholder="Search conversations..."
             value={searchQuery}

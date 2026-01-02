@@ -13,4 +13,16 @@ export default defineSchema({
     content: v.string(),
     createdAt: v.number(),
   }).index("by_conversation", ["conversationId"]),
+  knowledge: defineTable({
+    title: v.string(),
+    description: v.optional(v.string()),
+    content: v.string(),
+    dataType: v.union(
+      v.literal("text"),
+      v.literal("sitemap"),
+      v.literal("file"),
+      v.literal("url")
+    ),
+    createdAt: v.number(),
+  }).index("by_created", ["createdAt"]),
 });

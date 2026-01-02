@@ -9,6 +9,7 @@
  */
 
 import type * as conversations from "../conversations.js";
+import type * as knowledge from "../knowledge.js";
 import type * as messages from "../messages.js";
 
 import type {
@@ -19,6 +20,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   conversations: typeof conversations;
+  knowledge: typeof knowledge;
   messages: typeof messages;
 }>;
 
