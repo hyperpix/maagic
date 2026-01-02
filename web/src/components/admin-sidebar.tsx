@@ -151,10 +151,7 @@ export function AdminSidebar({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm" className="w-full justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="h-2 w-2 rounded-full bg-green-500" />
-                    <span className="text-sm font-medium">{selectedAgent.name}</span>
-                  </div>
+                  <span className="text-sm font-medium">{selectedAgent.name}</span>
                   <ChevronDown className="ml-2 size-4" />
                 </Button>
               </DropdownMenuTrigger>
@@ -170,13 +167,10 @@ export function AdminSidebar({
                   <DropdownMenuItem
                     key={agent.id}
                     onClick={() => setSelectedAgent(agent)}
-                    className="flex items-center gap-2"
+                    className="flex flex-col items-start gap-0.5"
                   >
-                    <div className="h-2 w-2 rounded-full bg-green-500" />
-                    <div className="flex flex-col items-start gap-0.5">
-                      <span className="font-medium">{agent.name}</span>
-                      <span className="text-xs text-muted-foreground">{agent.email}</span>
-                    </div>
+                    <span className="font-medium">{agent.name}</span>
+                    <span className="text-xs text-muted-foreground">{agent.email}</span>
                   </DropdownMenuItem>
                 ))}
                 <DropdownMenuSeparator />
