@@ -115,6 +115,14 @@ export function AgentPage() {
 
   if (savedConfig === undefined) {
     return (
+      <div className="flex flex-1 items-center justify-center h-full">
+        <div className="flex flex-col items-center gap-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          <p className="text-sm text-muted-foreground">Loading configuration...</p>
+        </div>
+      </div>
+    )
+  }
 
   const renderSection = () => {
     switch (activeSection) {
