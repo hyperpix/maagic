@@ -26,4 +26,17 @@ export default defineSchema({
     ),
     createdAt: v.number(),
   }).index("by_created", ["createdAt"]),
+  agentConfig: defineTable({
+    title: v.optional(v.string()),
+    description: v.optional(v.string()),
+    logoUrl: v.optional(v.string()),
+    headerImage: v.optional(v.string()),
+    backgroundImage: v.optional(v.string()),
+    font: v.optional(v.string()),
+    primaryColor: v.optional(v.string()),
+    backgroundColor: v.optional(v.string()),
+    enableTabs: v.optional(v.boolean()),
+    privacyDisclaimer: v.optional(v.string()),
+    legalLinks: v.optional(v.array(v.object({ label: v.string(), url: v.string() }))),
+  }),
 });
