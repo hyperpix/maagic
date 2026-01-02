@@ -16,7 +16,7 @@ This plan outlines the steps to redesign the Agent configuration page into a 2-c
 - [x] Task: Write tests to ensure navigation correctly switches between settings sections. 8b2ebab
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Layout & Navigation Refactor' (Protocol in workflow.md) 8b2ebab
 
-## Phase 3: Appearance Section & Local State
+## Phase 3: Appearance Section & Local State [checkpoint: 9594ead]
 - [x] Task: Build the "Appearance" configuration form (Identity, Branding, Styling, Legal). 2b2a8e9
 - [x] Task: Implement a local state manager (e.g., a hook) in `AgentPage` to handle real-time form updates for the preview. 2b2a8e9
 - [x] Task: Write tests for the Appearance form inputs and state synchronization. 2b2a8e9
