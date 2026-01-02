@@ -31,3 +31,21 @@ export const markConversationOpened = mutation({
     });
   },
 });
+
+export const deleteConversation = mutation({
+  args: { conversationId: v.id("conversations") },
+  handler: async (ctx: any, args: { conversationId: any }) => {
+    // Delete all messages associated with this conversation
+    const messages = await ctx.db
+      .query("messages")
+      .filter((q: any) => q.eq(q.field("conversationId"), args.conversationId))
+      .collect();
+    
+    for (const message of messages) {
+      await ctx.db.delete(message._id);
+    }
+    
+    // Delete the conversation
+    await ctx.db.delete(args.conversationId);
+  },
+});

@@ -213,7 +213,15 @@ export default function AdminPage() {
           </>
         )}
       </SidebarInset>
-      {selectedId && <UserSidebar selectedId={selectedId} conversations={conversations} />}
+      {selectedId && (
+        <UserSidebar
+          selectedId={selectedId}
+          conversations={conversations}
+          onDeleteConversation={(id) => {
+            setSelectedId(null)
+          }}
+        />
+      )}
     </SidebarProvider>
   );
 }

@@ -26,19 +26,33 @@ import { useAdminRuntime } from "@/lib/use-admin-runtime"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { useMutation } from "convex/react"
+import { api } from "../../convex/_generated/api"
 
 interface UserSidebarProps extends React.ComponentProps<typeof Sidebar> {
   selectedId: string | null
   conversations: any[] | undefined
+  onDeleteConversation?: (conversationId: string) => void
 }
 
 export function UserSidebar({
   selectedId,
   conversations,
+  onDeleteConversation,
   ...props
 }: UserSidebarProps) {
   const runtime = useAdminRuntime(selectedId)
   const [activeTab, setActiveTab] = useState("contact")
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const deleteConversation = useMutation(api.conversations.deleteConversation)
   
   // Reset to contact tab when conversation changes
   React.useEffect(() => {
@@ -46,6 +60,13 @@ export function UserSidebar({
       setActiveTab("contact")
     }
   }, [selectedId])
+  
+  const handleDelete = async () => {
+    if (!selectedId) return
+    await deleteConversation({ conversationId: selectedId })
+    onDeleteConversation?.(selectedId)
+    setDeleteDialogOpen(false)
+  }
   const [isEditing, setIsEditing] = useState(false)
   const [tags, setTags] = useState<string[]>([])
   const [newTag, setNewTag] = useState("")
@@ -293,9 +314,9 @@ export function UserSidebar({
                 </Button>
                 <Button
                   variant="destructive"
-                  className="w-full justify-start gap-2 h-9 font-medium hover:bg-destructive/90 transition-colors"
+                  className="w-full justify-start gap-2 h-9 font-medium hover:bg-destructive/90 transition-colors text-destructive-foreground"
                   size="sm"
-                  onClick={() => console.log("Delete Conversation")}
+                  onClick={() => setDeleteDialogOpen(true)}
                 >
                   <Trash2 className="h-4 w-4" />
                   Delete Conversation
@@ -305,6 +326,31 @@ export function UserSidebar({
           </div>
         )}
       </SidebarContent>
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Conversation</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this conversation? This action cannot be undone and will permanently delete all messages in this conversation.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setDeleteDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDelete}
+              className="text-destructive-foreground"
+            >
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Sidebar>
   )
 }
