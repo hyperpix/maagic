@@ -18,7 +18,11 @@ export const metadata: Metadata = {
   title: "Maagic",
   description: "Minimal live chat powered by Convex and Assistant-UI",
   icons: {
-    icon: "/maagic-logo.png",
+    icon: [
+      { url: "/maagic-logo.png", type: "image/png" },
+    ],
+    shortcut: "/maagic-logo.png",
+    apple: "/maagic-logo.png",
   },
 };
 
