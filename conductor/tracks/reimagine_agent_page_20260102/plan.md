@@ -10,11 +10,11 @@ This plan outlines the steps to redesign the Agent configuration page into a 2-c
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Backend Infrastructure' (Protocol in workflow.md) ad9879c
 
 ## Phase 2: Layout & Navigation Refactor
-- [ ] Task: Create a new `AgentLayout` component that supports a 2-column structure (Settings vs. Preview).
-- [ ] Task: Implement a vertical sidebar component for navigating settings sections (Behavior, Knowledge, Appearance).
-- [ ] Task: Refactor `web/src/components/agent-page.tsx` to use the new layout and sidebar.
-- [ ] Task: Write tests to ensure navigation correctly switches between settings sections.
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Layout & Navigation Refactor' (Protocol in workflow.md)
+- [x] Task: Create a new `AgentLayout` component that supports a 2-column structure (Settings vs. Preview). 8b2ebab
+- [x] Task: Implement a vertical sidebar component for navigating settings sections (Behavior, Knowledge, Appearance). 8b2ebab
+- [x] Task: Refactor `web/src/components/agent-page.tsx` to use the new layout and sidebar. 8b2ebab
+- [x] Task: Write tests to ensure navigation correctly switches between settings sections. 8b2ebab
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Layout & Navigation Refactor' (Protocol in workflow.md) 8b2ebab
 
 ## Phase 3: Appearance Section & Local State
 - [ ] Task: Build the "Appearance" configuration form (Identity, Branding, Styling, Legal).
