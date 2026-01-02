@@ -429,7 +429,7 @@ export default function AdminPage() {
                         </span>
                         <Button
                           type="button"
-                          variant={isHumanMode ? "default" : "outline"}
+                          variant={isHumanMode ? "primary" : "outline"}
                           size="sm"
                           onClick={async () => {
                             if (selectedId) {
