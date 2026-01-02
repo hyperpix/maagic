@@ -113,7 +113,9 @@ export default function AdminPage() {
         />
       )}
       <SidebarInset 
-        className={view === "inbox" && !selectedId ? "ml-80" : ""}
+        style={view === "inbox" && !selectedId ? {
+          marginLeft: 'calc(var(--sidebar-width, 16rem) + 20rem)'
+        } : undefined}
       >
         {view === "inbox" && !selectedId ? (
           <div className="flex flex-col h-full">
