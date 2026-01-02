@@ -48,8 +48,8 @@ export function InboxSidebar({
   }, [data, searchQuery])
 
   return (
-    <div className="w-80 border-r bg-sidebar flex flex-col">
-      <div className="p-2 border-b">
+    <div className="w-80 border-r bg-sidebar flex flex-col h-full">
+      <div className="p-2 border-b shrink-0">
         <div className="px-2">
           <Input
             placeholder="Search conversations..."
@@ -59,7 +59,7 @@ export function InboxSidebar({
           />
         </div>
       </div>
-      <ScrollArea className="flex-1">
+      <ScrollArea className="flex-1 min-h-0">
         <div className="p-2">
           {isLoading ? (
             <div className="space-y-1">
