@@ -35,7 +35,14 @@ export function UserSidebar({
   ...props
 }: UserSidebarProps) {
   const runtime = useAdminRuntime(selectedId)
-  const [activeTab, setActiveTab] = useState("copilot")
+  const [activeTab, setActiveTab] = useState("contact")
+  
+  // Reset to contact tab when conversation changes
+  React.useEffect(() => {
+    if (selectedId) {
+      setActiveTab("contact")
+    }
+  }, [selectedId])
   const [isEditing, setIsEditing] = useState(false)
   const [tags, setTags] = useState<string[]>([])
   const [newTag, setNewTag] = useState("")
