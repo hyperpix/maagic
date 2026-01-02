@@ -48,7 +48,7 @@ export function InboxSidebar({
   }, [data, searchQuery])
 
   return (
-    <div className="w-80 border-r bg-sidebar flex flex-col h-full">
+    <div className="w-80 border-l border-r bg-sidebar flex flex-col h-full">
       <div className="p-2 border-b shrink-0">
         <div className="px-2">
           <Input
