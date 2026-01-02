@@ -119,11 +119,6 @@ export default function AdminPage() {
       >
         {view === "inbox" && !selectedId ? (
           <div className="flex flex-col h-full">
-            <header className="flex h-16 shrink-0 items-center gap-2 border-b">
-              <div className="flex items-center gap-2 px-4">
-                <h2 className="font-medium">Inbox</h2>
-              </div>
-            </header>
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center max-w-md">
                 <h3 className="text-lg font-semibold mb-2">Select a conversation</h3>
