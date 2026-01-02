@@ -66,6 +66,11 @@ const data = {
     { id: "org-2", name: "TechCorp", description: "Startup" },
     { id: "org-3", name: "Global Solutions", description: "Business" },
   ],
+  agents: [
+    { id: "agent-1", name: "Agent 1", email: "agent1@maagic.com" },
+    { id: "agent-2", name: "Agent 2", email: "agent2@maagic.com" },
+    { id: "agent-3", name: "Agent 3", email: "agent3@maagic.com" },
+  ],
   user: {
     name: "Sokhina",
     email: "sokhina@maagic.com",
@@ -82,6 +87,7 @@ export function AdminSidebar({
 }: AdminSidebarProps) {
   const conversations = useQuery(api.conversations.getConversations)
   const [selectedOrg, setSelectedOrg] = useState(data.organizations[0])
+  const [selectedAgent, setSelectedAgent] = useState(data.agents[0])
   const { isMobile } = useSidebar()
 
   const unopenedCount = conversations?.filter((conv: any) => !conv.openedAt).length || 0
@@ -136,6 +142,47 @@ export function AdminSidebar({
                 >
                   <Plus className="size-4" />
                   <span>Add Organization</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <SidebarMenuButton size="lg">
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-medium">{selectedAgent.name}</span>
+                    <span className="truncate text-xs">{selectedAgent.email}</span>
+                  </div>
+                  <ChevronDown className="ml-auto size-4" />
+                </SidebarMenuButton>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                className="w-[--radix-dropdown-menu-trigger-width] min-w-56"
+                side={isMobile ? "bottom" : "right"}
+                align="start"
+                sideOffset={4}
+              >
+                {data.agents.map((agent) => (
+                  <DropdownMenuItem
+                    key={agent.id}
+                    onClick={() => setSelectedAgent(agent)}
+                    className="flex flex-col items-start gap-0.5"
+                  >
+                    <span className="font-medium">{agent.name}</span>
+                    <span className="text-xs text-muted-foreground">{agent.email}</span>
+                  </DropdownMenuItem>
+                ))}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={() => {
+                    // Handle add agent
+                    console.log("Add agent")
+                  }}
+                  className="gap-2"
+                >
+                  <Plus className="size-4" />
+                  <span>Add Agent</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
