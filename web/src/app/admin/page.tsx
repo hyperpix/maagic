@@ -137,14 +137,14 @@ export default function AdminPage() {
                 isLoading={conversationsWithLastMessage === undefined}
                 selectedId={selectedId}
               />
-              <div className="flex-1 flex items-center h-full">
-                <div className="text-left max-w-md pl-8">
+              <div className="flex-1 flex items-center justify-center h-full">
+                <div className="text-center max-w-md">
                   <h3 className="text-lg font-semibold mb-2">Select a conversation</h3>
                   <p className="text-muted-foreground text-sm">
                     Click on a conversation from the list to view the full message history and start chatting.
                   </p>
-                  </div>
-                  </div>
+                </div>
+              </div>
             </div>
           )}
           {selectedId && (
