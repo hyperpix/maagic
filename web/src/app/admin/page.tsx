@@ -112,9 +112,9 @@ export default function AdminPage() {
           selectedId={selectedId}
         />
       )}
-      <SidebarInset 
+      <SidebarInset
         style={view === "inbox" && !selectedId ? {
-          marginLeft: 'calc(var(--sidebar-width, 16rem) + 20rem)'
+          marginLeft: '20rem'
         } : undefined}
       >
         {view === "inbox" && !selectedId ? (
