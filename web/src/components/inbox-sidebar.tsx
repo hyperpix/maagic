@@ -120,11 +120,11 @@ export function InboxSidebar({
               </div>
             ) : (
               <SidebarMenu>
-                {filteredData.map((conv) => {
+                {filteredData.map((conv, index) => {
                   const isUnopened = !conv.openedAt
                   const isSelected = selectedId === conv._id
                   return (
-                    <SidebarMenuItem key={conv._id}>
+                    <SidebarMenuItem key={conv._id} className={index > 0 ? "border-t border-border/30" : ""}>
                       <SidebarMenuButton
                         onClick={() => onRowClick(conv._id)}
                         className={cn(
