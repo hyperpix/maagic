@@ -2,7 +2,7 @@
 
 This plan outlines the steps to redesign the Agent configuration page into a 2-column layout with a vertical sidebar and a live interactive preview, including persistence of branding and appearance settings.
 
-## Phase 1: Backend Infrastructure
+## Phase 1: Backend Infrastructure [checkpoint: 844f7a9]
 - [x] Task: Update `convex/schema.ts` to include an `agentConfig` table for persisting branding and behavior settings. ad9879c
 - [x] Task: Create `convex/agentConfig.ts` with `get` and `update` mutations. ad9879c
 - [x] Task: Write unit tests for `agentConfig` mutations in `convex/agentConfig.test.ts`. ad9879c
