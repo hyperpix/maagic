@@ -56,7 +56,7 @@ export function InboxSidebar({
     >
       <div className="p-2 shrink-0">
         <div className="px-2 mb-2">
-          <h2 className="text-lg font-semibold">Inbox</h2>
+          <h2 className="font-medium">Inbox</h2>
         </div>
         <div className="px-2">
           <Input
