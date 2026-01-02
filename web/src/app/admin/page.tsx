@@ -98,34 +98,34 @@ export default function AdminPage() {
         currentView={view}
         onViewChange={handleViewChange}
       />
+      {view === "inbox" && !selectedId && (
+        <InboxSidebar
+          data={conversationsWithLastMessage || []}
+          onRowClick={async (id) => {
+            setSelectedId(id);
+            await markOpened({ conversationId: id });
+          }}
+          getInitials={getInitials}
+          truncateMessage={truncateMessage}
+          formatTime={formatTime}
+          isLoading={conversationsWithLastMessage === undefined}
+          selectedId={selectedId}
+        />
+      )}
       <SidebarInset>
         {view === "inbox" && !selectedId ? (
-          <div className="flex h-full">
-            <InboxSidebar
-              data={conversationsWithLastMessage || []}
-              onRowClick={async (id) => {
-                setSelectedId(id);
-                await markOpened({ conversationId: id });
-              }}
-              getInitials={getInitials}
-              truncateMessage={truncateMessage}
-              formatTime={formatTime}
-              isLoading={conversationsWithLastMessage === undefined}
-              selectedId={selectedId}
-            />
-            <div className="flex-1 flex flex-col">
-              <header className="flex h-16 shrink-0 items-center gap-2 border-b">
-                <div className="flex items-center gap-2 px-4">
-                  <h2 className="font-medium">Inbox</h2>
-                </div>
-              </header>
-              <div className="flex-1 flex items-center justify-center">
-                <div className="text-center max-w-md">
-                  <h3 className="text-lg font-semibold mb-2">Select a conversation</h3>
-                  <p className="text-muted-foreground text-sm">
-                    Click on a conversation from the list to view the full message history and start chatting.
-                  </p>
-                </div>
+          <div className="flex flex-col h-full">
+            <header className="flex h-16 shrink-0 items-center gap-2 border-b">
+              <div className="flex items-center gap-2 px-4">
+                <h2 className="font-medium">Inbox</h2>
+              </div>
+            </header>
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center max-w-md">
+                <h3 className="text-lg font-semibold mb-2">Select a conversation</h3>
+                <p className="text-muted-foreground text-sm">
+                  Click on a conversation from the list to view the full message history and start chatting.
+                </p>
               </div>
             </div>
           </div>
