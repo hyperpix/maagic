@@ -33,23 +33,59 @@ import {
 import Image from "next/image";
 import type { FC } from "react";
 
-export const Thread: FC<{ clearChat?: () => void }> = ({ clearChat }) => {
+export interface ThreadConfig {
+  title?: string;
+  description?: string;
+  logoUrl?: string;
+  primaryColor?: string;
+  backgroundColor?: string;
+  greetingMessage?: string;
+}
+
+export const Thread: FC<{ clearChat?: () => void; config?: ThreadConfig }> = ({ 
+  clearChat, 
+  config 
+}) => {
   return (
     <ThreadPrimitive.Root
       className="aui-root aui-thread-root @container flex h-full flex-col bg-background"
       style={{
         ["--thread-max-width" as string]: "44rem",
+        ...(config?.primaryColor ? { ["--primary" as string]: config.primaryColor } : {}),
       }}
     >
-      {clearChat && (
-        <div className="flex items-center justify-between px-4 py-3 border-b">
-          <Image
-            src="/maagic-logo.png"
-            alt="Maagic"
-            width={32}
-            height={32}
-            className="object-contain"
-          />
+      <div className="flex items-center justify-between px-4 py-3 border-b bg-background z-10">
+        <div className="flex items-center gap-3">
+          <div className="relative size-8 rounded-full overflow-hidden bg-muted flex items-center justify-center">
+            {config?.logoUrl ? (
+              <Image
+                src={config.logoUrl}
+                alt={config.title || "Agent"}
+                fill
+                className="object-cover"
+              />
+            ) : (
+              <Image
+                src="/maagic-logo.png"
+                alt="Maagic"
+                width={24}
+                height={24}
+                className="object-contain"
+              />
+            )}
+          </div>
+          <div className="flex flex-col">
+            <span className="text-sm font-semibold leading-none">
+              {config?.title || "Hello there!"}
+            </span>
+            {config?.description && (
+              <span className="text-[10px] text-muted-foreground mt-0.5">
+                {config.description}
+              </span>
+            )}
+          </div>
+        </div>
+        {clearChat && (
           <TooltipIconButton
             tooltip="Clear chat"
             variant="ghost"
@@ -59,15 +95,16 @@ export const Thread: FC<{ clearChat?: () => void }> = ({ clearChat }) => {
           >
             <XIcon className="size-4" />
           </TooltipIconButton>
-        </div>
-      )}
+        )}
+      </div>
       <ThreadPrimitive.Viewport
         turnAnchor="top"
         className="aui-thread-viewport relative flex flex-1 flex-col overflow-x-auto overflow-y-scroll scroll-smooth px-4 pt-4"
       >
         <AssistantIf condition={({ thread }) => thread.isEmpty}>
-          <ThreadWelcome />
+          <ThreadWelcome greeting={config?.greetingMessage} />
         </AssistantIf>
+
 
         <ThreadPrimitive.Messages
           components={{
@@ -100,17 +137,19 @@ const ThreadScrollToBottom: FC = () => {
   );
 };
 
-const ThreadWelcome: FC = () => {
+const ThreadWelcome: FC<{ greeting?: string }> = ({ greeting }) => {
   return (
     <div className="aui-thread-welcome-root mx-auto my-auto flex w-full max-w-(--thread-max-width) grow flex-col">
       <div className="aui-thread-welcome-center flex w-full grow flex-col items-center justify-center">
         <div className="aui-thread-welcome-message flex size-full flex-col justify-center px-4">
           <h1 className="aui-thread-welcome-message-inner fade-in slide-in-from-bottom-1 animate-in font-semibold text-2xl duration-200">
-            Hello there!
+            {greeting || "Hello there!"}
           </h1>
-          <p className="aui-thread-welcome-message-inner fade-in slide-in-from-bottom-1 animate-in text-muted-foreground text-xl delay-75 duration-200">
-            How can I help you today?
-          </p>
+          {!greeting && (
+            <p className="aui-thread-welcome-message-inner fade-in slide-in-from-bottom-1 animate-in text-muted-foreground text-xl delay-75 duration-200">
+              How can I help you today?
+            </p>
+          )}
         </div>
       </div>
       <ThreadSuggestions />

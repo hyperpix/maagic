@@ -396,7 +396,7 @@ export function AgentPage() {
       }
       preview={
         <AssistantRuntimeProvider runtime={runtime}>
-          <Thread clearChat={clearChat} />
+          <Thread clearChat={clearChat} config={config} />
         </AssistantRuntimeProvider>
       }
     >

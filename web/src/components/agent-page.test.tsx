@@ -22,7 +22,12 @@ vi.mock("@assistant-ui/react", () => ({
 }))
 
 vi.mock("@/components/assistant-ui/thread", () => ({
-  Thread: () => <div data-testid="preview-thread">Thread Preview</div>,
+  Thread: ({ config }: any) => (
+    <div data-testid="preview-thread">
+      <span data-testid="preview-title">{config?.title}</span>
+      <span data-testid="preview-color">{config?.primaryColor}</span>
+    </div>
+  ),
 }))
 
 test("navigation switches between sections", async () => {
@@ -63,4 +68,27 @@ test("appearance section inputs update local state", async () => {
   fireEvent.change(colorInput, { target: { value: "#ff0000" } })
   expect((colorInput as HTMLInputElement).value).toBe("#ff0000")
 })
+
+test("live preview synchronizes with form state", async () => {
+  render(<AgentPage />)
+  
+  // Navigate to Appearance
+  const appearanceButton = screen.getByText("Appearance")
+  fireEvent.click(appearanceButton)
+  
+  // Change Title
+  const titleInput = screen.getByLabelText("Title")
+  fireEvent.change(titleInput, { target: { value: "Live Preview Agent" } })
+  
+  // Verify preview updated
+  expect(screen.getByTestId("preview-title").textContent).toBe("Live Preview Agent")
+  
+  // Change Color
+  const colorInput = screen.getByLabelText("Primary Color")
+  fireEvent.change(colorInput, { target: { value: "#00ff00" } })
+  
+  // Verify preview updated
+  expect(screen.getByTestId("preview-color").textContent).toBe("#00ff00")
+})
+
 
