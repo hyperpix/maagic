@@ -91,7 +91,7 @@ export default function AdminPage() {
   };
 
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={true}>
       <AdminSidebar
         selectedId={selectedId}
         onSelectConversation={setSelectedId}
