@@ -13,11 +13,11 @@ This plan outlines the steps to redesign the Analytics page to achieve a "soft" 
 - [x] Task: Implement the "Overview Metrics" section fe46a22 using the `SoftCard` component.
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Overview - [ ] Task: Conductor - User Manual Verification 'Phase 2: Overview & Layout Implementation' Layout Implementation' (Protocol in workflow.md)
 
-## Phase 3: Soft Visualizations & Empty States
+## Phase 3: Soft Visualizations ## Phase 3: Soft Visualizations & Empty States Empty States [checkpoint: 7fd630f]
 - [ ] Task: Write tests for the updated chart components and empty state visibility.
-- [ ] Task: Redesign "User Engagement" and "Conversation Metrics" SVG charts with smooth curves, soft gradients, and rounded bars.
-- [ ] Task: Update the "Not enough data" empty states to match the soft aesthetic.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Soft Visualizations & Empty States' (Protocol in workflow.md)
+- [x] Task: Redesign "User Engagement" and "Conversation Metrics" SVG charts 7fd630f with smooth curves, soft gradients, and rounded bars.
+- [x] Task: Update the "Not enough data" empty states 7fd630f to match the soft aesthetic.
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Soft Visualizations - [ ] Task: Conductor - User Manual Verification 'Phase 3: Soft Visualizations & Empty States' Empty States' (Protocol in workflow.md)
 
 ## Phase 4: Final Polish & Responsiveness
 - [ ] Task: Audit and adjust spacing and radii for mobile responsiveness.
