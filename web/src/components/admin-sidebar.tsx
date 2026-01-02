@@ -149,12 +149,15 @@ export function AdminSidebar({
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <SidebarMenuButton size="lg">
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-medium">{selectedAgent.name}</span>
-                    <span className="truncate text-xs">{selectedAgent.email}</span>
+                <SidebarMenuButton size="sm" className="w-full justify-start">
+                  <div className="flex items-center gap-2 flex-1">
+                    <div className="h-2 w-2 rounded-full bg-green-500" />
+                    <div className="grid flex-1 text-left text-xs leading-tight">
+                      <span className="truncate font-medium">{selectedAgent.name}</span>
+                      <span className="truncate text-xs text-muted-foreground">{selectedAgent.email}</span>
+                    </div>
                   </div>
-                  <ChevronDown className="ml-auto size-4" />
+                  <ChevronDown className="ml-auto size-3" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent
@@ -163,14 +166,19 @@ export function AdminSidebar({
                 align="start"
                 sideOffset={4}
               >
+                <DropdownMenuLabel>Agents</DropdownMenuLabel>
+                <DropdownMenuSeparator />
                 {data.agents.map((agent) => (
                   <DropdownMenuItem
                     key={agent.id}
                     onClick={() => setSelectedAgent(agent)}
-                    className="flex flex-col items-start gap-0.5"
+                    className="flex items-center gap-2"
                   >
-                    <span className="font-medium">{agent.name}</span>
-                    <span className="text-xs text-muted-foreground">{agent.email}</span>
+                    <div className="h-2 w-2 rounded-full bg-green-500" />
+                    <div className="flex flex-col items-start gap-0.5">
+                      <span className="font-medium">{agent.name}</span>
+                      <span className="text-xs text-muted-foreground">{agent.email}</span>
+                    </div>
                   </DropdownMenuItem>
                 ))}
                 <DropdownMenuSeparator />
