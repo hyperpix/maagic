@@ -150,7 +150,7 @@ export function AdminSidebar({
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="w-full justify-between bg-muted text-muted-foreground hover:bg-muted/80 border-muted">
+                <Button variant="outline" size="sm" className="w-full justify-between bg-muted text-muted-foreground hover:bg-muted/80 border-sidebar-border">
                   <span className="text-sm font-medium">{selectedAgent.name}</span>
                   <ChevronDown className="ml-2 size-4" />
                 </Button>
