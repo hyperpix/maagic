@@ -47,6 +47,12 @@ export default function AdminPage() {
   const [editContent, setEditContent] = useState("");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const markOpened = useMutation(api.conversations.markConversationOpened);
+  const setHumanMode = useMutation(api.conversations.setHumanMode);
+  const conversation = useQuery(
+    api.conversations.getConversation,
+    selectedId && view !== "knowledge" ? { conversationId: selectedId as any } : "skip"
+  );
+  const isHumanMode = conversation?.humanMode ?? false;
   const updateKnowledgeItem = useMutation(api.knowledge.updateKnowledgeItem);
   const deleteKnowledgeItem = useMutation(api.knowledge.deleteKnowledgeItem);
   
@@ -70,7 +76,10 @@ export default function AdminPage() {
     }
   }, [selectedId, knowledgeItems, view, isEditingKnowledge]);
 
-  const runtime = useAdminRuntime(view !== "knowledge" ? selectedId : null);
+  const runtime = useAdminRuntime(
+    view !== "knowledge" ? selectedId : null,
+    isHumanMode
+  );
 
   // Compute last message for each conversation
   const conversationsWithLastMessage = useMemo(() => {
@@ -412,12 +421,33 @@ export default function AdminPage() {
                   </ScrollArea>
 
                   <div className="p-4 bg-background">
-                    <div className="max-w-3xl mx-auto">
+                    <div className="max-w-3xl mx-auto space-y-3">
+                      {/* Human in Loop Toggle */}
+                      <div className="flex items-center justify-end gap-2">
+                        <span className="text-sm text-muted-foreground">
+                          {isHumanMode ? "Human Mode" : "AI Mode"}
+                        </span>
+                        <Button
+                          type="button"
+                          variant={isHumanMode ? "default" : "outline"}
+                          size="sm"
+                          onClick={async () => {
+                            if (selectedId) {
+                              await setHumanMode({
+                                conversationId: selectedId as any,
+                                humanMode: !isHumanMode,
+                              });
+                            }
+                          }}
+                        >
+                          {isHumanMode ? "Switch to AI" : "Take Over (Human)"}
+                        </Button>
+                      </div>
                       <AssistantRuntimeProvider runtime={runtime}>
                         <ComposerPrimitive.Root className="aui-composer-root relative flex w-full flex-col">
                           <div className="flex w-full flex-col rounded-2xl border border-input bg-background px-1 pt-2 outline-none transition-shadow has-[textarea:focus-visible]:border-ring has-[textarea:focus-visible]:ring-2 has-[textarea:focus-visible]:ring-ring/20">
                             <ComposerPrimitive.Input
-                              placeholder="Type a reply..."
+                              placeholder={isHumanMode ? "Type a reply..." : "Type a reply (AI will respond automatically)..."}
                               className="aui-composer-input mb-1 max-h-32 min-h-14 w-full resize-none bg-transparent px-4 pt-2 pb-3 text-sm outline-none placeholder:text-muted-foreground focus-visible:ring-0"
                               rows={1}
                               aria-label="Message input"

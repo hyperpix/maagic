@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation, useQuery } from "convex/react";
+import { useMutation, useQuery, useAction } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import {
   ExternalStoreAdapter,
@@ -11,6 +11,7 @@ import { useEffect, useMemo, useState } from "react";
 export const useConvexRuntime = () => {
   const [visitorId, setVisitorId] = useState<string | null>(null);
   const [conversationId, setConversationId] = useState<any>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const clearChat = () => {
     localStorage.removeItem("chat_conversation_id");
@@ -19,9 +20,15 @@ export const useConvexRuntime = () => {
 
   const createConversation = useMutation(api.conversations.createConversation);
   const sendMessageMutation = useMutation(api.messages.sendMessage);
+  const generateAIResponse = useAction(api.ai.generateAIResponse);
 
   const messages = useQuery(
     api.messages.getMessages,
+    conversationId ? { conversationId } : "skip"
+  );
+
+  const conversation = useQuery(
+    api.conversations.getConversation,
     conversationId ? { conversationId } : "skip"
   );
 
@@ -42,7 +49,7 @@ export const useConvexRuntime = () => {
 
   const store = useMemo((): ExternalStoreAdapter => {
     return {
-      isRunning: false,
+      isRunning: isGenerating,
       isLoading: conversationId ? messages === undefined : false,
       messages: (messages || []).map((msg: any) => ({
         id: msg._id,
@@ -70,11 +77,26 @@ export const useConvexRuntime = () => {
           .map((c) => (c as any).text)
           .join("\n");
 
+        // Save user message first
         await sendMessageMutation({
           conversationId: currentConvId,
           sender: "visitor",
           content: text,
         });
+
+        // Generate AI response based on knowledge base (only if not in human mode)
+        // Note: We check human mode in the AI action itself to avoid race conditions
+        setIsGenerating(true);
+        try {
+          await generateAIResponse({
+            conversationId: currentConvId,
+            userMessage: text,
+          });
+        } catch (error) {
+          console.error("Error generating AI response:", error);
+        } finally {
+          setIsGenerating(false);
+        }
       },
       adapters: {
         attachments: {
@@ -88,7 +110,7 @@ export const useConvexRuntime = () => {
         },
       },
     };
-  }, [messages, visitorId, conversationId, createConversation, sendMessageMutation]);
+  }, [messages, visitorId, conversationId, createConversation, sendMessageMutation, generateAIResponse, isGenerating]);
 
   const runtime = useExternalStoreRuntime(store);
   

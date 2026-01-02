@@ -8,7 +8,7 @@ import {
 } from "@assistant-ui/react";
 import { useMemo } from "react";
 
-export const useAdminRuntime = (conversationId: string | null) => {
+export const useAdminRuntime = (conversationId: string | null, isHumanMode: boolean = false) => {
   const sendMessageMutation = useMutation(api.messages.sendMessage);
 
   const messages = useQuery(
@@ -29,7 +29,7 @@ export const useAdminRuntime = (conversationId: string | null) => {
         try {
           const mapped = {
             id: String(msg._id),
-            role: msg.sender === "agent" ? "user" : "assistant",
+            role: msg.sender === "visitor" ? "user" : "assistant",
             content: [{ type: "text", text: String(msg.content ?? "") }],
             createdAt: new Date(msg.createdAt),
             attachments: [],
@@ -52,6 +52,7 @@ export const useAdminRuntime = (conversationId: string | null) => {
           .map((c) => (c as any).text)
           .join("\n");
 
+        // Save agent message (manual response)
         await sendMessageMutation({
           conversationId,
           sender: "agent",
@@ -70,7 +71,7 @@ export const useAdminRuntime = (conversationId: string | null) => {
         },
       },
     };
-  }, [messages, conversationId, sendMessageMutation]);
+  }, [messages, conversationId, sendMessageMutation, isHumanMode]);
 
   return useExternalStoreRuntime(store);
 };

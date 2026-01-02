@@ -49,3 +49,22 @@ export const deleteConversation = mutation({
     await ctx.db.delete(args.conversationId);
   },
 });
+
+export const setHumanMode = mutation({
+  args: { 
+    conversationId: v.id("conversations"),
+    humanMode: v.boolean(),
+  },
+  handler: async (ctx: any, args: { conversationId: any; humanMode: boolean }) => {
+    await ctx.db.patch(args.conversationId, {
+      humanMode: args.humanMode,
+    });
+  },
+});
+
+export const getConversation = query({
+  args: { conversationId: v.id("conversations") },
+  handler: async (ctx: any, args: { conversationId: any }) => {
+    return await ctx.db.get(args.conversationId);
+  },
+});

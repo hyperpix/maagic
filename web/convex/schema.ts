@@ -6,6 +6,7 @@ export default defineSchema({
     visitorId: v.string(),
     createdAt: v.number(),
     openedAt: v.optional(v.number()),
+    humanMode: v.optional(v.boolean()),
   }),
   messages: defineTable({
     conversationId: v.id("conversations"),
