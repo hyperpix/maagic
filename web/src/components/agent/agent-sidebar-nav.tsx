@@ -37,13 +37,14 @@ const items: { id: AgentSection; label: string; icon: any }[] = [
   { id: "knowledge", label: "Knowledge Base", icon: Database },
   { id: "appearance", label: "Appearance", icon: Palette },
   { id: "legal", label: "Privacy & Legal", icon: ShieldCheck },
-  { id: "deployment", label: "Deployment", icon: Code },
+  { id: "deployment", label: "Embed", icon: Code },
 ]
 
 export function AgentSidebarNav({ activeSection, onSectionChange }: AgentSidebarNavProps) {
   return (
     <>
       {items.map((item) => {
+        const Icon = item.icon
         return (
           <SidebarMenuItem key={item.id}>
             <SidebarMenuButton
@@ -51,6 +52,7 @@ export function AgentSidebarNav({ activeSection, onSectionChange }: AgentSidebar
               onClick={() => onSectionChange(item.id)}
               className="w-full justify-start"
             >
+              <Icon className="h-4 w-4 mr-2" />
               {item.label}
             </SidebarMenuButton>
           </SidebarMenuItem>

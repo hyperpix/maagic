@@ -34,6 +34,7 @@ import { KnowledgeSidebar } from "@/components/knowledge-sidebar";
 import { HomePage } from "@/components/home-page";
 import { AnalyticsPage } from "@/components/analytics-page";
 import { AgentPage } from "@/components/agent-page";
+import { AgentPreviewSidebar } from "@/components/agent/agent-preview-sidebar";
 import { AddDataSourceDialog } from "@/components/add-data-source-dialog";
 
 type View = "home" | "inbox" | "analytics" | "knowledge" | "agent" | "orders" | "issues" | "settings";
@@ -64,6 +65,7 @@ export default function AdminPage() {
     selectedId && view !== "knowledge" ? { conversationId: selectedId } : "skip"
   );
   const knowledgeItems = useQuery(api.knowledge.getKnowledgeItems);
+  const agentConfig = useQuery(api.agentConfig.getAgentConfig);
 
   // Update edit state when selected knowledge item changes
   React.useEffect(() => {
@@ -487,6 +489,9 @@ export default function AdminPage() {
             setSelectedId(null)
           }}
         />
+      )}
+      {view === "agent" && !selectedId && agentConfig && (
+        <AgentPreviewSidebar config={agentConfig} />
       )}
     </SidebarProvider>
   );

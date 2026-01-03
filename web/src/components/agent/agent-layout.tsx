@@ -9,62 +9,61 @@ import {
   SidebarGroupContent,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
 interface AgentLayoutProps {
   children: React.ReactNode
   preview: React.ReactNode
-  sidebar: React.ReactNode
+  sidebar?: React.ReactNode
 }
 
 export function AgentLayout({ children, preview, sidebar }: AgentLayoutProps) {
   return (
     <div className="flex flex-1 h-full overflow-hidden bg-background">
-      {/* Settings Sidebar (Nested) */}
-      <div 
-        className="w-80 border-l bg-sidebar flex flex-col fixed inset-y-0 z-10 h-svh"
-        style={{
-          left: 'var(--sidebar-width, 16rem)'
-        }}
-      >
-        <div className="relative shrink-0">
-          <div className="absolute top-0 left-0 right-0 p-2">
-            <div className="px-2 mb-2 pt-4 flex items-center justify-between">
-              <h2 className="font-medium">Agent</h2>
+      {/* Settings Sidebar (Nested) - Only show if sidebar prop is provided */}
+      {sidebar && (
+        <div 
+          className="w-80 border-l bg-sidebar flex flex-col fixed inset-y-0 z-10 h-svh"
+          style={{
+            left: 'var(--sidebar-width, 16rem)'
+          }}
+        >
+          <div className="relative shrink-0">
+            <div className="absolute top-0 left-0 right-0 p-2">
+              <div className="px-2 mb-2 pt-4 flex items-center justify-between">
+                <h2 className="font-medium">Agent</h2>
+              </div>
             </div>
-          </div>
-          <SidebarHeader>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <div className="h-14" />
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <Button variant="outline" size="sm" className="w-full justify-between bg-muted text-muted-foreground hover:bg-muted/80 border-sidebar-border">
-                  <span className="text-sm font-medium">Agent Settings</span>
-                  <ChevronDown className="ml-2 size-4" />
-                </Button>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarHeader>
-        </div>
-        <div className="flex-1 min-h-0 overflow-y-auto">
-          <SidebarGroup>
-            <SidebarGroupContent>
+            <SidebarHeader>
               <SidebarMenu>
-                {sidebar}
+                <SidebarMenuItem>
+                  <div className="h-14" />
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <Button variant="outline" size="sm" className="w-full justify-between bg-muted text-muted-foreground hover:bg-muted/80 border-sidebar-border">
+                    <span className="text-sm font-medium">Agent Settings</span>
+                    <ChevronDown className="ml-2 size-4" />
+                  </Button>
+                </SidebarMenuItem>
               </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
+            </SidebarHeader>
+          </div>
+          <div className="flex-1 min-h-0 overflow-y-auto">
+            <SidebarGroup>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {sidebar}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* Main Content Area (Scrollable Forms) */}
-      <div className="flex-1 overflow-y-auto h-full">
-        <div className="w-full pb-32 pt-0 min-h-full">
-          {children}
-        </div>
+      {/* Main Content Area */}
+      <div className="flex-1 overflow-hidden h-full">
+        {children}
       </div>
 
       {/* Preview Column (Fixed) */}
