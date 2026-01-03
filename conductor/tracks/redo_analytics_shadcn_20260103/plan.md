@@ -1,9 +1,9 @@
 # Plan: Redo Analytics Page with base shadcn/ui elements
 
 ## Phase 1: Foundation & Data Layer
-- [~] Task: Define Types and Data Mocks
-    - [ ] Sub-task: Create TypeScript interfaces for the proposed metrics (Total Conversations, Total Messages, Active Conversations, etc.).
-    - [ ] Sub-task: Setup Vitest mocks for the required Convex queries (`api.conversations.getConversations`, `api.messages.getAllMessages`).
+- [x] Task: Define Types and Data Mocks 5ae8076
+    - [x] Sub-task: Create TypeScript interfaces for the proposed metrics (Total Conversations, Total Messages, Active Conversations, etc.).
+    - [x] Sub-task: Setup Vitest mocks for the required Convex queries (`api.conversations.getConversations`, `api.messages.getAllMessages`).
 - [ ] Task: Conductor - User Manual Verification 'Foundation & Data Layer' (Protocol in workflow.md)
 
 ## Phase 2: Core Metric Components (TDD)
