@@ -291,7 +291,7 @@ export function AnalyticsPage() {
                     ))}
                   </div>
                   <div className="mt-6 flex flex-col items-center gap-1">
-                    <Badge variant="mono" className="bg-muted/50 text-muted-foreground/60 text-[10px] uppercase tracking-widest">{box.label}</Badge>
+                    <Badge variant="secondary" className="bg-muted/50 text-muted-foreground/60 text-[10px] uppercase tracking-widest">{box.label}</Badge>
                     <p className="text-xs text-muted-foreground/40 font-medium italic mt-2">Awaiting data...</p>
                   </div>
                 </CardContent>
