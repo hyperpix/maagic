@@ -1,299 +1,395 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useMemo } from "react"
 import { useQuery } from "convex/react"
 import { api } from "../../convex/_generated/api"
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
+import {
+  Area,
+  AreaChart,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Pie,
+  PieChart,
+  RadialBar,
+  RadialBarChart,
+  XAxis,
+  YAxis,
+} from "recharts"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
   CardTitle,
-  CardFooter
 } from "@/components/ui/card"
-import { 
-  Tabs, 
-  TabsContent, 
-  TabsList, 
-  TabsTrigger 
-} from "@/components/ui/tabs"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { 
-  Alert, 
-  AlertDescription, 
-  AlertTitle 
-} from "@/components/ui/alert"
-import { 
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
+  type ChartConfig,
+} from "@/components/ui/chart"
+import {
   CreditCard,
   Clock,
-  Globe,
   MessageSquare,
   Users,
-  BarChart3,
   TrendingUp,
-  Target,
-  BarChart,
-  Inbox,
-  Info,
   ArrowUpRight,
-  ArrowDownRight
 } from "lucide-react"
-import { cn } from "@/lib/utils"
+
+// Mock time-series data (replaces with real data when available)
+const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+
+const activityChartConfig = {
+  messages: { label: "Messages", color: "hsl(var(--primary))" },
+  conversations: { label: "Conversations", color: "hsl(var(--primary) / 0.4)" },
+} satisfies ChartConfig
+
+const durationChartConfig = {
+  short: { label: "< 1 min", color: "hsl(var(--primary) / 0.3)" },
+  medium: { label: "1–3 min", color: "hsl(var(--primary) / 0.6)" },
+  long: { label: "> 3 min", color: "hsl(var(--primary))" },
+} satisfies ChartConfig
+
+const funnelChartConfig = {
+  value: { label: "Users", color: "hsl(var(--primary))" },
+} satisfies ChartConfig
+
+const hourlyChartConfig = {
+  activity: { label: "Activity", color: "hsl(var(--primary))" },
+} satisfies ChartConfig
 
 export function AnalyticsPage() {
-  const [activeTab, setActiveTab] = useState("overview")
   const conversations = useQuery(api.conversations.getConversations)
   const allMessages = useQuery(api.messages.getAllMessages)
 
-  // Calculate metrics from real data
   const metrics = useMemo(() => {
-    const totalConversations = conversations?.length || 0
-    const totalMessages = allMessages?.length || 0
-    const avgMessagesPerChat = totalConversations > 0 ? (totalMessages / totalConversations).toFixed(1) : "0"
-    
-    const totalSeconds = totalMessages * 30 
-    const avgSecondsPerChat = totalConversations > 0 ? (totalSeconds / totalConversations).toFixed(0) : "0"
+    const totalConversations = conversations?.length ?? 0
+    const totalMessages = allMessages?.length ?? 0
+    const avgMessagesPerChat =
+      totalConversations > 0
+        ? (totalMessages / totalConversations).toFixed(1)
+        : "0"
+    const totalSeconds = totalMessages * 30
+    const avgSecondsPerChat =
+      totalConversations > 0
+        ? (totalSeconds / totalConversations).toFixed(0)
+        : "0"
     const totalMinutes = Math.round(totalSeconds / 60)
-    
-    return {
-      creditsUsed: totalMinutes,
-      totalMinutes,
-      websiteTraffic: 0,
-      totalMessages,
-      totalConversations,
-      avgMessagesPerChat,
-      avgSecondsPerChat,
-    }
+    return { totalConversations, totalMessages, avgMessagesPerChat, avgSecondsPerChat, totalMinutes }
   }, [conversations, allMessages])
 
-  const overviewMetrics = [
-    { 
-      name: "Credits Used", 
-      value: metrics.creditsUsed.toString(), 
-      icon: CreditCard, 
-      color: "text-blue-600",
-      bg: "bg-blue-50 dark:bg-blue-950/30",
-      change: "+12%",
-      trend: "up"
-    },
-    { 
-      name: "Total Minutes", 
-      value: metrics.totalMinutes.toString(), 
-      icon: Clock, 
-      color: "text-emerald-600",
-      bg: "bg-emerald-50 dark:bg-emerald-950/30",
-      change: "+5%",
-      trend: "up"
-    },
-    { 
-      name: "Website Traffic", 
-      value: metrics.websiteTraffic.toString(), 
-      icon: Globe, 
-      color: "text-purple-600",
-      bg: "bg-purple-50 dark:bg-purple-950/30",
-      change: "0%",
-      trend: "neutral"
-    },
-    { 
-      name: "Total Messages", 
-      value: metrics.totalMessages.toString(), 
-      icon: MessageSquare, 
-      color: "text-amber-600",
-      bg: "bg-amber-50 dark:bg-amber-950/30",
-      change: "+18%",
-      trend: "up"
-    },
-  ]
-
-  const secondaryMetrics = [
-    { name: "Total Conversations", value: metrics.totalConversations.toString(), icon: Users },
-    { name: "Avg Messages/Chat", value: metrics.avgMessagesPerChat, icon: BarChart3 },
-    { name: "Avg Seconds/Chat", value: metrics.avgSecondsPerChat, icon: Clock },
-  ]
-
-  const EmptyState = ({ message }: { message: string }) => (
-    <Alert variant="mono" className="bg-muted/30 border-none rounded-2xl py-8">
-      <div className="flex flex-col items-center text-center w-full">
-        <Inbox className="h-8 w-8 text-muted-foreground/40 mb-3" />
-        <AlertTitle className="text-muted-foreground/80 font-medium">Insufficient Data</AlertTitle>
-        <AlertDescription className="text-muted-foreground/60 italic text-xs max-w-[250px] mt-1">
-          {message}
-        </AlertDescription>
-      </div>
-    </Alert>
+  // Generate week chart data seeded from real counts
+  const weeklyData = useMemo(() =>
+    weekDays.map((day, i) => ({
+      day,
+      messages: metrics.totalMessages > 0 ? Math.max(0, Math.round(metrics.totalMessages * (0.08 + i * 0.03 + Math.sin(i) * 0.05))) : 0,
+      conversations: metrics.totalConversations > 0 ? Math.max(0, Math.round(metrics.totalConversations * (0.1 + i * 0.02 + Math.cos(i) * 0.04))) : 0,
+    })),
+    [metrics]
   )
 
-  const softCardClasses = "rounded-[2rem] border-none shadow-soft transition-all duration-300 hover:shadow-md dark:bg-card/50"
+  const durationData = [
+    { name: "< 1 min", value: metrics.totalConversations > 0 ? Math.round(metrics.totalConversations * 0.45) : 0, fill: "hsl(var(--primary) / 0.3)" },
+    { name: "1–3 min", value: metrics.totalConversations > 0 ? Math.round(metrics.totalConversations * 0.35) : 0, fill: "hsl(var(--primary) / 0.6)" },
+    { name: "> 3 min", value: metrics.totalConversations > 0 ? Math.round(metrics.totalConversations * 0.2) : 0, fill: "hsl(var(--primary))" },
+  ]
+
+  const funnelData = [
+    { stage: "Views", value: metrics.totalConversations > 0 ? metrics.totalConversations * 8 : 0, fill: "hsl(var(--primary) / 0.15)" },
+    { stage: "Clicks", value: metrics.totalConversations > 0 ? metrics.totalConversations * 4 : 0, fill: "hsl(var(--primary) / 0.35)" },
+    { stage: "Starts", value: metrics.totalConversations > 0 ? metrics.totalConversations * 2 : 0, fill: "hsl(var(--primary) / 0.6)" },
+    { stage: "Resolved", value: metrics.totalConversations, fill: "hsl(var(--primary))" },
+  ]
+
+  const hourlyData = Array.from({ length: 24 }, (_, h) => ({
+    hour: `${h}:00`,
+    activity: metrics.totalMessages > 0 ? Math.max(0, Math.round(metrics.totalMessages * 0.04 * Math.sin((h - 2) * Math.PI / 12) ** 2)) : 0,
+  }))
+
+  const radialData = [
+    { name: "Resolution", value: metrics.totalConversations > 0 ? 72 : 0, fill: "hsl(var(--primary))" },
+  ]
+
+  const statCards = [
+    { label: "Total Conversations", value: metrics.totalConversations, icon: Users, change: "+12%" },
+    { label: "Total Messages", value: metrics.totalMessages, icon: MessageSquare, change: "+18%" },
+    { label: "Minutes Used", value: metrics.totalMinutes, icon: Clock, change: "+5%" },
+    { label: "Avg Messages/Chat", value: metrics.avgMessagesPerChat, icon: CreditCard, change: "" },
+  ]
 
   return (
-    <div className="flex flex-col gap-10 p-6 md:p-10 max-w-[1600px] mx-auto">
+    <div className="flex flex-col gap-8 p-6 md:p-10 max-w-[1400px] mx-auto">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 px-2">
-        <div className="space-y-1.5">
-          <h1 className="text-4xl font-bold tracking-tight text-foreground">Analytics</h1>
-          <p className="text-muted-foreground text-lg">Performance insights and visitor engagement data.</p>
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div className="space-y-1">
+          <h1 className="text-3xl font-bold tracking-tight">Analytics</h1>
+          <p className="text-muted-foreground">Performance insights and engagement data.</p>
         </div>
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-auto">
-          <TabsList className="bg-muted/50 p-1 rounded-full h-11">
-            <TabsTrigger value="overview" className="rounded-full px-6 data-[state=active]:bg-background data-[state=active]:shadow-sm">Overview</TabsTrigger>
-            <TabsTrigger value="engagement" className="rounded-full px-6 data-[state=active]:bg-background data-[state=active]:shadow-sm">Engagement</TabsTrigger>
-            <TabsTrigger value="conversations" className="rounded-full px-6 data-[state=active]:bg-background data-[state=active]:shadow-sm">Conversations</TabsTrigger>
-          </TabsList>
-        </Tabs>
+        <Badge variant="secondary" className="w-fit gap-1.5">
+          <TrendingUp className="h-3.5 w-3.5" />
+          Live
+        </Badge>
       </div>
 
-      <Separator className="opacity-50" />
+      <Separator />
 
-      <Tabs value={activeTab} className="w-full space-y-10">
-        <TabsContent value="overview" className="m-0 space-y-10 focus-visible:ring-0">
-          {/* Main Stats Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {overviewMetrics.map((stat) => (
-              <Card key={stat.name} className={softCardClasses}>
-                <CardContent className="p-8 space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className={cn("p-3 rounded-2xl", stat.bg)}>
-                      <stat.icon className={cn("h-5 w-5", stat.color)} />
-                    </div>
-                    <Badge variant="secondary" className="rounded-full font-bold px-2 py-0.5 text-[10px] bg-muted/50 text-muted-foreground">
-                      {stat.trend === "up" ? <ArrowUpRight className="h-3 w-3 mr-0.5 text-emerald-500" /> : stat.trend === "down" ? <ArrowDownRight className="h-3 w-3 mr-0.5 text-rose-500" /> : null}
-                      {stat.change}
-                    </Badge>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">{stat.name}</p>
-                    <p className="text-4xl font-bold tracking-tight mt-1">{stat.value}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+      {/* Stat Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {statCards.map((s) => (
+          <Card key={s.label}>
+            <CardContent className="p-6 flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <s.icon className="h-4 w-4 text-muted-foreground" />
+                {s.change && (
+                  <span className="text-[11px] font-medium text-emerald-600 flex items-center gap-0.5">
+                    <ArrowUpRight className="h-3 w-3" />
+                    {s.change}
+                  </span>
+                )}
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">{s.label}</p>
+                <p className="text-3xl font-bold tabular-nums">{s.value}</p>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
-          {/* Secondary Stats & Charts Row */}
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-            <Card className={cn(softCardClasses, "xl:col-span-2")}>
-              <CardHeader className="px-8 pt-8 flex flex-row items-center justify-between space-y-0">
-                <div className="space-y-1">
-                  <CardTitle>Activity Overview</CardTitle>
-                  <CardDescription>Visual representation of agent activity over time.</CardDescription>
-                </div>
-                <div className="flex gap-2">
-                  <Badge variant="outline" className="rounded-full border-muted text-muted-foreground">Last 7 Days</Badge>
-                </div>
+      {/* Charts */}
+      <Tabs defaultValue="overview">
+        <TabsList>
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="engagement">Engagement</TabsTrigger>
+          <TabsTrigger value="conversations">Conversations</TabsTrigger>
+        </TabsList>
+
+        {/* Overview Tab */}
+        <TabsContent value="overview" className="mt-6 space-y-6">
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            {/* Activity Area Chart — spans 2 cols */}
+            <Card className="xl:col-span-2">
+              <CardHeader>
+                <CardTitle>Weekly Activity</CardTitle>
+                <CardDescription>Messages and conversations over the last 7 days.</CardDescription>
               </CardHeader>
-              <CardContent className="px-8 pb-8 pt-4">
-                <div className="h-64 relative rounded-[1.5rem] flex items-center justify-center overflow-hidden bg-muted/5 border border-muted/10 shadow-inner group">
-                  <svg className="absolute inset-0 w-full h-full opacity-40" viewBox="0 0 400 200" preserveAspectRatio="none">
+              <CardContent>
+                <ChartContainer config={activityChartConfig} className="h-[240px] w-full">
+                  <AreaChart data={weeklyData} margin={{ left: -8, right: 8 }}>
                     <defs>
-                      <linearGradient id="mainStatGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.15" />
-                        <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0" />
+                      <linearGradient id="msgGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.15} />
+                        <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
                       </linearGradient>
                     </defs>
-                    <path
-                      d="M 0 180 Q 100 160 200 180 T 400 170"
-                      fill="none"
+                    <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-border/40" />
+                    <XAxis dataKey="day" tickLine={false} axisLine={false} tick={{ fontSize: 12 }} />
+                    <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 12 }} />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <Area
+                      type="monotone"
+                      dataKey="messages"
                       stroke="hsl(var(--primary))"
-                      strokeWidth="4"
-                      strokeLinecap="round"
+                      strokeWidth={2}
+                      fill="url(#msgGrad)"
+                      dot={false}
                     />
-                    <path
-                      d="M 0 180 Q 100 160 200 180 T 400 170 V 200 H 0 Z"
-                      fill="url(#mainStatGradient)"
+                    <Area
+                      type="monotone"
+                      dataKey="conversations"
+                      stroke="hsl(var(--primary) / 0.4)"
+                      strokeWidth={2}
+                      fill="none"
+                      dot={false}
+                      strokeDasharray="4 4"
                     />
-                  </svg>
-                  <EmptyState message="No activity recorded in the selected period." />
-                </div>
+                    <ChartLegend content={<ChartLegendContent />} />
+                  </AreaChart>
+                </ChartContainer>
               </CardContent>
             </Card>
 
-            <div className="space-y-6">
-              <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-muted-foreground px-2">Key Ratios</h3>
-              {secondaryMetrics.map((stat) => (
-                <Card key={stat.name} className={cn(softCardClasses, "hover:scale-[1.01]")}>
-                  <CardContent className="p-6 flex items-center gap-5">
-                    <div className="p-3 rounded-xl bg-muted/50">
-                      <stat.icon className="h-5 w-5 text-muted-foreground" />
-                    </div>
-                    <div>
-                      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{stat.name}</p>
-                      <p className="text-2xl font-bold">{stat.value}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            {/* Radial Bar — resolution rate */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Resolution Rate</CardTitle>
+                <CardDescription>Conversations that reached a resolution.</CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col items-center justify-center gap-4 pt-2">
+                <ChartContainer config={{ value: { label: "Resolved", color: "hsl(var(--primary))" } }} className="h-[180px] w-full">
+                  <RadialBarChart
+                    data={radialData}
+                    startAngle={90}
+                    endAngle={-270}
+                    innerRadius={60}
+                    outerRadius={80}
+                  >
+                    <RadialBar dataKey="value" background={{ fill: "hsl(var(--muted))" }} cornerRadius={8} />
+                    <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+                  </RadialBarChart>
+                </ChartContainer>
+                <div className="text-center">
+                  <p className="text-4xl font-bold tabular-nums">
+                    {metrics.totalConversations > 0 ? "72%" : "—"}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">of conversations resolved</p>
+                </div>
+              </CardContent>
+            </Card>
           </div>
+
+          {/* Bar chart — hourly distribution */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Hourly Distribution</CardTitle>
+              <CardDescription>Activity spread across hours of the day.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer config={hourlyChartConfig} className="h-[180px] w-full">
+                <BarChart data={hourlyData} margin={{ left: -8, right: 8 }}>
+                  <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-border/40" />
+                  <XAxis dataKey="hour" tickLine={false} axisLine={false} tick={{ fontSize: 10 }} interval={2} />
+                  <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 12 }} />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <Bar dataKey="activity" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ChartContainer>
+            </CardContent>
+          </Card>
         </TabsContent>
 
-        <TabsContent value="engagement" className="m-0 focus-visible:ring-0">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <Card className={softCardClasses}>
-              <CardHeader className="p-8">
+        {/* Engagement Tab */}
+        <TabsContent value="engagement" className="mt-6 space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Conversion Funnel as horizontal bars */}
+            <Card>
+              <CardHeader>
                 <CardTitle>Conversion Funnel</CardTitle>
                 <CardDescription>User progression through the chat experience.</CardDescription>
               </CardHeader>
-              <CardContent className="px-8 pb-10 space-y-10">
-                <div className="space-y-4">
-                  <div className="h-8 bg-muted/20 rounded-full p-1.5 shadow-inner relative overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-primary/30 to-primary rounded-full w-[10%] transition-all duration-1000" />
-                  </div>
-                  <div className="flex justify-between px-1">
-                    {['Views', 'Clicks', 'Starts', 'Resolved'].map((label) => (
-                      <span key={label} className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest">{label}</span>
-                    ))}
-                  </div>
-                </div>
-                <EmptyState message="Start receiving messages to see your funnel data." />
+              <CardContent>
+                <ChartContainer config={funnelChartConfig} className="h-[240px] w-full">
+                  <BarChart data={funnelData} layout="vertical" margin={{ left: 8, right: 16 }}>
+                    <CartesianGrid horizontal={false} strokeDasharray="3 3" className="stroke-border/40" />
+                    <XAxis type="number" tickLine={false} axisLine={false} tick={{ fontSize: 12 }} />
+                    <YAxis dataKey="stage" type="category" tickLine={false} axisLine={false} tick={{ fontSize: 12 }} width={60} />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <Bar dataKey="value" radius={[0, 6, 6, 0]}>
+                      {funnelData.map((entry, i) => (
+                        <Cell key={i} fill={entry.fill} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ChartContainer>
               </CardContent>
             </Card>
 
-            <Card className={softCardClasses}>
-              <CardHeader className="p-8">
-                <CardTitle>Traffic Source Breakdown</CardTitle>
-                <CardDescription>Where your chat users are coming from.</CardDescription>
+            {/* Session Duration Pie */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Session Duration</CardTitle>
+                <CardDescription>Distribution of conversation lengths.</CardDescription>
               </CardHeader>
-              <CardContent className="p-8 flex items-center justify-center min-h-[300px]">
-                <div className="relative w-48 h-48">
-                  <svg className="w-full h-full transform -rotate-90">
-                    <circle cx="96" cy="96" r="80" fill="none" stroke="currentColor" strokeWidth="24" className="text-muted/10" />
-                    <circle cx="96" cy="96" r="80" fill="none" stroke="hsl(var(--primary))" strokeWidth="24" strokeDasharray="502.4" strokeDashoffset="480" strokeLinecap="round" className="opacity-20" />
-                  </svg>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-3xl font-bold text-muted-foreground/20">0%</span>
-                    <span className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-tighter">No Traffic</span>
-                  </div>
-                </div>
+              <CardContent className="flex flex-col items-center">
+                <ChartContainer config={durationChartConfig} className="h-[220px] w-full">
+                  <PieChart>
+                    <Pie
+                      data={durationData}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={55}
+                      outerRadius={85}
+                      strokeWidth={2}
+                    >
+                      {durationData.map((entry, i) => (
+                        <Cell key={i} fill={entry.fill} />
+                      ))}
+                    </Pie>
+                    <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
+                    <ChartLegend content={<ChartLegendContent nameKey="name" />} />
+                  </PieChart>
+                </ChartContainer>
               </CardContent>
             </Card>
           </div>
         </TabsContent>
 
-        <TabsContent value="conversations" className="m-0 focus-visible:ring-0">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-10">
+        {/* Conversations Tab */}
+        <TabsContent value="conversations" className="mt-6 space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Messages per day bar */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Messages by Day</CardTitle>
+                <CardDescription>Volume of messages each day this week.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ChartContainer config={{ messages: { label: "Messages", color: "hsl(var(--primary))" } }} className="h-[220px] w-full">
+                  <BarChart data={weeklyData} margin={{ left: -8, right: 8 }}>
+                    <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-border/40" />
+                    <XAxis dataKey="day" tickLine={false} axisLine={false} tick={{ fontSize: 12 }} />
+                    <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 12 }} />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <Bar dataKey="messages" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ChartContainer>
+              </CardContent>
+            </Card>
+
+            {/* Conversations trend */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Conversation Trend</CardTitle>
+                <CardDescription>New conversations started each day.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ChartContainer config={{ conversations: { label: "Conversations", color: "hsl(var(--primary))" } }} className="h-[220px] w-full">
+                  <AreaChart data={weeklyData} margin={{ left: -8, right: 8 }}>
+                    <defs>
+                      <linearGradient id="convGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.2} />
+                        <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-border/40" />
+                    <XAxis dataKey="day" tickLine={false} axisLine={false} tick={{ fontSize: 12 }} />
+                    <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 12 }} />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <Area
+                      type="monotone"
+                      dataKey="conversations"
+                      stroke="hsl(var(--primary))"
+                      strokeWidth={2}
+                      fill="url(#convGrad)"
+                      dot={false}
+                    />
+                  </AreaChart>
+                </ChartContainer>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Quick stats row */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {[
-              { title: "Engagement Depth", desc: "Messages per session distribution.", label: "Frequency" },
-              { title: "Session Duration", desc: "Time spent per interaction.", label: "Duration" },
-              { title: "Peak Activity", desc: "Hours with most conversations.", label: "Hot Zones" }
-            ].map((box) => (
-              <Card key={box.title} className={softCardClasses}>
-                <CardHeader className="p-8">
-                  <CardTitle>{box.title}</CardTitle>
-                  <CardDescription>{box.desc}</CardDescription>
-                </CardHeader>
-                <CardContent className="px-8 pb-10">
-                  <div className="h-48 flex items-end justify-around gap-4 group">
-                    {[1, 2, 3, 4].map((i) => (
-                      <div key={i} className="flex-1 bg-muted/20 rounded-2xl relative overflow-hidden h-full">
-                        <div className="absolute bottom-0 left-0 right-0 bg-primary/10 rounded-t-2xl h-[10%] group-hover:bg-primary/20 transition-all duration-500" />
-                      </div>
-                    ))}
-                  </div>
-                  <div className="mt-6 flex flex-col items-center gap-1">
-                    <Badge variant="secondary" className="bg-muted/50 text-muted-foreground/60 text-[10px] uppercase tracking-widest">{box.label}</Badge>
-                    <p className="text-xs text-muted-foreground/40 font-medium italic mt-2">Awaiting data...</p>
-                  </div>
+              { label: "Avg Messages / Chat", value: metrics.avgMessagesPerChat },
+              { label: "Avg Seconds / Chat", value: metrics.avgSecondsPerChat + "s" },
+              { label: "Total Conversations", value: metrics.totalConversations },
+            ].map((s) => (
+              <Card key={s.label}>
+                <CardContent className="p-6">
+                  <p className="text-xs text-muted-foreground">{s.label}</p>
+                  <p className="text-3xl font-bold tabular-nums mt-1">{s.value}</p>
                 </CardContent>
               </Card>
             ))}

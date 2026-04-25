@@ -13,6 +13,8 @@ import type * as ai from "../ai.js";
 import type * as conversations from "../conversations.js";
 import type * as knowledge from "../knowledge.js";
 import type * as messages from "../messages.js";
+import type * as workflowRunner from "../workflowRunner.js";
+import type * as workflows from "../workflows.js";
 
 import type {
   ApiFromModules,
@@ -26,6 +28,8 @@ declare const fullApi: ApiFromModules<{
   conversations: typeof conversations;
   knowledge: typeof knowledge;
   messages: typeof messages;
+  workflowRunner: typeof workflowRunner;
+  workflows: typeof workflows;
 }>;
 
 /**

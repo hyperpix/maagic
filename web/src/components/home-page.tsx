@@ -61,56 +61,47 @@ export function HomePage() {
   }, [conversations, allMessages])
 
   return (
-    <div className="flex-1 overflow-auto p-6 flex flex-col h-full">
-      <div className="flex-1 flex flex-col items-center justify-center -mt-16">
-        <div className="space-y-1 text-center mb-8">
-          <h1 className="text-2xl font-semibold">
-            Hello Sokhina <span className="inline-block">👋</span>
-          </h1>
+    <div className="flex-1 overflow-auto p-6 md:p-8">
+      <div className="max-w-4xl space-y-6">
+        <div className="space-y-1">
+          <h1 className="text-2xl font-semibold">Good morning, Sokhina</h1>
           <p className="text-sm text-muted-foreground">
-            Here's what's happening with your conversations today
+            Here&apos;s what&apos;s happening with your conversations today.
           </p>
         </div>
-        <dl className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 max-w-4xl mx-auto">
-            {data.map((item, index) => {
-              const softColors = [
-                "bg-blue-50/50 dark:bg-blue-950/20 border-blue-100/50 dark:border-blue-900/30",
-                "bg-purple-50/50 dark:bg-purple-950/20 border-purple-100/50 dark:border-purple-900/30",
-                "bg-pink-50/50 dark:bg-pink-950/20 border-pink-100/50 dark:border-pink-900/30",
-                "bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-100/50 dark:border-emerald-900/30",
-              ]
-              return (
-              <Card key={item.name} className={cn("p-0 gap-0 rounded-lg overflow-hidden", softColors[index % softColors.length])}>
-                <CardContent className="p-6">
-                  <dd className="flex items-start justify-between space-x-2">
-                    <span className="truncate text-sm text-muted-foreground">
-                      {item.name}
-                    </span>
-                    <span
-                      className={cn(
-                        "text-sm font-medium",
-                        item.changeType === "positive"
-                          ? "text-emerald-700 dark:text-emerald-500"
-                          : "text-red-700 dark:text-red-500"
-                      )}
-                    >
-                      {item.change}
-                    </span>
-                  </dd>
-                  <dd className="mt-1 text-3xl font-semibold text-foreground">
-                    {item.value}
-                  </dd>
-                </CardContent>
-                <CardFooter className="flex justify-end border-t border-border p-0 bg-white dark:bg-gray-950 rounded-b-lg">
-                  <a
-                    href={item.href}
-                    className="px-6 py-3 text-sm font-medium text-primary hover:text-primary/90"
+        <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {data.map((item) => (
+            <Card key={item.name} className="p-0 gap-0 overflow-hidden">
+              <CardContent className="p-6">
+                <dd className="flex items-start justify-between gap-2">
+                  <span className="truncate text-sm text-muted-foreground">
+                    {item.name}
+                  </span>
+                  <span
+                    className={cn(
+                      "text-xs font-medium shrink-0",
+                      item.changeType === "positive"
+                        ? "text-emerald-600 dark:text-emerald-500"
+                        : "text-red-600 dark:text-red-500"
+                    )}
                   >
-                    View more &#8594;
-                  </a>
-                </CardFooter>
-              </Card>
-            )})}
+                    {item.change}
+                  </span>
+                </dd>
+                <dd className="mt-1 text-3xl font-semibold tabular-nums">
+                  {item.value}
+                </dd>
+              </CardContent>
+              <CardFooter className="flex justify-end border-t p-0">
+                <a
+                  href={item.href}
+                  className="px-6 py-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  View more &rarr;
+                </a>
+              </CardFooter>
+            </Card>
+          ))}
         </dl>
       </div>
     </div>

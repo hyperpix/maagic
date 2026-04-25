@@ -26,6 +26,12 @@ export default defineSchema({
     ),
     createdAt: v.number(),
   }).index("by_created", ["createdAt"]),
+  workflows: defineTable({
+    nodes: v.string(),
+    edges: v.string(),
+    name: v.optional(v.string()),
+    updatedAt: v.number(),
+  }),
   agentConfig: defineTable({
     title: v.optional(v.string()),
     description: v.optional(v.string()),

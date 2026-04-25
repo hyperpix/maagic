@@ -179,54 +179,54 @@ export default function AdminPage() {
           marginLeft: '20rem'
         } : undefined}
       >
+        {view !== "agent" && (
+          <header className="flex h-16 shrink-0 items-center gap-2 border-b">
+            <div className="flex items-center gap-2 px-4">
+              {selectedId && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setSelectedId(null)}
+                  className="h-8 w-8"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                </Button>
+              )}
+              <h2 className="font-medium">
+                {selectedId && view === "knowledge"
+                  ? "Preview"
+                  : selectedId
+                  ? `Conversation with ${conversations?.find((c: any) => c._id === selectedId)?.visitorId}`
+                  : view === "home" ? "Home"
+                  : view.charAt(0).toUpperCase() + view.slice(1)}
+              </h2>
+            </div>
+          </header>
+        )}
         {view === "inbox" && !selectedId ? (
-          <div className="flex flex-col h-full">
+          <div className="flex flex-col flex-1 h-full">
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center max-w-md">
-                <h3 className="text-lg font-semibold mb-2">Select a conversation</h3>
+                <h3 className="text-base font-medium mb-1">Select a conversation</h3>
                 <p className="text-muted-foreground text-sm">
-                  Click on a conversation from the list to view the full message history and start chatting.
+                  Click on a conversation from the list to view the full message history.
                 </p>
               </div>
             </div>
           </div>
         ) : view === "knowledge" && !selectedId ? (
-          <div className="flex flex-col h-full">
+          <div className="flex flex-col flex-1 h-full">
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center max-w-md">
-                <h3 className="text-lg font-semibold mb-2">Select a document</h3>
+                <h3 className="text-base font-medium mb-1">Select a document</h3>
                 <p className="text-muted-foreground text-sm">
-                  Choose a document from the list to view its details, edit content, or manage settings.
+                  Choose a document from the list to view its details or edit content.
                 </p>
               </div>
             </div>
-            </div>
-          ) : (
+          </div>
+        ) : (
           <>
-            {view !== "agent" && (
-              <header className="flex h-16 shrink-0 items-center gap-2 border-b">
-                <div className="flex items-center gap-2 px-4">
-                  {selectedId && (
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setSelectedId(null)}
-                      className="h-8 w-8"
-                    >
-                      <ArrowLeft className="h-4 w-4" />
-                    </Button>
-                  )}
-                  <h2 className="font-medium">
-                    {selectedId && view === "knowledge"
-                      ? "Preview"
-                      : selectedId
-                      ? `Conversation with ${conversations?.find((c: any) => c._id === selectedId)?.visitorId}`
-                      : view === "home" ? "Home"
-                      : view.charAt(0).toUpperCase() + view.slice(1)}
-                  </h2>
-                </div>
-              </header>
-            )}
 
             <div className="flex flex-1 flex-col overflow-hidden">
               {view === "home" && !selectedId && <HomePage />}
