@@ -3,10 +3,12 @@
 import { useState, useEffect, useRef, useCallback } from "react"
 import { useQuery, useMutation } from "convex/react"
 import { api } from "../../../../convex/_generated/api"
-import { Provider, Editor, Sidebar } from "@inngest/workflow-kit/ui"
+import { Provider, Editor } from "@inngest/workflow-kit/ui"
 import "@inngest/workflow-kit/ui/ui.css"
+import "./workflow-canvas.css"
 import type { Workflow, PublicEngineAction } from "@inngest/workflow-kit"
 import { Loader2 } from "lucide-react"
+import { WorkflowFloatingPanel } from "./WorkflowFloatingPanel"
 
 const AVAILABLE_ACTIONS: PublicEngineAction[] = [
   {
@@ -108,10 +110,7 @@ export function WorkflowPage() {
   )
 
   return (
-    <div
-      className="relative w-full h-full"
-      style={{ "--sidebar-width": "300px" } as React.CSSProperties}
-    >
+    <div className="relative w-full h-full">
       {saving && (
         <div className="absolute top-3 left-3 z-50 flex items-center gap-2 text-xs text-muted-foreground bg-background border rounded-lg px-3 py-1.5 shadow-sm">
           <Loader2 className="h-3 w-3 animate-spin" />
@@ -124,9 +123,8 @@ export function WorkflowPage() {
         availableActions={AVAILABLE_ACTIONS}
         onChange={handleChange}
       >
-        <Editor direction="down">
-          <Sidebar />
-        </Editor>
+        <Editor direction="down" />
+        <WorkflowFloatingPanel />
       </Provider>
     </div>
   )
