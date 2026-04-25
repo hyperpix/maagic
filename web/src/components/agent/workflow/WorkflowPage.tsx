@@ -108,9 +108,12 @@ export function WorkflowPage() {
   )
 
   return (
-    <div className="relative w-full h-full">
+    <div
+      className="relative w-full h-full"
+      style={{ "--sidebar-width": "300px" } as React.CSSProperties}
+    >
       {saving && (
-        <div className="absolute top-3 right-3 z-50 flex items-center gap-2 text-xs text-muted-foreground bg-background border rounded-lg px-3 py-1.5 shadow-sm">
+        <div className="absolute top-3 left-3 z-50 flex items-center gap-2 text-xs text-muted-foreground bg-background border rounded-lg px-3 py-1.5 shadow-sm">
           <Loader2 className="h-3 w-3 animate-spin" />
           Saving…
         </div>
@@ -121,7 +124,7 @@ export function WorkflowPage() {
         availableActions={AVAILABLE_ACTIONS}
         onChange={handleChange}
       >
-        <Editor>
+        <Editor direction="down">
           <Sidebar />
         </Editor>
       </Provider>

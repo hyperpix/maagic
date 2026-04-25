@@ -6,6 +6,8 @@ import { AgentPromptView } from "@/components/agent/agent-prompt-view"
 import { AgentNestedSidebar } from "@/components/agent/agent-nested-sidebar"
 import { AgentSection } from "@/components/agent/agent-sidebar-nav"
 import { Button } from "@/components/ui/button"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { FileText, GitBranch } from "lucide-react"
 import { toast } from "sonner"
 import { useQuery, useMutation } from "convex/react"
 import { api } from "../../convex/_generated/api"
@@ -103,7 +105,19 @@ export function AgentPage() {
           <h2 className="font-medium">Agent</h2>
           <span className="text-muted-foreground">/</span>
           <span className="text-sm text-muted-foreground font-medium">{headerLabel}</span>
-          <div className="ml-auto">
+          <div className="ml-auto flex items-center gap-3">
+            <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as ViewMode)}>
+              <TabsList>
+                <TabsTrigger value="prompt" className="gap-1.5 text-xs">
+                  <FileText className="h-3.5 w-3.5" />
+                  Prompt
+                </TabsTrigger>
+                <TabsTrigger value="canvas" className="gap-1.5 text-xs">
+                  <GitBranch className="h-3.5 w-3.5" />
+                  Canvas
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
             {viewMode === "prompt" && (
               <Button onClick={handleSave} size="sm">
                 Save
@@ -126,13 +140,15 @@ export function AgentPage() {
         </div>
       </div>
 
-      {/* Right nav column */}
-      <AgentNestedSidebar
-        viewMode={viewMode}
-        onViewModeChange={setViewMode}
-        activeSection={viewMode === "prompt" ? activeSection : undefined}
-        onSectionChange={viewMode === "prompt" ? setActiveSection : undefined}
-      />
+      {/* Right nav column — only in prompt mode */}
+      {viewMode === "prompt" && (
+        <AgentNestedSidebar
+          viewMode={viewMode}
+          onViewModeChange={setViewMode}
+          activeSection={activeSection}
+          onSectionChange={setActiveSection}
+        />
+      )}
     </div>
   )
 }
