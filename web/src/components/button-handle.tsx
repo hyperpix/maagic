@@ -21,9 +21,7 @@ export function ButtonHandle({
   ...handleProps
 }: ButtonHandleProps) {
   const connectionInProgress = useStore((s) => !!s.connectionNodeId)
-  // Only show when this node is a leaf (no outgoing edges) — ButtonEdge handles the rest
-  const hasOutgoing = useStore((s) => s.edges.some((e) => e.source === nodeId))
-  const visible = showButton && !connectionInProgress && !hasOutgoing
+  const visible = showButton && !connectionInProgress
 
   return (
     <Handle
@@ -40,7 +38,6 @@ export function ButtonHandle({
           <div className="flex items-center gap-px rounded-lg border border-border bg-background shadow-sm overflow-hidden">
             {children}
           </div>
-          <div className="w-px h-4 bg-border" />
         </div>
       )}
     </Handle>
