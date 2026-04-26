@@ -1,107 +1,155 @@
 "use client"
 
 import React, { useState } from "react"
-import { X, Search } from "lucide-react"
-import { Input } from "@/components/ui/input"
+import { Search, X, GitFork } from "lucide-react"
+import {
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+} from "@/components/ui/sidebar"
 import { STEP_DEFINITIONS } from "./step-definitions"
+import { STEP_ACCENT } from "./nodes/node-shared"
 import type { StepType } from "./types"
 
 interface StepPickerProps {
   onSelect: (type: StepType) => void
+  onAddBranch?: () => void
   onClose: () => void
 }
 
-export function StepPicker({ onSelect, onClose }: StepPickerProps) {
+export function StepPicker({ onSelect, onAddBranch, onClose }: StepPickerProps) {
   const [query, setQuery] = useState("")
 
   const filtered = STEP_DEFINITIONS.filter(
     (d) =>
-      d.label.toLowerCase().includes(query.toLowerCase()) ||
-      d.description.toLowerCase().includes(query.toLowerCase())
+      d.category !== "triggers" &&
+      (d.label.toLowerCase().includes(query.toLowerCase()) ||
+        d.description.toLowerCase().includes(query.toLowerCase()))
   )
 
-  const triggers = filtered.filter((d) => d.category === "triggers")
-  const actions = filtered.filter((d) => d.category === "actions")
+  const dataItems = filtered.filter((d) => d.category === "data")
+  const flowItems = filtered.filter((d) => d.category === "flow" && d.type !== "branch")
+  const showBranch =
+    !query ||
+    "branch".includes(query.toLowerCase()) ||
+    "split".includes(query.toLowerCase())
 
   return (
-    <div className="w-72 border-l bg-sidebar flex flex-col h-full">
+    <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="px-4 py-3 border-b flex items-center justify-between">
-        <h3 className="font-semibold text-sm">Add Step</h3>
+      <div className="flex h-12 items-center gap-2 px-3 shrink-0 mt-3">
+        <span className="flex-1 truncate text-sm font-semibold">Add Step</span>
         <button
           onClick={onClose}
-          className="w-7 h-7 rounded-md flex items-center justify-center hover:bg-muted text-muted-foreground transition-colors"
+          className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors"
         >
-          <X className="h-4 w-4" />
+          <X className="h-3.5 w-3.5" />
         </button>
       </div>
 
       {/* Search */}
-      <div className="px-3 py-2 border-b">
-        <div className="relative">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-          <Input
+      <div className="px-2 pb-2 shrink-0">
+        <div className="relative flex items-center">
+          <Search className="absolute left-2.5 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
+          <input
             autoFocus
-            placeholder="Search steps…"
+            placeholder="Search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="pl-8 h-8 text-sm"
+            className="w-full h-8 rounded-md border border-sidebar-border bg-muted pl-8 pr-7 text-sm font-medium text-muted-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:ring-1 focus:ring-sidebar-ring"
           />
+          {query && (
+            <button
+              onClick={() => setQuery("")}
+              className="absolute right-2.5 text-muted-foreground hover:text-foreground"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          )}
         </div>
       </div>
 
       {/* Step list */}
-      <div className="flex-1 overflow-y-auto py-2">
-        {triggers.length > 0 && (
-          <Section title="Triggers" items={triggers} onSelect={onSelect} />
+      <div className="flex-1 overflow-y-auto">
+        {dataItems.length > 0 && (
+          <SidebarGroup>
+            <SidebarGroupLabel>Data</SidebarGroupLabel>
+            <SidebarMenu>
+              {dataItems.map((def) => (
+                <StepMenuItem
+                  key={def.type}
+                  def={def}
+                  onSelect={onSelect}
+                />
+              ))}
+            </SidebarMenu>
+          </SidebarGroup>
         )}
-        {actions.length > 0 && (
-          <Section title="Actions" items={actions} onSelect={onSelect} />
+
+        {(flowItems.length > 0 || showBranch) && (
+          <SidebarGroup>
+            <SidebarGroupLabel>Flow Logic</SidebarGroupLabel>
+            <SidebarMenu>
+              {flowItems.map((def) => (
+                <StepMenuItem
+                  key={def.type}
+                  def={def}
+                  onSelect={onSelect}
+                />
+              ))}
+              {showBranch && onAddBranch && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton onClick={onAddBranch}>
+                    <div
+                      className="flex h-5 w-5 shrink-0 items-center justify-center rounded"
+                      style={{
+                        backgroundColor: `${STEP_ACCENT.branch}20`,
+                        color: STEP_ACCENT.branch,
+                      }}
+                    >
+                      <GitFork className="h-3 w-3" />
+                    </div>
+                    <span>Branch</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
+            </SidebarMenu>
+          </SidebarGroup>
         )}
-        {filtered.length === 0 && (
-          <div className="px-4 py-8 text-center text-sm text-muted-foreground">
-            No steps match "{query}"
-          </div>
+
+        {filtered.length === 0 && !showBranch && (
+          <p className="px-4 py-8 text-center text-sm text-sidebar-foreground/50">
+            No steps match &ldquo;{query}&rdquo;
+          </p>
         )}
       </div>
     </div>
   )
 }
 
-function Section({
-  title,
-  items,
+function StepMenuItem({
+  def,
   onSelect,
 }: {
-  title: string
-  items: typeof STEP_DEFINITIONS
+  def: (typeof STEP_DEFINITIONS)[number]
   onSelect: (type: StepType) => void
 }) {
+  const Icon = def.icon
+  const accent = STEP_ACCENT[def.type] ?? "#64748b"
+
   return (
-    <div className="mb-4">
-      <div className="px-4 py-1.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
-        {title}
-      </div>
-      {items.map((def) => {
-        const Icon = def.icon
-        return (
-          <button
-            key={def.type}
-            onClick={() => onSelect(def.type)}
-            className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-muted/60 transition-colors text-left group"
-          >
-            <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-muted group-hover:bg-background border border-transparent group-hover:border-border flex items-center justify-center transition-all">
-              <Icon className="h-4 w-4 text-muted-foreground" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-sm font-medium leading-tight">{def.label}</div>
-              <div className="text-xs text-muted-foreground leading-tight mt-0.5 truncate">
-                {def.description}
-              </div>
-            </div>
-          </button>
-        )
-      })}
-    </div>
+    <SidebarMenuItem>
+      <SidebarMenuButton onClick={() => onSelect(def.type)}>
+        <div
+          className="flex h-5 w-5 shrink-0 items-center justify-center rounded"
+          style={{ backgroundColor: `${accent}20`, color: accent }}
+        >
+          <Icon className="h-3 w-3" />
+        </div>
+        <span>{def.label}</span>
+      </SidebarMenuButton>
+    </SidebarMenuItem>
   )
 }

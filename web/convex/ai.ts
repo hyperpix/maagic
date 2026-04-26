@@ -2,6 +2,8 @@ import { action } from "./_generated/server";
 import { v } from "convex/values";
 import { api } from "./_generated/api";
 import OpenAI from "openai";
+import { runWorkflowChain, searchKnowledgeBase as searchKB } from "./workflowRunner";
+import { graphToSteps } from "./graphToSteps";
 
 // Initialize OpenAI client
 // Make sure to set OPENAI_API_KEY in your Convex environment variables
@@ -86,101 +88,112 @@ export const generateAIResponse = action({
     userMessage: v.string(),
   },
   handler: async (ctx: any, args: { conversationId: any; userMessage: string }) => {
-    // Check if human mode is enabled for this conversation
     const conversation = await ctx.runQuery(api.conversations.getConversation, {
       conversationId: args.conversationId,
     });
 
-    // If human mode is enabled, don't generate AI response
-    if (conversation?.humanMode) {
-      return null;
+    if (conversation?.humanMode) return null;
+
+    // Load saved workflow
+    const savedWorkflow = await ctx.runQuery(api.workflows.getWorkflow);
+    let steps: ReturnType<typeof graphToSteps> = [];
+
+    if (savedWorkflow?.nodes) {
+      try {
+        const parsedNodes = JSON.parse(savedWorkflow.nodes);
+        const parsedEdges = JSON.parse(savedWorkflow.edges ?? "[]");
+        // Only use if it looks like a ReactFlow node array (has 'position' field)
+        if (Array.isArray(parsedNodes) && parsedNodes[0]?.position) {
+          steps = graphToSteps(parsedNodes, parsedEdges);
+        }
+      } catch {
+        // fall through to default
+      }
     }
 
-    // Search knowledge base for relevant context
-    const knowledgeContext = await searchKnowledgeBase(ctx, args.userMessage);
-    
-    // Build context string from knowledge base
-    let contextText = "";
-    if (knowledgeContext.length > 0) {
-      contextText = knowledgeContext
-        .map((item: { title: string; description: string; content: string }) => `Title: ${item.title}\nDescription: ${item.description}\nContent: ${item.content}`)
-        .join("\n\n---\n\n");
-    }
-
-    // Get conversation history
-    const messages: any[] = await ctx.runQuery(api.messages.getMessages, {
+    const conversationMessages: any[] = await ctx.runQuery(api.messages.getMessages, {
       conversationId: args.conversationId,
     });
 
-    // Build messages array for OpenAI
-    const hasContext = contextText.length > 0;
-    
-    const systemPrompt = hasContext 
-      ? `You are a helpful assistant. Answer questions based on the provided knowledge base context below.
+    const fallback = "I'm sorry, I'm unable to respond right now. Please try again later.";
 
-IMPORTANT RULES:
-1. Use the knowledge base context to answer the user's question.
-2. If the answer can be derived from the context (even partially), provide a helpful answer.
-3. You can infer and explain information based on what's in the context.
-4. Only if the question is completely unrelated to the context, say: "I don't know. This information is not available in my knowledge base."
-5. Be helpful, concise, and natural in your responses.
+    if (steps.length === 0) {
+      // No workflow configured — use legacy inline path
+      if (!openai) {
+        await ctx.runMutation(api.messages.sendMessage, {
+          conversationId: args.conversationId,
+          sender: "agent",
+          content: fallback,
+        });
+        return fallback;
+      }
 
-Knowledge Base Context:
-${contextText}`
-      : `You are a helpful assistant. The knowledge base is currently empty.
+      const knowledgeContext: string = await searchKB(ctx, args.userMessage);
+      const contextText = knowledgeContext;
 
-IMPORTANT RULES:
-1. Since there is no knowledge base content available, respond with: "I don't know. This information is not available in my knowledge base."
-2. Be polite and helpful in your response.`;
+      const systemPrompt = contextText
+        ? `You are a helpful assistant.\n\nKnowledge Base:\n${contextText}`
+        : "You are a helpful assistant.";
 
-    const conversationMessages: Array<{ role: "system" | "user" | "assistant"; content: string }> = [
-      { role: "system", content: systemPrompt },
-      ...messages.slice(-10).map((msg: any) => ({
-        role: (msg.sender === "visitor" ? "user" : "assistant") as "user" | "assistant",
-        content: msg.content,
-      })),
-      { role: "user", content: args.userMessage },
-    ];
+      const msgs = [
+        { role: "system" as const, content: systemPrompt },
+        ...conversationMessages.slice(-10).map((m: any) => ({
+          role: (m.sender === "visitor" ? "user" : "assistant") as "user" | "assistant",
+          content: m.content,
+        })),
+        { role: "user" as const, content: args.userMessage },
+      ];
 
-    if (!openai) {
-      const errorResponse = "I don't know. This information is not available in my knowledge base.";
-      await ctx.runMutation(api.messages.sendMessage, {
-        conversationId: args.conversationId,
-        sender: "agent",
-        content: errorResponse,
-      });
-      return errorResponse;
+      try {
+        const completion: any = await openai.chat.completions.create({
+          model: "gpt-4o-mini",
+          messages: msgs,
+          temperature: 0.7,
+          max_tokens: 500,
+        });
+        const response = completion.choices[0]?.message?.content || fallback;
+        await ctx.runMutation(api.messages.sendMessage, {
+          conversationId: args.conversationId,
+          sender: "agent",
+          content: response,
+        });
+        return response;
+      } catch {
+        await ctx.runMutation(api.messages.sendMessage, {
+          conversationId: args.conversationId,
+          sender: "agent",
+          content: fallback,
+        });
+        return fallback;
+      }
     }
 
-    try {
-      const completion: any = await openai.chat.completions.create({
-        model: "gpt-4o-mini", // Using gpt-4o-mini (nano equivalent)
-        messages: conversationMessages,
-        temperature: 0.7,
-        max_tokens: 500,
-      });
+    // Run the configured workflow
+    const rc = {
+      convex: ctx,
+      conversationId: args.conversationId,
+      userMessage: args.userMessage,
+      knowledgeContext: "",
+      accumulatedContext: "",
+      stepOutputs: {} as Record<string, unknown>,
+      humanMode: false,
+      finalResponse: null as string | null,
+    };
 
-      const aiResponse: string = completion.choices[0]?.message?.content || "I don't know. This information is not available in my knowledge base.";
+    await runWorkflowChain(steps as any, rc, conversationMessages.slice(-10).map((m: any) => ({
+      role: m.sender === "visitor" ? "user" : "assistant",
+      content: m.content,
+    })));
 
-      // Save the AI response as a message
-      await ctx.runMutation(api.messages.sendMessage, {
-        conversationId: args.conversationId,
-        sender: "agent",
-        content: aiResponse,
-      });
+    const response = rc.finalResponse ?? fallback;
 
-      return aiResponse;
-    } catch (error) {
-      console.error("OpenAI API error:", error);
-      // Fallback response
-      const fallbackResponse = "I don't know. This information is not available in my knowledge base.";
-      await ctx.runMutation(api.messages.sendMessage, {
-        conversationId: args.conversationId,
-        sender: "agent",
-        content: fallbackResponse,
-      });
-      return fallbackResponse;
-    }
+    await ctx.runMutation(api.messages.sendMessage, {
+      conversationId: args.conversationId,
+      sender: "agent",
+      content: response,
+    });
+
+    return response;
   },
 });
 

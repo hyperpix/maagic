@@ -4,6 +4,14 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Tremor chart fill classes — must be explicit because Tremor applies them at runtime */
+.fill-\[\#3b82f6\]   { fill: #3b82f6 !important; }
+.fill-\[\#8b5cf6\]   { fill: #8b5cf6 !important; }
+.fill-\[\#10b981\]   { fill: #10b981 !important; }
+.stroke-\[\#3b82f6\] { stroke: #3b82f6 !important; }
+.stroke-\[\#8b5cf6\] { stroke: #8b5cf6 !important; }
+.stroke-\[\#10b981\] { stroke: #10b981 !important; }
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

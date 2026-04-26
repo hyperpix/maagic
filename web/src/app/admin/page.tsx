@@ -34,14 +34,18 @@ import { KnowledgeSidebar } from "@/components/knowledge-sidebar";
 import { HomePage } from "@/components/home-page";
 import { AnalyticsPage } from "@/components/analytics-page";
 import { AgentPage } from "@/components/agent-page";
-import { AgentPreviewSidebar } from "@/components/agent/agent-preview-sidebar";
 import { AddDataSourceDialog } from "@/components/add-data-source-dialog";
+import { WorkflowProvider } from "@/components/agent/workflow/WorkflowContext";
+import { CanvasRightSidebar } from "@/components/agent/workflow/CanvasRightSidebar";
+import { AgentNestedSidebar } from "@/components/agent/agent-nested-sidebar";
+import type { AgentSection } from "@/components/agent/agent-sidebar-nav";
 
-type View = "home" | "inbox" | "analytics" | "knowledge" | "agent" | "orders" | "issues" | "settings";
+type View = "home" | "inbox" | "analytics" | "knowledge" | "agent-prompt" | "agent-canvas" | "orders" | "issues" | "settings";
 
 export default function AdminPage() {
   const [view, setView] = useState<View>("home");
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [activeAgentSection, setActiveAgentSection] = useState<AgentSection>("instructions");
   const [addDataSourceOpen, setAddDataSourceOpen] = useState(false);
   const [isEditingKnowledge, setIsEditingKnowledge] = useState(false);
   const [editTitle, setEditTitle] = useState("");
@@ -131,13 +135,14 @@ export default function AdminPage() {
   };
 
   const handleViewChange = (viewString: string) => {
-    const validViews: View[] = ["home", "inbox", "analytics", "knowledge", "agent", "orders", "issues", "settings"];
+    const validViews: View[] = ["home", "inbox", "analytics", "knowledge", "agent-prompt", "agent-canvas", "orders", "issues", "settings"];
     if (validViews.includes(viewString as View)) {
       setView(viewString as View);
     }
   };
 
   return (
+    <WorkflowProvider>
     <SidebarProvider defaultOpen={true}>
       <AdminSidebar
         selectedId={selectedId}
@@ -170,16 +175,24 @@ export default function AdminPage() {
           onAddClick={() => setAddDataSourceOpen(true)}
         />
       )}
+      {view === "agent-prompt" && !selectedId && (
+        <AgentNestedSidebar
+          viewMode="prompt"
+          onViewModeChange={() => {}}
+          activeSection={activeAgentSection}
+          onSectionChange={setActiveAgentSection}
+        />
+      )}
       <AddDataSourceDialog
         open={addDataSourceOpen}
         onOpenChange={setAddDataSourceOpen}
       />
       <SidebarInset
-        style={(view === "inbox" && !selectedId) || (view === "knowledge") || (view === "agent") ? {
+        style={(view === "inbox" && !selectedId) || (view === "knowledge") ? {
           marginLeft: '20rem'
         } : undefined}
       >
-        {view !== "agent" && (
+        {view !== "agent-prompt" && view !== "agent-canvas" && (
           <header className="flex h-16 shrink-0 items-center gap-2 border-b">
             <div className="flex items-center gap-2 px-4">
               {selectedId && (
@@ -231,7 +244,13 @@ export default function AdminPage() {
             <div className="flex flex-1 flex-col overflow-hidden">
               {view === "home" && !selectedId && <HomePage />}
               {view === "analytics" && !selectedId && <AnalyticsPage />}
-              {view === "agent" && !selectedId && <AgentPage />}
+              {(view === "agent-prompt" || view === "agent-canvas") && !selectedId && (
+                <AgentPage
+                  viewMode={view === "agent-canvas" ? "canvas" : "prompt"}
+                  activeSection={activeAgentSection}
+                  onSectionChange={setActiveAgentSection}
+                />
+              )}
               {view === "knowledge" && selectedId && knowledgeItems ? (
                 <ScrollArea className="flex-1 p-6">
                   <div className="max-w-4xl mx-auto space-y-6">
@@ -472,7 +491,7 @@ export default function AdminPage() {
           </div>
                 </>
               )}
-              {view !== "home" && view !== "inbox" && view !== "knowledge" && view !== "analytics" && view !== "agent" && !selectedId && (
+              {view !== "home" && view !== "inbox" && view !== "knowledge" && view !== "analytics" && view !== "agent-prompt" && view !== "agent-canvas" && !selectedId && (
           <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
                   {view.charAt(0).toUpperCase() + view.slice(1)} page coming soon
                 </div>
@@ -490,9 +509,8 @@ export default function AdminPage() {
           }}
         />
       )}
-      {view === "agent" && !selectedId && agentConfig && (
-        <AgentPreviewSidebar config={agentConfig} />
-      )}
+      {view === "agent-canvas" && <CanvasRightSidebar />}
     </SidebarProvider>
+    </WorkflowProvider>
   );
 }

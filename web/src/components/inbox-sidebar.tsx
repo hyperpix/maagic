@@ -52,21 +52,19 @@ export function InboxSidebar({
   const [showUnreadOnly, setShowUnreadOnly] = React.useState(false)
 
   const filteredData = React.useMemo(() => {
-    let filtered = data
-    
-    // Filter by read/unread
+    let filtered = data.filter((conv) => !!conv.visitorId)
+
     if (showUnreadOnly) {
       filtered = filtered.filter((conv) => !conv.openedAt)
     }
-    
-    // Filter by search query
+
     if (searchQuery) {
       filtered = filtered.filter((conv) =>
         conv.visitorId.toLowerCase().includes(searchQuery.toLowerCase()) ||
         conv.lastMessage?.content.toLowerCase().includes(searchQuery.toLowerCase())
       )
     }
-    
+
     return filtered
   }, [data, searchQuery, showUnreadOnly])
 

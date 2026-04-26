@@ -9,6 +9,8 @@ export type StepType =
   | "human_handoff"
   | "branch"
   | "loop"
+  | "branchHub"
+  | "branchCard"
 
 export interface WorkflowBranch {
   id: string
@@ -30,30 +32,8 @@ export interface Workflow {
   steps: WorkflowStep[]
 }
 
-// ── ReactFlow node data shapes ──────────────────────────────────────────────
+// ── ReactFlow node data shape ─────────────────────────────────────────────
 
 export interface StepNodeData {
   step: WorkflowStep
-  isFirst: boolean
-  onSelect: (id: string) => void
-  onDelete: (id: string) => void
-}
-
-export interface BranchNodeData {
-  branch: WorkflowBranch
-  parentStepId: string
-  onSelect: (id: string) => void
-  onDeleteBranch: (parentId: string, branchId: string) => void
-}
-
-export interface EdgeData {
-  insertAfterId: string | null
-  onAddStep: (insertAfterId: string | null, branchPath?: BranchPath) => void
-  onAddBranch: (afterStepId: string) => void
-  isBranchEdge?: boolean
-}
-
-export interface BranchPath {
-  parentStepId: string
-  branchId: string
 }

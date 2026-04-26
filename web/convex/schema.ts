@@ -44,5 +44,10 @@ export default defineSchema({
     enableTabs: v.optional(v.boolean()),
     privacyDisclaimer: v.optional(v.string()),
     legalLinks: v.optional(v.array(v.object({ label: v.string(), url: v.string() }))),
+    baseInstructions: v.optional(v.string()),
+    model: v.optional(v.string()),
+    temperature: v.optional(v.number()),
+    maxTokens: v.optional(v.number()),
+    greetingMessage: v.optional(v.string()),
   }),
 });

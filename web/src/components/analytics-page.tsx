@@ -72,13 +72,6 @@ export function AnalyticsPage() {
 
   return (
     <div className="flex-1 overflow-auto p-4 sm:p-6 lg:p-8">
-      <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-50">
-        Analytics
-      </h1>
-      <p className="mt-1 text-sm text-gray-500 dark:text-gray-500">
-        Monitor your agent performance and engagement.
-      </p>
-
       {/* Main metric card — chart-composition-04 pattern */}
       <Card className="mt-8 overflow-hidden !p-0">
         <TabGroup>
@@ -115,8 +108,9 @@ export function AnalyticsPage() {
                   data={weeklyData}
                   index="day"
                   categories={[tab.name]}
+                  colors={["#3b82f6"]}
                   valueFormatter={valueFormatter}
-                  showGradient={false}
+                  showGradient
                   showLegend={false}
                   yAxisWidth={50}
                   className="hidden !h-72 sm:block"
@@ -125,8 +119,9 @@ export function AnalyticsPage() {
                   data={weeklyData}
                   index="day"
                   categories={[tab.name]}
+                  colors={["#3b82f6"]}
                   valueFormatter={valueFormatter}
-                  showGradient={false}
+                  showGradient
                   showLegend={false}
                   showYAxis={false}
                   startEndOnly
@@ -152,6 +147,7 @@ export function AnalyticsPage() {
             data={hourlyData}
             index="hour"
             categories={["Activity"]}
+            colors={["#8b5cf6"]}
             valueFormatter={valueFormatter}
             showLegend={false}
             yAxisWidth={40}
@@ -171,21 +167,11 @@ export function AnalyticsPage() {
             data={durationData}
             category="value"
             index="name"
+            colors={["#3b82f6", "#8b5cf6", "#10b981"]}
             valueFormatter={valueFormatter}
             className="mt-4 !h-48"
             showLabel
           />
-          <div className="mt-4 flex justify-center gap-6">
-            {durationData.map((d, i) => (
-              <div key={d.name} className="flex items-center gap-1.5">
-                <span
-                  className="inline-block h-2 w-2 rounded-full"
-                  style={{ backgroundColor: ["#3b82f6","#8b5cf6","#10b981"][i] }}
-                />
-                <span className="text-xs text-gray-500">{d.name}</span>
-              </div>
-            ))}
-          </div>
         </Card>
       </div>
     </div>

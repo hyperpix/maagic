@@ -11,6 +11,7 @@
 import type * as agentConfig from "../agentConfig.js";
 import type * as ai from "../ai.js";
 import type * as conversations from "../conversations.js";
+import type * as graphToSteps from "../graphToSteps.js";
 import type * as knowledge from "../knowledge.js";
 import type * as messages from "../messages.js";
 import type * as workflowRunner from "../workflowRunner.js";
@@ -26,6 +27,7 @@ declare const fullApi: ApiFromModules<{
   agentConfig: typeof agentConfig;
   ai: typeof ai;
   conversations: typeof conversations;
+  graphToSteps: typeof graphToSteps;
   knowledge: typeof knowledge;
   messages: typeof messages;
   workflowRunner: typeof workflowRunner;

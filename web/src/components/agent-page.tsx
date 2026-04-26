@@ -1,16 +1,20 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { WorkflowPage } from "@/components/agent/workflow/WorkflowPage"
+import { WorkflowCanvas } from "@/components/agent/workflow/WorkflowCanvas"
 import { AgentPromptView } from "@/components/agent/agent-prompt-view"
-import { AgentNestedSidebar } from "@/components/agent/agent-nested-sidebar"
 import { AgentSection } from "@/components/agent/agent-sidebar-nav"
 import { Button } from "@/components/ui/button"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { FileText, GitBranch } from "lucide-react"
 import { toast } from "sonner"
 import { useQuery, useMutation } from "convex/react"
 import { api } from "../../convex/_generated/api"
+
+export type McpServer = {
+  id: string
+  name: string
+  url: string
+  transport: "sse" | "stdio"
+}
 
 export type AgentConfig = {
   title?: string
@@ -29,9 +33,9 @@ export type AgentConfig = {
   model?: string
   temperature?: number
   maxTokens?: number
+  enabledTools?: string[]
+  mcpServers?: McpServer[]
 }
-
-type ViewMode = "prompt" | "canvas"
 
 const SECTION_LABELS: Record<AgentSection, string> = {
   instructions: "Instructions",
@@ -43,9 +47,16 @@ const SECTION_LABELS: Record<AgentSection, string> = {
   deployment: "Embed",
 }
 
-export function AgentPage() {
-  const [viewMode, setViewMode] = useState<ViewMode>("prompt")
-  const [activeSection, setActiveSection] = useState<AgentSection>("instructions")
+interface AgentPageProps {
+  viewMode?: "prompt" | "canvas"
+  activeSection?: AgentSection
+  onSectionChange?: (section: AgentSection) => void
+}
+
+export function AgentPage({ viewMode = "prompt", activeSection: activeSectionProp, onSectionChange }: AgentPageProps) {
+  const [activeSectionLocal, setActiveSectionLocal] = useState<AgentSection>("instructions")
+  const activeSection = activeSectionProp ?? activeSectionLocal
+  const setActiveSection = onSectionChange ?? setActiveSectionLocal
 
   const savedConfig = useQuery(api.agentConfig.getAgentConfig)
   const updateConfigMutation = useMutation(api.agentConfig.updateAgentConfig)
@@ -97,6 +108,10 @@ export function AgentPage() {
       ? "Workflow"
       : SECTION_LABELS[activeSection] ?? activeSection
 
+  if (viewMode === "canvas") {
+    return <WorkflowCanvas />
+  }
+
   return (
     <div className="flex h-full w-full">
       {/* Main content */}
@@ -105,50 +120,21 @@ export function AgentPage() {
           <h2 className="font-medium">Agent</h2>
           <span className="text-muted-foreground">/</span>
           <span className="text-sm text-muted-foreground font-medium">{headerLabel}</span>
-          <div className="ml-auto flex items-center gap-3">
-            <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as ViewMode)}>
-              <TabsList>
-                <TabsTrigger value="prompt" className="gap-1.5 text-xs">
-                  <FileText className="h-3.5 w-3.5" />
-                  Prompt
-                </TabsTrigger>
-                <TabsTrigger value="canvas" className="gap-1.5 text-xs">
-                  <GitBranch className="h-3.5 w-3.5" />
-                  Canvas
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
-            {viewMode === "prompt" && (
-              <Button onClick={handleSave} size="sm">
-                Save
-              </Button>
-            )}
+          <div className="ml-auto">
+            <Button onClick={handleSave} variant="yellow" size="sm">Save</Button>
           </div>
         </header>
 
         <div className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
-          {viewMode === "canvas" ? (
-            <WorkflowPage />
-          ) : (
-            <AgentPromptView
-              config={config}
-              onUpdateConfig={handleUpdateConfig}
-              activeSection={activeSection}
-              onSectionChange={setActiveSection}
-            />
-          )}
+          <AgentPromptView
+            config={config}
+            onUpdateConfig={handleUpdateConfig}
+            activeSection={activeSection}
+            onSectionChange={setActiveSection}
+          />
         </div>
       </div>
-
-      {/* Right nav column — only in prompt mode */}
-      {viewMode === "prompt" && (
-        <AgentNestedSidebar
-          viewMode={viewMode}
-          onViewModeChange={setViewMode}
-          activeSection={activeSection}
-          onSectionChange={setActiveSection}
-        />
-      )}
     </div>
   )
 }
+

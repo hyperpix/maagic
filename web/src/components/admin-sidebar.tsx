@@ -5,6 +5,7 @@ import { useState } from "react"
 import Image from "next/image"
 import {
   ChevronDown,
+  ChevronRight,
   ChevronsUpDown,
   LifeBuoy,
   LogOut,
@@ -34,6 +35,9 @@ import {
   SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
   useSidebar,
 } from "@/components/ui/sidebar"
 import {
@@ -245,15 +249,48 @@ export function AdminSidebar({
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton
-                isActive={currentView === "agent"}
+                isActive={currentView === "agent-prompt" || currentView === "agent-canvas"}
                 onClick={() => {
-                  onViewChange?.("agent")
-                  onSelectConversation(null)
+                  if (currentView !== "agent-prompt" && currentView !== "agent-canvas") {
+                    onViewChange?.("agent-prompt")
+                    onSelectConversation(null)
+                  }
                 }}
                 className="w-full justify-start"
               >
                 Agent
+                <ChevronRight
+                  className={`ml-auto size-4 transition-transform ${
+                    currentView === "agent-prompt" || currentView === "agent-canvas" ? "rotate-90" : ""
+                  }`}
+                />
               </SidebarMenuButton>
+              {(currentView === "agent-prompt" || currentView === "agent-canvas") && (
+                <SidebarMenuSub>
+                  <SidebarMenuSubItem>
+                    <SidebarMenuSubButton
+                      isActive={currentView === "agent-prompt"}
+                      onClick={() => {
+                        onViewChange?.("agent-prompt")
+                        onSelectConversation(null)
+                      }}
+                    >
+                      Prompt
+                    </SidebarMenuSubButton>
+                  </SidebarMenuSubItem>
+                  <SidebarMenuSubItem>
+                    <SidebarMenuSubButton
+                      isActive={currentView === "agent-canvas"}
+                      onClick={() => {
+                        onViewChange?.("agent-canvas")
+                        onSelectConversation(null)
+                      }}
+                    >
+                      Canvas
+                    </SidebarMenuSubButton>
+                  </SidebarMenuSubItem>
+                </SidebarMenuSub>
+              )}
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton

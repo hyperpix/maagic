@@ -1,5 +1,8 @@
 import OpenAI from "openai"
+import { Parser } from "expr-eval"
 import { api } from "./_generated/api"
+
+const exprParser = new Parser()
 
 const openai = process.env.OPENAI_API_KEY
   ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
@@ -136,13 +139,15 @@ async function runCondition(step: WorkflowStep, rc: RunCtx): Promise<string | nu
   const expr = (step.config.expression as string) || ""
   if (!expr) return null
 
-  // Simple evaluator: check if expression references known outputs
-  // e.g. "confidence < 0.6" — for now, confidence is hardcoded 0.8 (no embeddings)
-  // Returns the branch name to follow, or null for the default path
-  const outputs = { ...rc.stepOutputs, confidence: 0.8 }
+  // Safe expression evaluator (no eval / new Function)
+  const scope: Record<string, number | string | boolean> = { confidence: 0.8 }
+  for (const [k, v] of Object.entries(rc.stepOutputs)) {
+    if (typeof v === "number" || typeof v === "string" || typeof v === "boolean") {
+      scope[k] = v
+    }
+  }
   try {
-    const fn = new Function(...Object.keys(outputs), `return ${expr}`)
-    const result = fn(...Object.values(outputs))
+    const result = exprParser.evaluate(expr, scope as any)
     return result ? "true" : "false"
   } catch {
     return null
@@ -218,10 +223,14 @@ export async function runWorkflowChain(
             matched = branch
             break
           }
-          const outputs = { ...rc.stepOutputs, confidence: 0.8 }
+          const scope: Record<string, number | string | boolean> = { confidence: 0.8 }
+          for (const [k, v] of Object.entries(rc.stepOutputs)) {
+            if (typeof v === "number" || typeof v === "string" || typeof v === "boolean") {
+              scope[k] = v
+            }
+          }
           try {
-            const fn = new Function(...Object.keys(outputs), `return ${branch.condition}`)
-            if (fn(...Object.values(outputs))) {
+            if (exprParser.evaluate(branch.condition, scope as any)) {
               matched = branch
               break
             }
