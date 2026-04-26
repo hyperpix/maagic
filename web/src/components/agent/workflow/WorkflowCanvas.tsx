@@ -56,26 +56,9 @@ const BASE_TRIGGER: Node<StepNodeData> = {
   deletable: false,
 }
 
-const DEFAULT_NODES: Node<StepNodeData>[] = [
-  BASE_TRIGGER,
-  {
-    id: "knowledge-1",
-    type: "stepNode",
-    position: { x: 100, y: 180 },
-    data: { step: { id: "knowledge-1", type: "knowledge", name: "Knowledge Search", config: { maxRetrieve: 3, threshold: 0.5 } } },
-  },
-  {
-    id: "llm-1",
-    type: "stepNode",
-    position: { x: 100, y: 300 },
-    data: { step: { id: "llm-1", type: "llm", name: "LLM Response", config: { model: "gpt-4o-mini", temperature: 0.7, maxTokens: 1024, systemPrompt: "" } } },
-  },
-]
+const DEFAULT_NODES: Node<StepNodeData>[] = [BASE_TRIGGER]
 
-const DEFAULT_EDGES: Edge[] = [
-  { id: "e-trigger-knowledge", source: "trigger-1", target: "knowledge-1", type: "buttonEdge" },
-  { id: "e-knowledge-llm", source: "knowledge-1", target: "llm-1", type: "buttonEdge" },
-]
+const DEFAULT_EDGES: Edge[] = []
 
 function parseStoredWorkflow(raw: { nodes: string; edges: string } | null | undefined): {
   nodes: Node<StepNodeData>[]
