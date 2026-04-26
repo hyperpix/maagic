@@ -414,6 +414,14 @@ export function WorkflowCanvas() {
     })
   }, [addStep, addBranch, insertStepAfter, insertBranchAfter, updateStep, deleteSelectedNode, setActions])
 
+  if (savedWorkflow === undefined) {
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+      </div>
+    )
+  }
+
   return (
     <div className="w-full h-full relative">
       {saving && (
