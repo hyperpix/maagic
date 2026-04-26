@@ -199,7 +199,7 @@ export default function AdminPage() {
           marginLeft: '20rem'
         } : undefined}
       >
-        {view !== "agent-prompt" && view !== "agent-canvas" && (
+        {view !== "agent-prompt" && view !== "agent-canvas" && view !== "home" && (
           <header className="flex h-16 shrink-0 items-center gap-2 border-b">
             <div className="flex items-center gap-2 px-4">
               {selectedId && (
@@ -217,7 +217,6 @@ export default function AdminPage() {
                   ? "Preview"
                   : selectedId
                   ? `Conversation with ${conversations?.find((c: any) => c._id === selectedId)?.visitorId}`
-                  : view === "home" ? "Home"
                   : view.charAt(0).toUpperCase() + view.slice(1)}
               </h2>
             </div>
