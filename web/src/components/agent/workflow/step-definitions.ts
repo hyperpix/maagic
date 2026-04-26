@@ -9,6 +9,9 @@ import {
   MessageSquare,
   RefreshCw,
   Zap,
+  ShoppingCart,
+  AlertCircle,
+  Package,
 } from "lucide-react"
 import type { StepType } from "./types"
 
@@ -115,6 +118,35 @@ export const STEP_DEFINITIONS: StepDefinition[] = [
     category: "flow",
     defaultName: "Loop",
     defaultConfig: { maxIterations: 10 },
+  },
+
+  // ── Integrations ──────────────────────────────────────────────────────────
+  {
+    type: "orders",
+    label: "Orders",
+    description: "Fetch or update orders from your store",
+    icon: ShoppingCart,
+    category: "data",
+    defaultName: "Orders",
+    defaultConfig: { action: "get", orderId: "" },
+  },
+  {
+    type: "issues",
+    label: "Issues",
+    description: "Create or retrieve support issues",
+    icon: AlertCircle,
+    category: "data",
+    defaultName: "Issues",
+    defaultConfig: { action: "create", title: "", priority: "medium" },
+  },
+  {
+    type: "items",
+    label: "Items",
+    description: "Look up product or inventory items",
+    icon: Package,
+    category: "data",
+    defaultName: "Items",
+    defaultConfig: { action: "get", itemId: "" },
   },
 ]
 

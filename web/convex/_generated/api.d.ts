@@ -12,8 +12,12 @@ import type * as agentConfig from "../agentConfig.js";
 import type * as ai from "../ai.js";
 import type * as conversations from "../conversations.js";
 import type * as graphToSteps from "../graphToSteps.js";
+import type * as integrations from "../integrations.js";
+import type * as issues from "../issues.js";
+import type * as items from "../items.js";
 import type * as knowledge from "../knowledge.js";
 import type * as messages from "../messages.js";
+import type * as orders from "../orders.js";
 import type * as workflowRunner from "../workflowRunner.js";
 import type * as workflows from "../workflows.js";
 
@@ -28,8 +32,12 @@ declare const fullApi: ApiFromModules<{
   ai: typeof ai;
   conversations: typeof conversations;
   graphToSteps: typeof graphToSteps;
+  integrations: typeof integrations;
+  issues: typeof issues;
+  items: typeof items;
   knowledge: typeof knowledge;
   messages: typeof messages;
+  orders: typeof orders;
   workflowRunner: typeof workflowRunner;
   workflows: typeof workflows;
 }>;

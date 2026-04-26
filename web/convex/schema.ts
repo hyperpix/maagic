@@ -32,6 +32,56 @@ export default defineSchema({
     name: v.optional(v.string()),
     updatedAt: v.number(),
   }),
+  issues: defineTable({
+    title: v.string(),
+    customerName: v.string(),
+    customerEmail: v.optional(v.string()),
+    priority: v.union(v.literal("high"), v.literal("medium"), v.literal("low")),
+    status: v.union(v.literal("open"), v.literal("in_progress"), v.literal("resolved")),
+    createdAt: v.number(),
+  }).index("by_created", ["createdAt"]),
+
+  integrations: defineTable({
+    type: v.union(
+      v.literal("shopify"),
+      v.literal("woocommerce"),
+      v.literal("postgres"),
+      v.literal("rest_api")
+    ),
+    name: v.string(),
+    config: v.string(), // JSON-encoded credentials
+    active: v.boolean(),
+    createdAt: v.number(),
+  }),
+
+  orders: defineTable({
+    customerId: v.string(),
+    customerName: v.string(),
+    customerEmail: v.string(),
+    total: v.number(),
+    status: v.union(
+      v.literal("processing"),
+      v.literal("shipped"),
+      v.literal("delivered"),
+      v.literal("cancelled")
+    ),
+    itemCount: v.number(),
+    createdAt: v.number(),
+  }).index("by_created", ["createdAt"]),
+
+  items: defineTable({
+    name: v.string(),
+    sku: v.string(),
+    category: v.string(),
+    price: v.number(),
+    stock: v.number(),
+    status: v.union(
+      v.literal("in_stock"),
+      v.literal("low_stock"),
+      v.literal("out_of_stock")
+    ),
+  }).index("by_sku", ["sku"]),
+
   agentConfig: defineTable({
     title: v.optional(v.string()),
     description: v.optional(v.string()),

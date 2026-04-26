@@ -14,6 +14,9 @@ export const STEP_ACCENT: Record<string, string> = {
   human_handoff: "#14b8a6",
   branch:        "#6366f1",
   loop:          "#64748b",
+  orders:        "#0ea5e9",
+  issues:        "#ef4444",
+  items:         "#22c55e",
 }
 
 export function NodeTopHandle() {

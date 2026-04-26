@@ -51,6 +51,7 @@ interface AdminSidebarProps extends React.ComponentProps<typeof Sidebar> {
   onSelectConversation: (id: string | null) => void
   currentView?: string
   onViewChange?: (view: string) => void
+  onOpenSettings?: () => void
 }
 
 const data = {
@@ -88,6 +89,7 @@ export function AdminSidebar({
   onSelectConversation,
   currentView = "home",
   onViewChange,
+  onOpenSettings,
   ...props
 }: AdminSidebarProps) {
   const conversations = useQuery(api.conversations.getConversations)
@@ -318,11 +320,19 @@ export function AdminSidebar({
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton
-                isActive={currentView === "settings"}
+                isActive={currentView === "items"}
                 onClick={() => {
-                  onViewChange?.("settings")
+                  onViewChange?.("items")
                   onSelectConversation(null)
                 }}
+                className="w-full justify-start"
+              >
+                Items
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                onClick={onOpenSettings}
                 className="w-full justify-start"
               >
                 Settings

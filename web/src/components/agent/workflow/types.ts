@@ -11,6 +11,9 @@ export type StepType =
   | "loop"
   | "branchHub"
   | "branchCard"
+  | "orders"
+  | "issues"
+  | "items"
 
 export interface WorkflowBranch {
   id: string
