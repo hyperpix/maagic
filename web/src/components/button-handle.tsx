@@ -21,7 +21,8 @@ export function ButtonHandle({
   ...handleProps
 }: ButtonHandleProps) {
   const connectionInProgress = useStore((s) => !!s.connectionNodeId)
-  const visible = showButton && !connectionInProgress
+  const hasOutgoing = useStore((s) => s.edges.some((e) => e.source === nodeId))
+  const visible = showButton && !connectionInProgress && !hasOutgoing
 
   return (
     <Handle
