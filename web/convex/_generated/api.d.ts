@@ -9,10 +9,16 @@
  */
 
 import type * as agentConfig from "../agentConfig.js";
+import type * as agents from "../agents.js";
 import type * as ai from "../ai.js";
+import type * as auth from "../auth.js";
 import type * as conversations from "../conversations.js";
 import type * as knowledge from "../knowledge.js";
+import type * as members from "../members.js";
 import type * as messages from "../messages.js";
+import type * as migrations from "../migrations.js";
+import type * as organizations from "../organizations.js";
+import type * as users from "../users.js";
 
 import type {
   ApiFromModules,
@@ -22,10 +28,16 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   agentConfig: typeof agentConfig;
+  agents: typeof agents;
   ai: typeof ai;
+  auth: typeof auth;
   conversations: typeof conversations;
   knowledge: typeof knowledge;
+  members: typeof members;
   messages: typeof messages;
+  migrations: typeof migrations;
+  organizations: typeof organizations;
+  users: typeof users;
 }>;
 
 /**
