@@ -24,8 +24,8 @@ import { Card as TremorCard } from "@tremor/react"
 const valueFormatter = (n: number) => Intl.NumberFormat("us").format(n).toString()
 
 // Generate 90 days of chart data seeded from a base value
-function buildDailyData(conversations: number, messages: number) {
-  const days: { date: string; Conversations: number; Messages: number }[] = []
+function buildDailyData(conversations: number, messages: number, minutes: number) {
+  const days: { date: string; Conversations: number; Messages: number; "Minutes Used": number }[] = []
   const now = new Date()
   for (let i = 89; i >= 0; i--) {
     const d = new Date(now)
@@ -33,17 +33,19 @@ function buildDailyData(conversations: number, messages: number) {
     const seed = Math.sin(i * 0.4) * 0.3 + Math.cos(i * 0.7) * 0.2
     days.push({
       date: d.toISOString().slice(0, 10),
-      Conversations: Math.max(0, Math.round((conversations / 90) * (1 + seed))),
-      Messages: Math.max(0, Math.round((messages / 90) * (1 + seed * 1.2))),
+      Conversations:  Math.max(0, Math.round((conversations / 90) * (1 + seed))),
+      Messages:       Math.max(0, Math.round((messages / 90) * (1 + seed * 1.2))),
+      "Minutes Used": Math.max(0, Math.round((minutes / 90) * (1 + seed * 0.9))),
     })
   }
   return days
 }
 
 const chartConfig = {
-  views: { label: "Activity" },
-  Conversations: { label: "Conversations", color: "var(--chart-2)" },
-  Messages:      { label: "Messages",      color: "var(--chart-1)" },
+  views:           { label: "Activity" },
+  Conversations:   { label: "Conversations", color: "var(--chart-2)" },
+  Messages:        { label: "Messages",      color: "var(--chart-1)" },
+  "Minutes Used":  { label: "Minutes Used",  color: "var(--chart-3)" },
 } satisfies ChartConfig
 
 export function AnalyticsPage() {
@@ -58,13 +60,14 @@ export function AnalyticsPage() {
   }, [conversations, allMessages])
 
   const dailyData = useMemo(
-    () => buildDailyData(metrics.totalConversations, metrics.totalMessages),
+    () => buildDailyData(metrics.totalConversations, metrics.totalMessages, metrics.totalMinutes),
     [metrics]
   )
 
   const total = useMemo(() => ({
-    Conversations: dailyData.reduce((a, c) => a + c.Conversations, 0),
-    Messages:      dailyData.reduce((a, c) => a + c.Messages, 0),
+    Conversations:  dailyData.reduce((a, c) => a + c.Conversations, 0),
+    Messages:       dailyData.reduce((a, c) => a + c.Messages, 0),
+    "Minutes Used": dailyData.reduce((a, c) => a + c["Minutes Used"], 0),
   }), [dailyData])
 
   const hourlyData = useMemo(() =>
@@ -84,7 +87,7 @@ export function AnalyticsPage() {
   ]
 
   const [activeChart, setActiveChart] =
-    React.useState<"Conversations" | "Messages">("Conversations")
+    React.useState<"Conversations" | "Messages" | "Minutes Used">("Conversations")
 
   return (
     <div className="flex-1 overflow-auto p-6 space-y-6">
@@ -96,7 +99,7 @@ export function AnalyticsPage() {
             <CardTitle>Activity</CardTitle>
           </div>
           <div className="flex">
-            {(["Conversations", "Messages"] as const).map((key) => (
+            {(["Conversations", "Messages", "Minutes Used"] as const).map((key) => (
               <button
                 key={key}
                 data-active={activeChart === key}
