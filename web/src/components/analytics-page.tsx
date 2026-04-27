@@ -18,7 +18,9 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart"
-import { BarChart as TremorBar, DonutChart } from "@tremor/react"
+import { TrendingUp } from "lucide-react"
+import { CardFooter } from "@/components/ui/card"
+import { DonutChart } from "@tremor/react"
 import { Card as TremorCard } from "@tremor/react"
 
 const valueFormatter = (n: number) => Intl.NumberFormat("us").format(n).toString()
@@ -149,20 +151,37 @@ export function AnalyticsPage() {
 
       {/* Secondary charts */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-        <TremorCard>
-          <h3 className="text-sm font-medium text-gray-900 dark:text-gray-50">Hourly Distribution</h3>
-          <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-500">Message volume by hour of day</p>
-          <TremorBar
-            data={hourlyData}
-            index="hour"
-            categories={["Activity"]}
-            colors={["#8b5cf6"]}
-            valueFormatter={valueFormatter}
-            showLegend={false}
-            yAxisWidth={40}
-            className="mt-4 !h-48"
-          />
-        </TremorCard>
+        <Card>
+          <CardHeader>
+            <CardTitle>Hourly Distribution</CardTitle>
+            <CardDescription>Message volume by hour of day</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ChartContainer config={{ Activity: { label: "Activity", color: "var(--chart-3)" } }}>
+              <BarChart accessibilityLayer data={hourlyData}>
+                <CartesianGrid vertical={false} />
+                <XAxis
+                  dataKey="hour"
+                  tickLine={false}
+                  tickMargin={10}
+                  axisLine={false}
+                  tickFormatter={(v) => v}
+                  minTickGap={20}
+                />
+                <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+                <Bar dataKey="Activity" fill="var(--color-Activity)" radius={8} />
+              </BarChart>
+            </ChartContainer>
+          </CardContent>
+          <CardFooter className="flex-col items-start gap-2 text-sm">
+            <div className="flex gap-2 leading-none font-medium">
+              Peak hours in the afternoon <TrendingUp className="h-4 w-4" />
+            </div>
+            <div className="leading-none text-muted-foreground">
+              Showing message activity across 24 hours
+            </div>
+          </CardFooter>
+        </Card>
 
         <TremorCard>
           <h3 className="text-sm font-medium text-gray-900 dark:text-gray-50">Session Duration</h3>
