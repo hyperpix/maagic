@@ -8,13 +8,15 @@ import {
 } from "@assistant-ui/react";
 import { useEffect, useMemo, useState } from "react";
 
-export const useConvexRuntime = () => {
+export const useConvexRuntime = ({ widgetKey }: { widgetKey: string }) => {
   const [visitorId, setVisitorId] = useState<string | null>(null);
   const [conversationId, setConversationId] = useState<any>(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
+  const storageKey = `chat_conversation_id_${widgetKey}`;
+
   const clearChat = () => {
-    localStorage.removeItem("chat_conversation_id");
+    localStorage.removeItem(storageKey);
     setConversationId(null);
   };
 
@@ -27,25 +29,19 @@ export const useConvexRuntime = () => {
     conversationId ? { conversationId } : "skip"
   );
 
-  const conversation = useQuery(
-    api.conversations.getConversation,
-    conversationId ? { conversationId } : "skip"
-  );
-
   useEffect(() => {
     let id = localStorage.getItem("chat_visitor_id");
     if (!id) {
       id = Math.random().toString(36).substring(2, 15);
       localStorage.setItem("chat_visitor_id", id);
     }
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setVisitorId(id);
 
-    const convId = localStorage.getItem("chat_conversation_id");
+    const convId = localStorage.getItem(storageKey);
     if (convId) {
       setConversationId(convId);
     }
-  }, []);
+  }, [storageKey]);
 
   const store = useMemo((): ExternalStoreAdapter => {
     return {
@@ -53,23 +49,21 @@ export const useConvexRuntime = () => {
       isLoading: conversationId ? messages === undefined : false,
       messages: (messages || []).map((msg: any) => ({
         id: msg._id,
-        role: msg.sender === "visitor" ? "user" : "assistant",
-        content: [{ type: "text", text: msg.content }],
+        role: (msg.sender === "visitor" ? "user" : "assistant") as "user" | "assistant",
+        content: [{ type: "text" as const, text: msg.content as string }],
         createdAt: new Date(msg.createdAt),
-        attachments: [],
-        status: { type: "complete", reason: "stop" },
-        metadata: {
-          custom: {},
-        },
-      })),
+        attachments: [] as [],
+        status: { type: "complete" as const, reason: "stop" as const },
+        metadata: { custom: {} },
+      })) as any[],
       onNew: async (message) => {
-        if (!visitorId) return;
+        if (!visitorId || !widgetKey) return;
 
         let currentConvId = conversationId;
         if (!currentConvId) {
-          currentConvId = await createConversation({ visitorId });
+          currentConvId = await createConversation({ widgetKey, visitorId });
           setConversationId(currentConvId);
-          localStorage.setItem("chat_conversation_id", currentConvId as string);
+          localStorage.setItem(storageKey, currentConvId as string);
         }
 
         const text = message.content
@@ -77,15 +71,12 @@ export const useConvexRuntime = () => {
           .map((c) => (c as any).text)
           .join("\n");
 
-        // Save user message first
         await sendMessageMutation({
           conversationId: currentConvId,
           sender: "visitor",
           content: text,
         });
 
-        // Generate AI response based on knowledge base (only if not in human mode)
-        // Note: We check human mode in the AI action itself to avoid race conditions
         setIsGenerating(true);
         try {
           await generateAIResponse({
@@ -101,18 +92,15 @@ export const useConvexRuntime = () => {
       adapters: {
         attachments: {
           add: async () => { throw new Error("Not supported"); },
-          remove: async () => { },
+          remove: async () => {},
           accept: "*",
           send: async () => { throw new Error("Not supported"); },
         },
-        feedback: {
-          submit: async () => { },
-        },
+        feedback: { submit: async () => {} },
       },
     };
-  }, [messages, visitorId, conversationId, createConversation, sendMessageMutation, generateAIResponse, isGenerating]);
+  }, [messages, visitorId, conversationId, widgetKey, storageKey, createConversation, sendMessageMutation, generateAIResponse, isGenerating]);
 
   const runtime = useExternalStoreRuntime(store);
-  
   return { runtime, clearChat };
 };

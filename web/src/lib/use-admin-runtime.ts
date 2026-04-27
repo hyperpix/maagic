@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
+import { Id } from "../../convex/_generated/dataModel";
 import {
   ExternalStoreAdapter,
   useExternalStoreRuntime
@@ -13,37 +14,22 @@ export const useAdminRuntime = (conversationId: string | null, isHumanMode: bool
 
   const messages = useQuery(
     api.messages.getMessages,
-    conversationId ? { conversationId } : "skip"
+    conversationId ? { conversationId: conversationId as Id<"conversations"> } : "skip"
   );
 
   const store = useMemo((): ExternalStoreAdapter => {
     return {
       isRunning: false,
       isLoading: messages === undefined,
-      messages: (messages || []).map((msg: any) => {
-        if (!msg?._id || !msg?.sender || typeof msg?.createdAt !== 'number') {
-          console.warn("Skipping invalid message:", msg);
-          return null;
-        }
-
-        try {
-          const mapped = {
-            id: String(msg._id),
-            role: msg.sender === "visitor" ? "user" : "assistant",
-            content: [{ type: "text", text: String(msg.content ?? "") }],
-            createdAt: new Date(msg.createdAt),
-            attachments: [],
-            status: { type: "complete", reason: "stop" },
-            metadata: {
-              custom: {},
-            },
-          };
-          return mapped;
-        } catch (error) {
-          console.error("Error processing message:", msg, error);
-          return null;
-        }
-      }).filter((m: any) => m !== null),
+      messages: (messages || []).map((msg: any) => ({
+        id: String(msg._id),
+        role: (msg.sender === "visitor" ? "user" : "assistant") as "user" | "assistant",
+        content: [{ type: "text" as const, text: String(msg.content ?? "") }],
+        createdAt: new Date(msg.createdAt),
+        attachments: [] as [],
+        status: { type: "complete" as const, reason: "stop" as const },
+        metadata: { custom: {} },
+      })) as any[],
       onNew: async (message) => {
         if (!conversationId) return;
 
@@ -54,7 +40,7 @@ export const useAdminRuntime = (conversationId: string | null, isHumanMode: bool
 
         // Save agent message (manual response)
         await sendMessageMutation({
-          conversationId,
+          conversationId: conversationId as Id<"conversations">,
           sender: "agent",
           content: text,
         });

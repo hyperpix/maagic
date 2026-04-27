@@ -41,10 +41,18 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-export function AnalyticsPage() {
+import { Id } from "../../convex/_generated/dataModel"
+
+export function AnalyticsPage({ agentId }: { agentId?: Id<"agents"> }) {
   const [activeTab, setActiveTab] = useState("overview")
-  const conversations = useQuery(api.conversations.getConversations)
-  const allMessages = useQuery(api.messages.getAllMessages)
+  const conversations = useQuery(
+    api.conversations.getConversations,
+    agentId ? { agentId } : "skip"
+  )
+  const allMessages = useQuery(
+    api.messages.getAllMessages,
+    agentId ? { agentId } : "skip"
+  )
 
   // Calculate metrics from real data
   const metrics = useMemo(() => {

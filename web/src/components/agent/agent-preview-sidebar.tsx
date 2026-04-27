@@ -12,6 +12,7 @@ import { AssistantRuntimeProvider } from "@assistant-ui/react"
 import { Thread } from "@/components/assistant-ui/thread"
 import { useConvexRuntime } from "@/lib/use-chat-runtime"
 import { AgentConfig } from "@/components/agent-page"
+import { useWorkspace } from "@/contexts/WorkspaceContext"
 
 interface AgentPreviewSidebarProps extends React.ComponentProps<typeof Sidebar> {
   config: AgentConfig
@@ -22,7 +23,8 @@ export function AgentPreviewSidebar({
   ...props
 }: AgentPreviewSidebarProps) {
   const [activeTab, setActiveTab] = useState("preview")
-  const { runtime, clearChat } = useConvexRuntime()
+  const { activeAgent } = useWorkspace()
+  const { runtime, clearChat } = useConvexRuntime({ widgetKey: activeAgent.widgetKey })
 
   return (
     <Sidebar variant="inset" side="right" className="w-[450px] h-full" {...props}>

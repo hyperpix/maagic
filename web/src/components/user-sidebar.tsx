@@ -63,7 +63,7 @@ export function UserSidebar({
   
   const handleDelete = async () => {
     if (!selectedId) return
-    await deleteConversation({ conversationId: selectedId })
+    await deleteConversation({ conversationId: selectedId as any })
     onDeleteConversation?.(selectedId)
     setDeleteDialogOpen(false)
   }

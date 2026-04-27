@@ -1,14 +1,15 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { AgentCanvas } from "@/components/agent/agent-canvas"
 import { AgentPromptView } from "@/components/agent/agent-prompt-view"
 import { AgentNestedSidebar } from "@/components/agent/agent-nested-sidebar"
 import { AgentSection } from "@/components/agent/agent-sidebar-nav"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
-import { useQuery, useMutation } from "convex/react"
+import { useMutation } from "convex/react"
 import { api } from "../../convex/_generated/api"
+import { useWorkspace } from "@/contexts/WorkspaceContext"
 
 export type AgentConfig = {
   title?: string
@@ -32,13 +33,11 @@ export type AgentConfig = {
 
 type ViewMode = "prompt" | "canvas"
 
-export function AgentPage() {
+export function AgentPage({ agentId }: { agentId?: string }) {
   const [viewMode, setViewMode] = useState<ViewMode>("prompt")
   const [activeSection, setActiveSection] = useState<AgentSection>("instructions")
-  
-  // Load existing config from Convex
-  const savedConfig = useQuery(api.agentConfig.getAgentConfig)
-  const updateConfigMutation = useMutation(api.agentConfig.updateAgentConfig)
+  const { activeAgent } = useWorkspace()
+  const updateConfigMutation = useMutation(api.agents.updateAgent)
 
   // Local state for real-time preview
   const [config, setConfig] = useState<AgentConfig>({
@@ -52,19 +51,14 @@ export function AgentPage() {
     maxTokens: 2048,
   })
 
-  useEffect(() => {
-    if (savedConfig) {
-      setConfig(prev => ({ ...prev, ...savedConfig }))
-    }
-  }, [savedConfig])
-
   const handleUpdateConfig = (updates: Partial<AgentConfig>) => {
     setConfig(prev => ({ ...prev, ...updates }))
   }
 
   const handleSave = async () => {
+    if (!agentId) return
     try {
-      await updateConfigMutation(config)
+      await updateConfigMutation({ agentId: agentId as any, ...config })
       toast.success(`Agent ${viewMode === "prompt" ? "configuration" : "workflow"} saved successfully!`)
     } catch (error) {
       console.error("Failed to save:", error)
@@ -72,7 +66,7 @@ export function AgentPage() {
     }
   }
 
-  if (savedConfig === undefined) {
+  if (!agentId) {
     return (
       <div className="flex flex-1 items-center justify-center h-full">
         <div className="flex flex-col items-center gap-4">
