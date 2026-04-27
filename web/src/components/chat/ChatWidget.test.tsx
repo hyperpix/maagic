@@ -1,13 +1,11 @@
-import { vi } from "vitest";
+import { vi, describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { ChatWidget } from "./ChatWidget";
 
-// Mock the runtime hook
 vi.mock("@/lib/use-chat-runtime", () => ({
-  useConvexRuntime: vi.fn().mockReturnValue({}),
+  useConvexRuntime: vi.fn().mockReturnValue({ runtime: {}, clearChat: vi.fn() }),
 }));
 
-// Mock assistant-ui components
 vi.mock("@assistant-ui/react", () => ({
   AssistantRuntimeProvider: ({ children }: any) => <div>{children}</div>,
 }));
@@ -18,7 +16,7 @@ vi.mock("@/components/assistant-ui/assistant-modal", () => ({
 
 describe("ChatWidget", () => {
   it("renders the assistant modal", () => {
-    render(<ChatWidget />);
+    render(<ChatWidget widgetKey="test-widget-key" />);
     expect(screen.getByTestId("assistant-modal")).toBeInTheDocument();
   });
 });

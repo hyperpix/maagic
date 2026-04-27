@@ -8,7 +8,7 @@ import { FC, ReactNode } from "react";
 const RuntimeWrapper: FC<{ children: ReactNode }> = ({ children }) => {
   const runtime = useLocalRuntime({
     onNew: async () => {},
-  });
+  } as any);
   return (
     <AssistantRuntimeProvider runtime={runtime}>
       {children}

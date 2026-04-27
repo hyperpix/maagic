@@ -3,12 +3,19 @@
 import { useMemo } from "react"
 import { useQuery } from "convex/react"
 import { api } from "../../convex/_generated/api"
+import { Id } from "../../convex/_generated/dataModel"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
-export function HomePage() {
-  const conversations = useQuery(api.conversations.getConversations)
-  const allMessages = useQuery(api.messages.getAllMessages)
+export function HomePage({ agentId }: { agentId?: Id<"agents"> }) {
+  const conversations = useQuery(
+    api.conversations.getConversations,
+    agentId ? { agentId } : "skip"
+  )
+  const allMessages = useQuery(
+    api.messages.getAllMessages,
+    agentId ? { agentId } : "skip"
+  )
 
   const data = useMemo(() => {
     const totalConversations = conversations?.length || 0

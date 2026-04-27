@@ -15,29 +15,32 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 import { useMutation } from "convex/react"
 import { api } from "../../convex/_generated/api"
+import { Id } from "../../convex/_generated/dataModel"
 
 interface AddDataSourceDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
+  agentId?: Id<"agents">
 }
 
-export function AddDataSourceDialog({ open, onOpenChange }: AddDataSourceDialogProps) {
+export function AddDataSourceDialog({ open, onOpenChange, agentId }: AddDataSourceDialogProps) {
   const [dataType, setDataType] = React.useState<"text" | "sitemap" | "file" | "url">("text")
   const [documentName, setDocumentName] = React.useState("")
   const [description, setDescription] = React.useState("")
   const [content, setContent] = React.useState("")
   const [isSubmitting, setIsSubmitting] = React.useState(false)
-  
+
   const createKnowledgeItem = useMutation(api.knowledge.createKnowledgeItem)
 
   const handleSubmit = async () => {
-    if (!documentName.trim() || !content.trim()) {
+    if (!documentName.trim() || !content.trim() || !agentId) {
       return
     }
-    
+
     setIsSubmitting(true)
     try {
       await createKnowledgeItem({
+        agentId,
         title: documentName,
         description: description.trim() || undefined,
         content: content,

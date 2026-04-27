@@ -92,7 +92,7 @@ export function AdminSidebar({
   onOpenSettings,
   ...props
 }: AdminSidebarProps) {
-  const conversations = useQuery(api.conversations.getConversations)
+  const conversations = useQuery(api.conversations.getConversations, "skip")
   const [selectedOrg, setSelectedOrg] = useState(data.organizations[0])
   const [selectedAgent, setSelectedAgent] = useState(data.agents[0])
   const { isMobile } = useSidebar()
