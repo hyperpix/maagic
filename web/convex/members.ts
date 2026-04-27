@@ -58,6 +58,18 @@ export const inviteMember = mutation({
   },
 });
 
+export const getInvitation = query({
+  args: { token: v.string() },
+  handler: async (ctx, { token }) => {
+    const invitation = await ctx.db
+      .query("invitations")
+      .withIndex("by_token", (q) => q.eq("token", token))
+      .first();
+    if (!invitation || invitation.acceptedAt) return null;
+    return { email: invitation.email, expiresAt: invitation.expiresAt };
+  },
+});
+
 export const acceptInvitation = mutation({
   args: { token: v.string() },
   handler: async (ctx, { token }) => {
@@ -71,6 +83,13 @@ export const acceptInvitation = mutation({
     if (!invitation) throw new ConvexError("Invalid invitation");
     if (invitation.acceptedAt) throw new ConvexError("Invitation already accepted");
     if (invitation.expiresAt < Date.now()) throw new ConvexError("Invitation has expired");
+
+    const user = await ctx.db.get(userId);
+    if (!user?.email || user.email.toLowerCase() !== invitation.email.toLowerCase()) {
+      throw new ConvexError(
+        `This invitation was sent to ${invitation.email}. Please sign in with that email address.`
+      );
+    }
 
     // Check not already a member
     const existing = await ctx.db

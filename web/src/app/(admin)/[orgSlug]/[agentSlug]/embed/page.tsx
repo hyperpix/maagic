@@ -7,22 +7,30 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 export default function EmbedPage() {
   const { activeAgent } = useWorkspace();
   const rotateKey = useMutation(api.agents.rotateWidgetKey);
   const [rotating, setRotating] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
-  const scriptTag = `<script
-  src="${typeof window !== "undefined" ? window.location.origin : ""}/widget.js"
-  data-widget-key="${activeAgent.widgetKey}"
-  async
-></script>`;
+  const scriptTag = `<script\n  src="${typeof window !== "undefined" ? window.location.origin : ""}/widget.js"\n  data-widget-key="${activeAgent.widgetKey}"\n  async\n></script>`;
 
-  const iframeTag = `<iframe
-  src="${typeof window !== "undefined" ? window.location.origin : ""}/widget/${activeAgent.widgetKey}"
-  style="border:none;position:fixed;bottom:24px;right:24px;width:400px;height:500px;z-index:9999"
-></iframe>`;
+  const iframeTag = `<iframe\n  src="${typeof window !== "undefined" ? window.location.origin : ""}/widget/${activeAgent.widgetKey}"\n  style="border:none;position:fixed;bottom:24px;right:24px;width:400px;height:500px;z-index:9999"\n></iframe>`;
+
+  const previewUrl =
+    typeof window !== "undefined"
+      ? `${window.location.origin}/widget/${activeAgent.widgetKey}`
+      : `/widget/${activeAgent.widgetKey}`;
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -30,8 +38,8 @@ export default function EmbedPage() {
   };
 
   const handleRotate = async () => {
-    if (!confirm("Rotating the widget key will break all existing embeds. Are you sure?")) return;
     setRotating(true);
+    setDialogOpen(false);
     try {
       await rotateKey({ agentId: activeAgent._id });
       toast.success("Widget key rotated. Update your embeds.");
@@ -58,7 +66,12 @@ export default function EmbedPage() {
           <pre className="bg-muted rounded-md p-3 text-xs font-mono overflow-x-auto whitespace-pre-wrap break-all">
             {scriptTag}
           </pre>
-          <Button variant="outline" size="sm" onClick={() => handleCopy(scriptTag)}>Copy</Button>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => handleCopy(scriptTag)}>Copy</Button>
+            <Button variant="outline" size="sm" asChild>
+              <a href={previewUrl} target="_blank" rel="noopener noreferrer">Preview widget ↗</a>
+            </Button>
+          </div>
         </CardContent>
       </Card>
 
@@ -85,9 +98,27 @@ export default function EmbedPage() {
         <CardContent className="space-y-3">
           <code className="text-sm font-mono bg-muted px-2 py-1 rounded">{activeAgent.widgetKey}</code>
           <div>
-            <Button variant="destructive" size="sm" onClick={handleRotate} disabled={rotating}>
-              {rotating ? "Rotating..." : "Rotate key"}
-            </Button>
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="destructive" size="sm" disabled={rotating}>
+                  {rotating ? "Rotating..." : "Rotate key"}
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Rotate widget key?</DialogTitle>
+                  <DialogDescription>
+                    This will immediately invalidate your current embed snippet. Any website using the old key will stop showing the widget until you update the snippet.
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
+                  <Button variant="destructive" onClick={handleRotate} disabled={rotating}>
+                    Rotate key
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
         </CardContent>
       </Card>

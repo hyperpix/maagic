@@ -2,6 +2,7 @@ import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
 import { ConvexError } from "convex/values";
 import { requireAgentAccess } from "./lib/permissions";
+import { getAuthUserId } from "@convex-dev/auth/server";
 
 export const createConversation = mutation({
   args: {
@@ -39,13 +40,22 @@ export const getConversations = query({
 export const getConversation = query({
   args: { conversationId: v.id("conversations") },
   handler: async (ctx, { conversationId }) => {
-    return ctx.db.get(conversationId);
+    const conversation = await ctx.db.get(conversationId);
+    if (!conversation) return null;
+    const userId = await getAuthUserId(ctx);
+    if (userId && conversation.agentId) {
+      await requireAgentAccess(ctx, conversation.agentId, "conversation:read");
+    }
+    return conversation;
   },
 });
 
 export const markConversationOpened = mutation({
   args: { conversationId: v.id("conversations") },
   handler: async (ctx, { conversationId }) => {
+    const conversation = await ctx.db.get(conversationId);
+    if (!conversation?.agentId) throw new ConvexError("Conversation not found");
+    await requireAgentAccess(ctx, conversation.agentId, "conversation:read");
     await ctx.db.patch(conversationId, { openedAt: Date.now() });
   },
 });
