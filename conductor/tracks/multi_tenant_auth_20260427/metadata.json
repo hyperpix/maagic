@@ -1,0 +1,23 @@
+{
+  "title": "Multi-Tenant Auth + Orgs + Agents",
+  "created": "2026-04-27",
+  "status": "planned",
+  "phases": 10,
+  "dependencies": [
+    "@convex-dev/auth",
+    "@auth/core",
+    "resend"
+  ],
+  "breaking_changes": [
+    "agentConfig table removed, fields merged into agents table",
+    "conversations.agentId now required (was absent)",
+    "knowledge.agentId now required (was absent)",
+    "ConvexProvider replaced by ConvexAuthProvider",
+    "/admin route becomes a redirect"
+  ],
+  "open_decisions": [
+    "Clean slate vs data migration (plan assumes clean slate)",
+    "Google OAuth only vs + GitHub for v1",
+    "Org slug immutability policy"
+  ]
+}
