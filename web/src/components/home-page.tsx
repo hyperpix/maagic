@@ -1,223 +1,119 @@
 "use client"
 
-import * as React from "react"
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  type ChartConfig,
-} from "@/components/ui/chart"
-
-const chartData = [
-  { date: "2024-04-01", desktop: 222, mobile: 150 },
-  { date: "2024-04-02", desktop: 97, mobile: 180 },
-  { date: "2024-04-03", desktop: 167, mobile: 120 },
-  { date: "2024-04-04", desktop: 242, mobile: 260 },
-  { date: "2024-04-05", desktop: 373, mobile: 290 },
-  { date: "2024-04-06", desktop: 301, mobile: 340 },
-  { date: "2024-04-07", desktop: 245, mobile: 180 },
-  { date: "2024-04-08", desktop: 409, mobile: 320 },
-  { date: "2024-04-09", desktop: 59, mobile: 110 },
-  { date: "2024-04-10", desktop: 261, mobile: 190 },
-  { date: "2024-04-11", desktop: 327, mobile: 350 },
-  { date: "2024-04-12", desktop: 292, mobile: 210 },
-  { date: "2024-04-13", desktop: 342, mobile: 380 },
-  { date: "2024-04-14", desktop: 137, mobile: 220 },
-  { date: "2024-04-15", desktop: 120, mobile: 170 },
-  { date: "2024-04-16", desktop: 138, mobile: 190 },
-  { date: "2024-04-17", desktop: 446, mobile: 360 },
-  { date: "2024-04-18", desktop: 364, mobile: 410 },
-  { date: "2024-04-19", desktop: 243, mobile: 180 },
-  { date: "2024-04-20", desktop: 89, mobile: 150 },
-  { date: "2024-04-21", desktop: 137, mobile: 200 },
-  { date: "2024-04-22", desktop: 224, mobile: 170 },
-  { date: "2024-04-23", desktop: 138, mobile: 230 },
-  { date: "2024-04-24", desktop: 387, mobile: 290 },
-  { date: "2024-04-25", desktop: 215, mobile: 250 },
-  { date: "2024-04-26", desktop: 75, mobile: 130 },
-  { date: "2024-04-27", desktop: 383, mobile: 420 },
-  { date: "2024-04-28", desktop: 122, mobile: 180 },
-  { date: "2024-04-29", desktop: 315, mobile: 240 },
-  { date: "2024-04-30", desktop: 454, mobile: 380 },
-  { date: "2024-05-01", desktop: 165, mobile: 220 },
-  { date: "2024-05-02", desktop: 293, mobile: 310 },
-  { date: "2024-05-03", desktop: 247, mobile: 190 },
-  { date: "2024-05-04", desktop: 385, mobile: 420 },
-  { date: "2024-05-05", desktop: 481, mobile: 390 },
-  { date: "2024-05-06", desktop: 498, mobile: 520 },
-  { date: "2024-05-07", desktop: 388, mobile: 300 },
-  { date: "2024-05-08", desktop: 149, mobile: 210 },
-  { date: "2024-05-09", desktop: 227, mobile: 180 },
-  { date: "2024-05-10", desktop: 293, mobile: 330 },
-  { date: "2024-05-11", desktop: 335, mobile: 270 },
-  { date: "2024-05-12", desktop: 197, mobile: 240 },
-  { date: "2024-05-13", desktop: 197, mobile: 160 },
-  { date: "2024-05-14", desktop: 448, mobile: 490 },
-  { date: "2024-05-15", desktop: 473, mobile: 380 },
-  { date: "2024-05-16", desktop: 338, mobile: 400 },
-  { date: "2024-05-17", desktop: 499, mobile: 420 },
-  { date: "2024-05-18", desktop: 315, mobile: 350 },
-  { date: "2024-05-19", desktop: 235, mobile: 180 },
-  { date: "2024-05-20", desktop: 177, mobile: 230 },
-  { date: "2024-05-21", desktop: 82, mobile: 140 },
-  { date: "2024-05-22", desktop: 81, mobile: 120 },
-  { date: "2024-05-23", desktop: 252, mobile: 290 },
-  { date: "2024-05-24", desktop: 294, mobile: 220 },
-  { date: "2024-05-25", desktop: 201, mobile: 250 },
-  { date: "2024-05-26", desktop: 213, mobile: 170 },
-  { date: "2024-05-27", desktop: 420, mobile: 460 },
-  { date: "2024-05-28", desktop: 233, mobile: 190 },
-  { date: "2024-05-29", desktop: 78, mobile: 130 },
-  { date: "2024-05-30", desktop: 340, mobile: 280 },
-  { date: "2024-05-31", desktop: 178, mobile: 230 },
-  { date: "2024-06-01", desktop: 178, mobile: 200 },
-  { date: "2024-06-02", desktop: 470, mobile: 410 },
-  { date: "2024-06-03", desktop: 103, mobile: 160 },
-  { date: "2024-06-04", desktop: 439, mobile: 380 },
-  { date: "2024-06-05", desktop: 88, mobile: 140 },
-  { date: "2024-06-06", desktop: 294, mobile: 250 },
-  { date: "2024-06-07", desktop: 323, mobile: 370 },
-  { date: "2024-06-08", desktop: 385, mobile: 320 },
-  { date: "2024-06-09", desktop: 438, mobile: 480 },
-  { date: "2024-06-10", desktop: 155, mobile: 200 },
-  { date: "2024-06-11", desktop: 92, mobile: 150 },
-  { date: "2024-06-12", desktop: 492, mobile: 420 },
-  { date: "2024-06-13", desktop: 81, mobile: 130 },
-  { date: "2024-06-14", desktop: 426, mobile: 380 },
-  { date: "2024-06-15", desktop: 307, mobile: 350 },
-  { date: "2024-06-16", desktop: 371, mobile: 310 },
-  { date: "2024-06-17", desktop: 475, mobile: 520 },
-  { date: "2024-06-18", desktop: 107, mobile: 170 },
-  { date: "2024-06-19", desktop: 341, mobile: 290 },
-  { date: "2024-06-20", desktop: 408, mobile: 450 },
-  { date: "2024-06-21", desktop: 169, mobile: 210 },
-  { date: "2024-06-22", desktop: 317, mobile: 270 },
-  { date: "2024-06-23", desktop: 480, mobile: 530 },
-  { date: "2024-06-24", desktop: 132, mobile: 180 },
-  { date: "2024-06-25", desktop: 141, mobile: 190 },
-  { date: "2024-06-26", desktop: 434, mobile: 380 },
-  { date: "2024-06-27", desktop: 448, mobile: 490 },
-  { date: "2024-06-28", desktop: 149, mobile: 200 },
-  { date: "2024-06-29", desktop: 103, mobile: 160 },
-  { date: "2024-06-30", desktop: 446, mobile: 400 },
-]
-
-const chartConfig = {
-  views: {
-    label: "Page Views",
-  },
-  desktop: {
-    label: "Desktop",
-    color: "var(--chart-2)",
-  },
-  mobile: {
-    label: "Mobile",
-    color: "var(--chart-1)",
-  },
-} satisfies ChartConfig
+import { useMemo } from "react"
+import { useQuery } from "convex/react"
+import { api } from "../../convex/_generated/api"
+import { Card, CardContent, CardFooter } from "@/components/ui/card"
+import { cn } from "@/lib/utils"
 
 export function HomePage() {
-  const [activeChart, setActiveChart] =
-    React.useState<keyof typeof chartConfig>("desktop")
+  const conversations = useQuery(api.conversations.getConversations)
+  const allMessages = useQuery(api.messages.getAllMessages)
 
-  const total = React.useMemo(
-    () => ({
-      desktop: chartData.reduce((acc, curr) => acc + curr.desktop, 0),
-      mobile: chartData.reduce((acc, curr) => acc + curr.mobile, 0),
-    }),
-    []
-  )
+  const data = useMemo(() => {
+    const totalConversations = conversations?.length || 0
+    const unopenedConversations = conversations?.filter((conv: any) => !conv.openedAt).length || 0
+    const totalMessages = allMessages?.length || 0
+    const activeToday = conversations?.filter((conv: any) => {
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+      return new Date(conv.createdAt) >= today
+    }).length || 0
+
+    // Calculate changes (simplified - comparing to previous period)
+    const calculateChange = (current: number) => {
+      // In a real app, you'd compare to previous period
+      // For now, showing a positive change if there's data
+      if (current > 0) return "+12.5%"
+      return "0%"
+    }
+
+    return [
+      {
+        name: "Conversations",
+        value: totalConversations.toLocaleString(),
+        change: calculateChange(totalConversations),
+        changeType: "positive" as const,
+        href: "#",
+      },
+      {
+        name: "Unopened",
+        value: unopenedConversations.toLocaleString(),
+        change: calculateChange(unopenedConversations),
+        changeType: unopenedConversations > 0 ? "negative" as const : "positive" as const,
+        href: "#",
+      },
+      {
+        name: "Active Today",
+        value: activeToday.toLocaleString(),
+        change: calculateChange(activeToday),
+        changeType: "positive" as const,
+        href: "#",
+      },
+      {
+        name: "Messages",
+        value: totalMessages.toLocaleString(),
+        change: calculateChange(totalMessages),
+        changeType: "positive" as const,
+        href: "#",
+      },
+    ]
+  }, [conversations, allMessages])
 
   return (
-    <div className="flex-1 overflow-auto p-6">
-      <div className="space-y-1 mb-6">
-        <h1 className="text-2xl font-semibold">
-          Hello Sokhina <span className="inline-block">👋</span>
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Here's what's happening with your conversations today
-        </p>
+    <div className="flex-1 overflow-auto p-6 flex flex-col h-full">
+      <div className="flex-1 flex flex-col items-center justify-center -mt-16">
+        <div className="space-y-1 text-center mb-8">
+          <h1 className="text-2xl font-semibold">
+            Hello Sokhina <span className="inline-block">👋</span>
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Here's what's happening with your conversations today
+          </p>
+        </div>
+        <dl className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 max-w-4xl mx-auto">
+            {data.map((item, index) => {
+              const softColors = [
+                "bg-blue-50/50 dark:bg-blue-950/20 border-blue-100/50 dark:border-blue-900/30",
+                "bg-purple-50/50 dark:bg-purple-950/20 border-purple-100/50 dark:border-purple-900/30",
+                "bg-pink-50/50 dark:bg-pink-950/20 border-pink-100/50 dark:border-pink-900/30",
+                "bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-100/50 dark:border-emerald-900/30",
+              ]
+              return (
+              <Card key={item.name} className={cn("p-0 gap-0 rounded-lg overflow-hidden", softColors[index % softColors.length])}>
+                <CardContent className="p-6">
+                  <dd className="flex items-start justify-between space-x-2">
+                    <span className="truncate text-sm text-muted-foreground">
+                      {item.name}
+                    </span>
+                    <span
+                      className={cn(
+                        "text-sm font-medium",
+                        item.changeType === "positive"
+                          ? "text-emerald-700 dark:text-emerald-500"
+                          : "text-red-700 dark:text-red-500"
+                      )}
+                    >
+                      {item.change}
+                    </span>
+                  </dd>
+                  <dd className="mt-1 text-3xl font-semibold text-foreground">
+                    {item.value}
+                  </dd>
+                </CardContent>
+                <CardFooter className="flex justify-end border-t border-border p-0 bg-white dark:bg-gray-950 rounded-b-lg">
+                  <a
+                    href={item.href}
+                    className="px-6 py-3 text-sm font-medium text-primary hover:text-primary/90"
+                  >
+                    View more &#8594;
+                  </a>
+                </CardFooter>
+              </Card>
+            )})}
+        </dl>
       </div>
-
-      <Card className="py-0">
-        <CardHeader className="flex flex-col items-stretch border-b p-0! sm:flex-row">
-          <div className="flex flex-1 flex-col justify-center gap-1 px-6 pt-4 pb-3 sm:py-0!">
-            <CardTitle>Bar Chart - Interactive</CardTitle>
-            <CardDescription>
-              Showing total visitors for the last 3 months
-            </CardDescription>
-          </div>
-          <div className="flex">
-            {(["desktop", "mobile"] as const).map((key) => (
-              <button
-                key={key}
-                data-active={activeChart === key}
-                className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-t-0 sm:border-l sm:px-8 sm:py-6"
-                onClick={() => setActiveChart(key)}
-              >
-                <span className="text-xs text-muted-foreground">
-                  {chartConfig[key].label}
-                </span>
-                <span className="text-lg leading-none font-bold sm:text-3xl">
-                  {total[key].toLocaleString()}
-                </span>
-              </button>
-            ))}
-          </div>
-        </CardHeader>
-        <CardContent className="px-2 sm:p-6">
-          <ChartContainer
-            config={chartConfig}
-            className="aspect-auto h-[250px] w-full"
-          >
-            <BarChart
-              accessibilityLayer
-              data={chartData}
-              margin={{ left: 12, right: 12 }}
-            >
-              <CartesianGrid vertical={false} />
-              <XAxis
-                dataKey="date"
-                tickLine={false}
-                axisLine={false}
-                tickMargin={8}
-                minTickGap={32}
-                tickFormatter={(value) => {
-                  const date = new Date(value)
-                  return date.toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                  })
-                }}
-              />
-              <ChartTooltip
-                content={
-                  <ChartTooltipContent
-                    className="w-[150px]"
-                    nameKey="views"
-                    labelFormatter={(value) =>
-                      new Date(value).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })
-                    }
-                  />
-                }
-              />
-              <Bar dataKey={activeChart} fill={`var(--color-${activeChart})`} />
-            </BarChart>
-          </ChartContainer>
-        </CardContent>
-      </Card>
     </div>
   )
 }
+

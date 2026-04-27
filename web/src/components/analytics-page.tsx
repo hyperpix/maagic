@@ -1,179 +1,214 @@
 "use client"
 
-import React, { useMemo } from "react"
-import { useQuery } from "convex/react"
-import { api } from "../../convex/_generated/api"
-import { AreaChart, BarChart, DonutChart } from "@tremor/react"
-import { Card, Tab, TabGroup, TabList, TabPanel, TabPanels } from "@tremor/react"
+import * as React from "react"
+import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@/components/ui/chart"
 
-const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+const chartData = [
+  { date: "2024-04-01", desktop: 222, mobile: 150 },
+  { date: "2024-04-02", desktop: 97, mobile: 180 },
+  { date: "2024-04-03", desktop: 167, mobile: 120 },
+  { date: "2024-04-04", desktop: 242, mobile: 260 },
+  { date: "2024-04-05", desktop: 373, mobile: 290 },
+  { date: "2024-04-06", desktop: 301, mobile: 340 },
+  { date: "2024-04-07", desktop: 245, mobile: 180 },
+  { date: "2024-04-08", desktop: 409, mobile: 320 },
+  { date: "2024-04-09", desktop: 59, mobile: 110 },
+  { date: "2024-04-10", desktop: 261, mobile: 190 },
+  { date: "2024-04-11", desktop: 327, mobile: 350 },
+  { date: "2024-04-12", desktop: 292, mobile: 210 },
+  { date: "2024-04-13", desktop: 342, mobile: 380 },
+  { date: "2024-04-14", desktop: 137, mobile: 220 },
+  { date: "2024-04-15", desktop: 120, mobile: 170 },
+  { date: "2024-04-16", desktop: 138, mobile: 190 },
+  { date: "2024-04-17", desktop: 446, mobile: 360 },
+  { date: "2024-04-18", desktop: 364, mobile: 410 },
+  { date: "2024-04-19", desktop: 243, mobile: 180 },
+  { date: "2024-04-20", desktop: 89, mobile: 150 },
+  { date: "2024-04-21", desktop: 137, mobile: 200 },
+  { date: "2024-04-22", desktop: 224, mobile: 170 },
+  { date: "2024-04-23", desktop: 138, mobile: 230 },
+  { date: "2024-04-24", desktop: 387, mobile: 290 },
+  { date: "2024-04-25", desktop: 215, mobile: 250 },
+  { date: "2024-04-26", desktop: 75, mobile: 130 },
+  { date: "2024-04-27", desktop: 383, mobile: 420 },
+  { date: "2024-04-28", desktop: 122, mobile: 180 },
+  { date: "2024-04-29", desktop: 315, mobile: 240 },
+  { date: "2024-04-30", desktop: 454, mobile: 380 },
+  { date: "2024-05-01", desktop: 165, mobile: 220 },
+  { date: "2024-05-02", desktop: 293, mobile: 310 },
+  { date: "2024-05-03", desktop: 247, mobile: 190 },
+  { date: "2024-05-04", desktop: 385, mobile: 420 },
+  { date: "2024-05-05", desktop: 481, mobile: 390 },
+  { date: "2024-05-06", desktop: 498, mobile: 520 },
+  { date: "2024-05-07", desktop: 388, mobile: 300 },
+  { date: "2024-05-08", desktop: 149, mobile: 210 },
+  { date: "2024-05-09", desktop: 227, mobile: 180 },
+  { date: "2024-05-10", desktop: 293, mobile: 330 },
+  { date: "2024-05-11", desktop: 335, mobile: 270 },
+  { date: "2024-05-12", desktop: 197, mobile: 240 },
+  { date: "2024-05-13", desktop: 197, mobile: 160 },
+  { date: "2024-05-14", desktop: 448, mobile: 490 },
+  { date: "2024-05-15", desktop: 473, mobile: 380 },
+  { date: "2024-05-16", desktop: 338, mobile: 400 },
+  { date: "2024-05-17", desktop: 499, mobile: 420 },
+  { date: "2024-05-18", desktop: 315, mobile: 350 },
+  { date: "2024-05-19", desktop: 235, mobile: 180 },
+  { date: "2024-05-20", desktop: 177, mobile: 230 },
+  { date: "2024-05-21", desktop: 82, mobile: 140 },
+  { date: "2024-05-22", desktop: 81, mobile: 120 },
+  { date: "2024-05-23", desktop: 252, mobile: 290 },
+  { date: "2024-05-24", desktop: 294, mobile: 220 },
+  { date: "2024-05-25", desktop: 201, mobile: 250 },
+  { date: "2024-05-26", desktop: 213, mobile: 170 },
+  { date: "2024-05-27", desktop: 420, mobile: 460 },
+  { date: "2024-05-28", desktop: 233, mobile: 190 },
+  { date: "2024-05-29", desktop: 78, mobile: 130 },
+  { date: "2024-05-30", desktop: 340, mobile: 280 },
+  { date: "2024-05-31", desktop: 178, mobile: 230 },
+  { date: "2024-06-01", desktop: 178, mobile: 200 },
+  { date: "2024-06-02", desktop: 470, mobile: 410 },
+  { date: "2024-06-03", desktop: 103, mobile: 160 },
+  { date: "2024-06-04", desktop: 439, mobile: 380 },
+  { date: "2024-06-05", desktop: 88, mobile: 140 },
+  { date: "2024-06-06", desktop: 294, mobile: 250 },
+  { date: "2024-06-07", desktop: 323, mobile: 370 },
+  { date: "2024-06-08", desktop: 385, mobile: 320 },
+  { date: "2024-06-09", desktop: 438, mobile: 480 },
+  { date: "2024-06-10", desktop: 155, mobile: 200 },
+  { date: "2024-06-11", desktop: 92, mobile: 150 },
+  { date: "2024-06-12", desktop: 492, mobile: 420 },
+  { date: "2024-06-13", desktop: 81, mobile: 130 },
+  { date: "2024-06-14", desktop: 426, mobile: 380 },
+  { date: "2024-06-15", desktop: 307, mobile: 350 },
+  { date: "2024-06-16", desktop: 371, mobile: 310 },
+  { date: "2024-06-17", desktop: 475, mobile: 520 },
+  { date: "2024-06-18", desktop: 107, mobile: 170 },
+  { date: "2024-06-19", desktop: 341, mobile: 290 },
+  { date: "2024-06-20", desktop: 408, mobile: 450 },
+  { date: "2024-06-21", desktop: 169, mobile: 210 },
+  { date: "2024-06-22", desktop: 317, mobile: 270 },
+  { date: "2024-06-23", desktop: 480, mobile: 530 },
+  { date: "2024-06-24", desktop: 132, mobile: 180 },
+  { date: "2024-06-25", desktop: 141, mobile: 190 },
+  { date: "2024-06-26", desktop: 434, mobile: 380 },
+  { date: "2024-06-27", desktop: 448, mobile: 490 },
+  { date: "2024-06-28", desktop: 149, mobile: 200 },
+  { date: "2024-06-29", desktop: 103, mobile: 160 },
+  { date: "2024-06-30", desktop: 446, mobile: 400 },
+]
 
-const valueFormatter = (n: number) =>
-  Intl.NumberFormat("us").format(n).toString()
+const chartConfig = {
+  views: {
+    label: "Page Views",
+  },
+  desktop: {
+    label: "Desktop",
+    color: "var(--chart-2)",
+  },
+  mobile: {
+    label: "Mobile",
+    color: "var(--chart-1)",
+  },
+} satisfies ChartConfig
 
 export function AnalyticsPage() {
-  const conversations = useQuery(api.conversations.getConversations)
-  const allMessages   = useQuery(api.messages.getAllMessages)
+  const [activeChart, setActiveChart] =
+    React.useState<keyof typeof chartConfig>("desktop")
 
-  const metrics = useMemo(() => {
-    const totalConversations = conversations?.length ?? 0
-    const totalMessages      = allMessages?.length ?? 0
-    const totalSeconds       = totalMessages * 30
-    const totalMinutes       = Math.round(totalSeconds / 60)
-    return { totalConversations, totalMessages, totalMinutes }
-  }, [conversations, allMessages])
-
-  const weeklyData = useMemo(() =>
-    weekDays.map((day, i) => ({
-      day,
-      Conversations: metrics.totalConversations > 0
-        ? Math.max(0, Math.round(metrics.totalConversations * (0.10 + i * 0.02 + Math.cos(i) * 0.04)))
-        : 0,
-      Messages: metrics.totalMessages > 0
-        ? Math.max(0, Math.round(metrics.totalMessages * (0.08 + i * 0.03 + Math.sin(i) * 0.05)))
-        : 0,
-      "Minutes Used": metrics.totalMinutes > 0
-        ? Math.max(0, Math.round(metrics.totalMinutes * (0.09 + i * 0.025 + Math.sin(i + 1) * 0.04)))
-        : 0,
-    })),
-    [metrics]
+  const total = React.useMemo(
+    () => ({
+      desktop: chartData.reduce((acc, curr) => acc + curr.desktop, 0),
+      mobile: chartData.reduce((acc, curr) => acc + curr.mobile, 0),
+    }),
+    []
   )
 
-  const hourlyData = Array.from({ length: 24 }, (_, h) => ({
-    hour: `${h}:00`,
-    Activity: metrics.totalMessages > 0
-      ? Math.max(0, Math.round(metrics.totalMessages * 0.04 * Math.sin((h - 2) * Math.PI / 12) ** 2))
-      : 0,
-  }))
-
-  const durationData = [
-    { name: "< 1 min", value: Math.round(metrics.totalConversations * 0.45) },
-    { name: "1–3 min", value: Math.round(metrics.totalConversations * 0.35) },
-    { name: "> 3 min", value: Math.round(metrics.totalConversations * 0.20) },
-  ]
-
-  const tabs = [
-    {
-      name:  "Conversations",
-      value: metrics.totalConversations.toLocaleString(),
-      change: "+12.5%",
-    },
-    {
-      name:  "Messages",
-      value: metrics.totalMessages.toLocaleString(),
-      change: "+18%",
-    },
-    {
-      name:  "Minutes Used",
-      value: metrics.totalMinutes.toLocaleString(),
-      change: "+5%",
-    },
-  ]
-
   return (
-    <div className="flex-1 overflow-auto p-4 sm:p-6 lg:p-8">
-      {/* Main metric card — chart-composition-04 pattern */}
-      <Card className="mt-8 overflow-hidden !p-0">
-        <TabGroup>
-          <TabList className="!h-24 !bg-gray-50 dark:!bg-gray-900 border-b border-gray-200 dark:border-gray-800">
-            {tabs.map((tab, i) => (
-              <React.Fragment key={tab.name}>
-                <Tab
-                  className="!py-4 !pl-5 !pr-12 text-left data-[selected]:bg-white dark:data-[selected]:bg-gray-950"
-                >
-                  <span className="block font-normal text-gray-500 dark:text-gray-500">
-                    {tab.name}
-                  </span>
-                  <span className="mt-1 block text-3xl font-semibold text-gray-900 dark:text-gray-50">
-                    {tab.value}
-                  </span>
-                  <span className="block text-xs font-medium text-emerald-700 dark:text-emerald-500 mt-0.5">
-                    {tab.change}
-                  </span>
-                </Tab>
-                {i < tabs.length - 1 && (
-                  <span
-                    className="h-full border-r border-gray-200 dark:border-gray-800"
-                    aria-hidden
+    <div className="flex-1 overflow-auto p-6">
+      <Card className="py-0">
+        <CardHeader className="flex flex-col items-stretch border-b p-0! sm:flex-row">
+          <div className="flex flex-1 flex-col justify-center gap-1 px-6 pt-4 pb-3 sm:py-0!">
+            <CardTitle>Bar Chart - Interactive</CardTitle>
+            <CardDescription>
+              Showing total visitors for the last 3 months
+            </CardDescription>
+          </div>
+          <div className="flex">
+            {(["desktop", "mobile"] as const).map((key) => (
+              <button
+                key={key}
+                data-active={activeChart === key}
+                className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-t-0 sm:border-l sm:px-8 sm:py-6"
+                onClick={() => setActiveChart(key)}
+              >
+                <span className="text-xs text-muted-foreground">
+                  {chartConfig[key].label}
+                </span>
+                <span className="text-lg leading-none font-bold sm:text-3xl">
+                  {total[key].toLocaleString()}
+                </span>
+              </button>
+            ))}
+          </div>
+        </CardHeader>
+        <CardContent className="px-2 sm:p-6">
+          <ChartContainer
+            config={chartConfig}
+            className="aspect-auto h-[250px] w-full"
+          >
+            <BarChart
+              accessibilityLayer
+              data={chartData}
+              margin={{ left: 12, right: 12 }}
+            >
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="date"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                minTickGap={32}
+                tickFormatter={(value) => {
+                  const date = new Date(value)
+                  return date.toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                  })
+                }}
+              />
+              <ChartTooltip
+                content={
+                  <ChartTooltipContent
+                    className="w-[150px]"
+                    nameKey="views"
+                    labelFormatter={(value) =>
+                      new Date(String(value)).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })
+                    }
                   />
-                )}
-              </React.Fragment>
-            ))}
-          </TabList>
-
-          <TabPanels>
-            {tabs.map((tab) => (
-              <TabPanel key={tab.name} className="p-6">
-                <AreaChart
-                  data={weeklyData}
-                  index="day"
-                  categories={[tab.name]}
-                  colors={["#3b82f6"]}
-                  valueFormatter={valueFormatter}
-                  showGradient
-                  showLegend={false}
-                  yAxisWidth={50}
-                  className="hidden !h-72 sm:block"
-                />
-                <AreaChart
-                  data={weeklyData}
-                  index="day"
-                  categories={[tab.name]}
-                  colors={["#3b82f6"]}
-                  valueFormatter={valueFormatter}
-                  showGradient
-                  showLegend={false}
-                  showYAxis={false}
-                  startEndOnly
-                  className="!h-56 sm:hidden"
-                />
-              </TabPanel>
-            ))}
-          </TabPanels>
-        </TabGroup>
+                }
+              />
+              <Bar dataKey={activeChart} fill={`var(--color-${activeChart})`} />
+            </BarChart>
+          </ChartContainer>
+        </CardContent>
       </Card>
-
-      {/* Secondary charts */}
-      <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
-        {/* Hourly activity */}
-        <Card>
-          <h3 className="text-sm font-medium text-gray-900 dark:text-gray-50">
-            Hourly Distribution
-          </h3>
-          <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-500">
-            Message volume by hour of day
-          </p>
-          <BarChart
-            data={hourlyData}
-            index="hour"
-            categories={["Activity"]}
-            colors={["#8b5cf6"]}
-            valueFormatter={valueFormatter}
-            showLegend={false}
-            yAxisWidth={40}
-            className="mt-4 !h-48"
-          />
-        </Card>
-
-        {/* Session duration donut */}
-        <Card>
-          <h3 className="text-sm font-medium text-gray-900 dark:text-gray-50">
-            Session Duration
-          </h3>
-          <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-500">
-            Breakdown of conversation lengths
-          </p>
-          <DonutChart
-            data={durationData}
-            category="value"
-            index="name"
-            colors={["#3b82f6", "#8b5cf6", "#10b981"]}
-            valueFormatter={valueFormatter}
-            className="mt-4 !h-48"
-            showLabel
-          />
-        </Card>
-      </div>
     </div>
   )
 }
