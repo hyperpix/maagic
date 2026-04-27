@@ -75,10 +75,13 @@ export default defineSchema({
 
   messages: defineTable({
     conversationId: v.id("conversations"),
+    agentId: v.optional(v.id("agents")),
     sender: v.union(v.literal("visitor"), v.literal("agent")),
     content: v.string(),
     createdAt: v.number(),
-  }).index("by_conversation", ["conversationId"]),
+  })
+    .index("by_conversation", ["conversationId"])
+    .index("by_agent", ["agentId"]),
 
   knowledge: defineTable({
     agentId: v.optional(v.id("agents")),

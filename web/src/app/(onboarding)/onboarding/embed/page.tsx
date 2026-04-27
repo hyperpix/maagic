@@ -50,10 +50,17 @@ function EmbedSetup() {
           <Button variant="outline" onClick={handleCopy} className="flex-1">
             Copy snippet
           </Button>
-          <Button onClick={handleFinish} className="flex-1">
-            Go to inbox
-          </Button>
+          {agent && (
+            <Button variant="outline" asChild className="flex-1">
+              <a href={`${origin}/widget/${agent.widgetKey}`} target="_blank" rel="noopener noreferrer">
+                Preview widget ↗
+              </a>
+            </Button>
+          )}
         </div>
+        <Button onClick={handleFinish} className="w-full">
+          Go to inbox
+        </Button>
         <p className="text-xs text-center text-muted-foreground">
           You can find this snippet anytime in{" "}
           <Link href={`/${orgSlug}/${agentSlug}/embed`} className="underline">

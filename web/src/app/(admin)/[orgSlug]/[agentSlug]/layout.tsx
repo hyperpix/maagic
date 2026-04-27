@@ -16,14 +16,19 @@ export default async function AgentLayout({
   const token = await convexAuthNextjsToken();
   if (!token) redirect("/login");
 
-  const org = await fetchQuery(api.organizations.getOrgBySlug, { slug: orgSlug }, { token });
+  const [org, orgs] = await Promise.all([
+    fetchQuery(api.organizations.getOrgBySlug, { slug: orgSlug }, { token }),
+    fetchQuery(api.organizations.getMyOrgs, {}, { token }),
+  ]);
+
   if (!org) redirect("/");
 
-  const orgs = await fetchQuery(api.organizations.getMyOrgs, {}, { token });
-  const agent = await fetchQuery(api.agents.getAgentBySlug, { orgId: org._id, slug: agentSlug }, { token });
-  if (!agent) redirect(`/${orgSlug}`);
+  const [agent, agents] = await Promise.all([
+    fetchQuery(api.agents.getAgentBySlug, { orgId: org._id, slug: agentSlug }, { token }),
+    fetchQuery(api.agents.getAgents, { orgId: org._id }, { token }),
+  ]);
 
-  const agents = await fetchQuery(api.agents.getAgents, { orgId: org._id }, { token });
+  if (!agent) redirect(`/${orgSlug}`);
 
   const orgWithRole = orgs?.find((o: any) => o?._id === org._id) as (typeof org & { role: string }) | undefined;
 

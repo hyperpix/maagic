@@ -14,8 +14,15 @@ export default async function OrgLayout({
   const token = await convexAuthNextjsToken();
   if (!token) redirect("/login");
 
-  const org = await fetchQuery(api.organizations.getOrgBySlug, { slug: orgSlug }, { token });
+  const [org, orgs] = await Promise.all([
+    fetchQuery(api.organizations.getOrgBySlug, { slug: orgSlug }, { token }),
+    fetchQuery(api.organizations.getMyOrgs, {}, { token }),
+  ]);
+
   if (!org) redirect("/");
+
+  const isMember = orgs?.some((o: any) => o?._id === org._id);
+  if (!isMember) redirect("/");
 
   return <>{children}</>;
 }

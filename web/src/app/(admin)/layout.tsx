@@ -11,5 +11,8 @@ export default async function AdminLayout({
   const token = await convexAuthNextjsToken();
   if (!token) redirect("/login");
 
+  const orgs = await fetchQuery(api.organizations.getMyOrgs, {}, { token });
+  if (!orgs || orgs.length === 0) redirect("/onboarding/create-org");
+
   return <>{children}</>;
 }
