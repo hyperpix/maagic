@@ -480,16 +480,6 @@ function ToolsPage({ config, onUpdate }: { config: AgentConfig; onUpdate: (u: Pa
   )
 }
 
-/* ─── Coming soon ───────────────────────────────────────────────────────────── */
-
-function ComingSoonPage({ section }: { section: string }) {
-  return (
-    <div className="flex flex-col items-center justify-center py-32 text-center">
-      <p className="text-sm font-medium capitalize">{section}</p>
-      <p className="mt-1 text-xs text-muted-foreground">Coming soon</p>
-    </div>
-  )
-}
 
 /* ─── root ──────────────────────────────────────────────────────────────────── */
 
@@ -541,9 +531,6 @@ export function AgentPromptView({ config, onUpdateConfig, activeSection: propSec
           {section === "knowledge"    && <KnowledgePage    config={config} onUpdate={onUpdateConfig} />}
           {section === "deployment"   && <DeploymentPage />}
           {section === "tools"        && <ToolsPage        config={config} onUpdate={onUpdateConfig} />}
-          {!["instructions","llm","appearance","legal","knowledge","deployment","tools"].includes(section) && (
-            <ComingSoonPage section={section} />
-          )}
         </div>
       </div>
     </div>

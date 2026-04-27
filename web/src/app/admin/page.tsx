@@ -500,11 +500,6 @@ export default function AdminPage() {
           </div>
                 </>
               )}
-              {view !== "home" && view !== "inbox" && view !== "knowledge" && view !== "analytics" && view !== "agent-prompt" && view !== "agent-canvas" && !selectedId && (
-          <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
-                  {view.charAt(0).toUpperCase() + view.slice(1)} page coming soon
-                </div>
-              )}
           </div>
           </>
         )}

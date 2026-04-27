@@ -39,16 +39,16 @@ const NAV = [
 ]
 
 function GeneralContent() {
-  return <p className="text-sm text-muted-foreground p-4">General settings coming soon.</p>
+  return <div className="flex-1" />
 }
 function AccountContent() {
-  return <p className="text-sm text-muted-foreground p-4">Account settings coming soon.</p>
+  return <div className="flex-1" />
 }
 function NotificationsContent() {
-  return <p className="text-sm text-muted-foreground p-4">Notification settings coming soon.</p>
+  return <div className="flex-1" />
 }
 function SecurityContent() {
-  return <p className="text-sm text-muted-foreground p-4">Security settings coming soon.</p>
+  return <div className="flex-1" />
 }
 
 export function SettingsDialog({
