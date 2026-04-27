@@ -1,17 +1,23 @@
 "use client"
 
 import * as React from "react"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { FileText, GitBranch } from "lucide-react"
+import { AgentSection } from "./agent-sidebar-nav"
+import {
+  MessageSquare,
+  Brain,
+  Zap,
+  Database,
+  Palette,
+  ShieldCheck,
+  Code,
+} from "lucide-react"
 import {
   SidebarGroup,
-  SidebarGroupContent,
-  SidebarHeader,
+  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuItem,
+  SidebarMenuButton,
 } from "@/components/ui/sidebar"
-import { AgentSidebarNav, AgentSection } from "./agent-sidebar-nav"
-import { AgentCanvasNodePalette } from "./agent-canvas-node-palette"
 
 interface AgentNestedSidebarProps {
   viewMode: "prompt" | "canvas"
@@ -20,64 +26,51 @@ interface AgentNestedSidebarProps {
   onSectionChange?: (section: AgentSection) => void
 }
 
-export function AgentNestedSidebar({
-  viewMode,
-  onViewModeChange,
-  activeSection,
-  onSectionChange,
-}: AgentNestedSidebarProps) {
+const items: {
+  id: AgentSection
+  label: string
+  icon: React.ComponentType<{ className?: string }>
+  accent: string
+}[] = [
+  { id: "instructions", label: "Instructions",   icon: MessageSquare, accent: "#3b82f6" },
+  { id: "llm",          label: "Model",           icon: Brain,         accent: "#8b5cf6" },
+  { id: "tools",        label: "Tools & MCP",     icon: Zap,           accent: "#f97316" },
+  { id: "knowledge",    label: "Knowledge Base",  icon: Database,      accent: "#f59e0b" },
+  { id: "appearance",   label: "Appearance",      icon: Palette,       accent: "#f43f5e" },
+  { id: "legal",        label: "Privacy & Legal", icon: ShieldCheck,   accent: "#64748b" },
+  { id: "deployment",   label: "Embed",           icon: Code,          accent: "#06b6d4" },
+]
+
+export function AgentNestedSidebar({ activeSection, onSectionChange }: AgentNestedSidebarProps) {
   return (
-    <div 
-      className="w-80 border-l bg-sidebar flex flex-col fixed inset-y-0 z-10 h-svh"
-      style={{
-        left: 'var(--sidebar-width, 16rem)'
-      }}
-    >
-      <div className="relative shrink-0">
-        <div className="absolute top-0 left-0 right-0 p-2">
-          <div className="px-2 mb-2 pt-4 flex items-center justify-between">
-            <h2 className="font-medium">Agent</h2>
-          </div>
-        </div>
-        <SidebarHeader>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <div className="h-14" />
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <Tabs value={viewMode} onValueChange={(v) => onViewModeChange(v as "prompt" | "canvas")} className="w-full">
-                <TabsList className="w-full">
-                  <TabsTrigger value="prompt" className="flex-1 gap-2">
-                    <FileText className="h-4 w-4" />
-                    Prompt
-                  </TabsTrigger>
-                  <TabsTrigger value="canvas" className="flex-1 gap-2">
-                    <GitBranch className="h-4 w-4" />
-                    Canvas
-                  </TabsTrigger>
-                </TabsList>
-              </Tabs>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarHeader>
+    <div className="flex min-h-screen w-[16rem] shrink-0 flex-col bg-sidebar text-sidebar-foreground border-l border-sidebar-border">
+
+      {/* Header — matches canvas right sidebar */}
+      <div className="flex h-12 items-center gap-2 px-3 shrink-0 mt-3">
+        <span className="flex-1 truncate text-sm font-semibold">Configuration</span>
       </div>
-      <div className="flex-1 min-h-0 overflow-y-auto">
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {viewMode === "prompt" && activeSection && onSectionChange ? (
-                <AgentSidebarNav 
-                  activeSection={activeSection} 
-                  onSectionChange={onSectionChange} 
-                />
-              ) : viewMode === "canvas" ? (
-                <AgentCanvasNodePalette onAddNode={() => {}} />
-              ) : null}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </div>
+
+      {/* Nav items */}
+      <SidebarGroup>
+        <SidebarMenu>
+          {items.map(({ id, label, icon: Icon, accent }) => (
+            <SidebarMenuItem key={id}>
+              <SidebarMenuButton
+                isActive={activeSection === id}
+                onClick={() => onSectionChange?.(id)}
+              >
+                <div
+                  className="flex h-5 w-5 shrink-0 items-center justify-center rounded"
+                  style={{ backgroundColor: `${accent}20`, color: accent }}
+                >
+                  <Icon className="h-3 w-3" />
+                </div>
+                <span>{label}</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          ))}
+        </SidebarMenu>
+      </SidebarGroup>
     </div>
   )
 }
-
